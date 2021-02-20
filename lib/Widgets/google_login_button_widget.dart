@@ -3,13 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
-class GoogleSignupButtonWidget extends StatelessWidget {
+class GoogleLoginButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
         child: OutlineButton.icon(
           label: Text(
-            "Register with Google",
+            "Login with Google",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           shape: StadiumBorder(),
