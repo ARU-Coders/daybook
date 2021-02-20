@@ -1,27 +1,18 @@
-// import 'dart:html';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class UpperCaseTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    return TextEditingValue(
-      text: newValue.text?.toUpperCase(),
-      selection: newValue.selection,
-    );
-  }
-}
-
-class FormPage extends StatefulWidget {
-  // final String selectedDoc;
-  // FormPage();
+class SignupDetails extends StatefulWidget {
 
   @override
-  _FormPageState createState() => _FormPageState();
+  _SignupDetailsState createState() => _SignupDetailsState();
 }
 
-class _FormPageState extends State<FormPage> {
+class _SignupDetailsState extends State<SignupDetails> {
+  bool _obscurePassText = true;
+  bool _obscureCnfPassText = true;
+
+  void _togglePassText() => setState(() =>  _obscurePassText = !_obscurePassText);
+  void _toggleCnfPassText() => setState(() =>  _obscureCnfPassText = !_obscureCnfPassText);
+
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -55,6 +46,7 @@ class _FormPageState extends State<FormPage> {
                                     controller: nameController,
                                     decoration: InputDecoration(
                                         labelText: "Name",
+                                        icon: const Icon(Icons.account_circle),
                                         labelStyle: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 18,
@@ -76,8 +68,10 @@ class _FormPageState extends State<FormPage> {
                                   ),
                                   TextFormField(
                                     controller: emailController,
+                                    
                                     decoration: InputDecoration(
                                         labelText: "Email ID",
+                                        icon: const Icon(Icons.email),
                                         labelStyle: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 18,
@@ -99,11 +93,12 @@ class _FormPageState extends State<FormPage> {
                                   TextFormField(
                                     controller: birthdayController,
                                     decoration: InputDecoration(
-                                        labelText: "DOB",
-                                        labelStyle: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500),
+                                      icon: const Icon(Icons.calendar_today),
+                                      labelText: "Birthdate",
+                                      labelStyle: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.black, width: 1)),
@@ -121,6 +116,7 @@ class _FormPageState extends State<FormPage> {
 
                                   DropdownButtonFormField(
                                     decoration: InputDecoration(
+                                      icon: const Icon(Icons.supervisor_account),
                                       labelText: "Gender",
                                       labelStyle: TextStyle(
                                           color: Colors.grey,
@@ -149,16 +145,19 @@ class _FormPageState extends State<FormPage> {
                                         child: Text(value),
                                       );
                                     }).toList(),
-                                    // dropdownColor: Colors.amber,
                                   ),
                                   SizedBox(
                                     height: 25.0,
                                   ),
                                   TextFormField(
                                     controller: passwordController,
+                                    obscureText: _obscurePassText,
+                                    
                                     // keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                         labelText: "Password",
+                                        
+                                        icon: Icon(Icons.lock_outline),
                                         labelStyle: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 18,
@@ -166,8 +165,21 @@ class _FormPageState extends State<FormPage> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.black, width: 1)),
-                                        hintText: 'Enter your Password'),
-                                    validator: (value) {
+                                        hintText: 'Enter your Password',
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            // Based on passwordVisible state choose the icon
+                                            _obscurePassText
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                            color: Theme.of(context).primaryColorDark,
+                                            ),
+                                          onPressed: () {
+                                            _togglePassText();}),
+                                        
+                                        ),
+
+                                      validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Password cannot be empty !';
                                       }
@@ -180,8 +192,10 @@ class _FormPageState extends State<FormPage> {
                                   TextFormField(
                                     controller: confirmPasswordController,
                                     // keyboardType: TextInputType.number,
+                                    obscureText: _obscureCnfPassText,
                                     decoration: InputDecoration(
                                         labelText: "Confirm Password",
+                                        icon: Icon(Icons.lock_rounded),
                                         labelStyle: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 18,
@@ -189,10 +203,23 @@ class _FormPageState extends State<FormPage> {
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.black, width: 1)),
-                                        hintText: 'Confirm your Password'),
+                                        hintText: 'Confirm your Password',
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            // Based on passwordVisible state choose the icon
+                                            _obscureCnfPassText
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                            color: Theme.of(context).primaryColorDark,
+                                            ),
+                                          onPressed: () {
+                                            _toggleCnfPassText();}),),
                                     validator: (value) {
                                       if (value.isEmpty) {
                                         return 'Password cannot be empty !';
+                                      }
+                                      if(value != passwordController.text){
+                                        return 'Passwords do not match !';
                                       }
                                       return null;
                                     },
@@ -204,13 +231,13 @@ class _FormPageState extends State<FormPage> {
                                       child: Text('Submit Form'),
                                       color: Colors.orange[300],
                                       onPressed: () {
-                                        final snackBar = SnackBar(
-                                            content: Text('Thanks !' +
-                                                'Thanks !' +
-                                                nameController.text));
+                                        // final snackBar = SnackBar(
+                                        //     content: Text('Thanks !' +
+                                        //         'Thanks !' +
+                                        //         nameController.text));
 
-                                        Scaffold.of(buildContext)
-                                            .showSnackBar(snackBar);
+                                        // Scaffold.of(buildContext)
+                                        //     .showSnackBar(snackBar);
                                       }) // dob
                                 ],
                               ))),
