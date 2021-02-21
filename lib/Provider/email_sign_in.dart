@@ -19,17 +19,18 @@ class EmailSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<UserCredential> login(String email, String password) async {
+  Future login(String email, String password) async {
     final user = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
-    return user;
+    print(user);
+    return;
   }
 
-  Future<UserCredential> register(String name, String email, String password,
-      String gender, String dob) async {
+  void register(String name, String email, String password, String gender,
+      String dob) async {
     final newUser = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
-    if (newUser!=null) {
+    if (newUser != null) {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       Future<DocumentReference> query = firestore.collection('users').add({
         'name': name,
@@ -42,7 +43,6 @@ class EmailSignInProvider extends ChangeNotifier {
       });
       print(query);
     }
-    return newUser;
   }
 
   // void addUserToFirestore(user) async {
@@ -88,8 +88,7 @@ class EmailSignInProvider extends ChangeNotifier {
   //   }
   // }
 
-  // void logout() async {
-  //   await googleSignIn.disconnect();
-  //   FirebaseAuth.instance.signOut();
-  // }
+  void logout() async {
+    FirebaseAuth.instance.signOut();
+  }
 }

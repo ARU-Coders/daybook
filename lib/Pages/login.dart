@@ -1,8 +1,12 @@
 import 'package:daybook/Pages/signup.dart';
+import 'package:daybook/Pages/start.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Widgets/background_painter.dart';
 import 'package:daybook/Widgets/google_login_button_widget.dart';
-import 'package:daybook/Services/authentication.dart';
+import 'package:daybook/provider/email_sign_in.dart';
+import 'package:provider/provider.dart';
+
+// import 'package:daybook/Services/authentication.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -82,6 +86,14 @@ class LoginPage extends StatelessWidget {
                   child: Text('Login'),
                   color: Colors.orange[300],
                   onPressed: () {
+                    final provider = Provider.of<EmailSignInProvider>(context,
+                        listen: false);
+                    provider.login(
+                        emailController.text, passwordController.text);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => StartPage()),
+                    );
                     // Authentication.login(emailController.text, passwordController.text)
                   }),
               SizedBox(height: 15),

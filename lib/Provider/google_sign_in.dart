@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   final googleSignIn = GoogleSignIn();
   bool _isSigningIn;
 
@@ -24,6 +26,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     final user = await googleSignIn.signIn();
     if (user == null) {
       isSigningIn = false;
+      print("Null user");
       return;
     } else {
       final googleAuth = await user.authentication;
@@ -62,7 +65,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   void logout() async {
-    await googleSignIn.disconnect();
-    FirebaseAuth.instance.signOut();
+    // await googleSignIn.disconnect();
+    await _firebaseAuth.signOut();
   }
 }
