@@ -26,7 +26,7 @@ class GoogleSignupButtonWidget extends StatelessWidget {
                 textColor: Colors.black,
                 icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
                 onPressed: () {
-                  provider.login();
+                  provider.registerWithGoogle();
                 },
               ),
             );
