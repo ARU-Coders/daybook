@@ -37,7 +37,8 @@ dependencies:
   firebase_storage: ^7.0.0
   path:
   image_picker: ^0.6.7+22
-
+  curved_navigation_bar: ^0.3.7
+  
   # state management
   provider: ^4.3.2+2
 

@@ -5,7 +5,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:daybook/Config/config.dart';
 
 /*
 GET https://people.googleapis.com/v1/people/me?personFields=genders%2Cbirthdays&key=[YOUR_API_KEY] HTTP/1.1
@@ -71,28 +70,28 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   Future<List<String>> getGenderAndDOB(String accessToken) async {
     final headers = await googleSignIn.currentUser.authHeaders;
-    String dd = "01", mm="01", yyyy="2000", gender="Not Set";
+    String dd = "01", mm = "01", yyyy = "2000", gender = "Not Set";
     final r = await http.get(
         "https://people.googleapis.com/v1/people/me?personFields=genders,birthdays&key=$apiKey&access_token=$accessToken",
         headers: {"Authorization": headers["Authorization"]});
     final response = jsonDecode(r.body);
     print(response);
 
-    if(response.containsKey("genders")){
+    if (response.containsKey("genders")) {
       gender = response["genders"][0]["formattedValue"].toString();
     }
 
-    if(response.containsKey("birthdays")){
+    if (response.containsKey("birthdays")) {
       dd = response["birthdays"][1]["date"]["day"].toString();
       mm = response["birthdays"][1]["date"]["month"].toString();
       yyyy = response["birthdays"][1]["date"]["year"].toString();
     }
-    
+
     String dob = dd + "/" + mm + "/" + yyyy;
 
     print("DOB\t$dob\tGENDER\t$gender");
     return [gender, dob];
-}
+  }
 
   Future<bool> registerWithGoogle() async {
     //Returns true if the sign up process is completed and all user details are stored in respective collection
