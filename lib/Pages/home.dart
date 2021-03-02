@@ -4,6 +4,11 @@ import 'package:daybook/Pages/start.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'entries.dart';
+import 'journeys.dart';
+import 'tasks.dart';
+import 'habits.dart';
+import 'stats.dart';
 
 // import 'package:curved'
 class HomePage extends StatefulWidget {
@@ -13,31 +18,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey _bottomNavigationKey = GlobalKey();
+
+  final _tabs = [
+    JourneysScreen(),
+    HabitsScreen(),
+    EntriesScreen(),
+    TasksScreen(),
+    StatsScreen()
+  ];
+
   int _currentTab = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Tab $_currentTab !"),
-            SizedBox(height: 15),
-            RaisedButton(
-              onPressed: () {
-                final provider =
-                    Provider.of<GoogleSignInProvider>(context, listen: false);
-                provider.logout();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => StartPage()),
-                );
-              },
-              child: Text('Logout'),
-            )
-          ],
-        ),
+        child: _tabs[_currentTab],
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   foregroundColor: Colors.black54,
+      //   child: Icon(Icons.add),
+      //   onPressed: () {
+      //     print('Clicked');
+      //   },
+      // ),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         color: Colors.blueGrey[900],
@@ -61,5 +64,115 @@ class _HomePageState extends State<HomePage> {
         height: 50,
       ),
     );
+  }
+
+  Widget journeys() {
+    return (Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Tab $_currentTab !"),
+        SizedBox(height: 15),
+        RaisedButton(
+          onPressed: () {
+            final provider =
+                Provider.of<GoogleSignInProvider>(context, listen: false);
+            provider.logout();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+          child: Text('Logout'),
+        )
+      ],
+    ));
+  }
+
+  Widget entries() {
+    return (Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Tab $_currentTab !"),
+        SizedBox(height: 15),
+        RaisedButton(
+          onPressed: () {
+            final provider =
+                Provider.of<GoogleSignInProvider>(context, listen: false);
+            provider.logout();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+          child: Text('Logout'),
+        )
+      ],
+    ));
+  }
+
+  Widget stats() {
+    return (Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Tab $_currentTab !"),
+        SizedBox(height: 15),
+        RaisedButton(
+          onPressed: () {
+            final provider =
+                Provider.of<GoogleSignInProvider>(context, listen: false);
+            provider.logout();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+          child: Text('Logout'),
+        )
+      ],
+    ));
+  }
+
+  Widget habits() {
+    return (Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Tab $_currentTab !"),
+        SizedBox(height: 15),
+        RaisedButton(
+          onPressed: () {
+            final provider =
+                Provider.of<GoogleSignInProvider>(context, listen: false);
+            provider.logout();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+          child: Text('Logout'),
+        )
+      ],
+    ));
+  }
+
+  Widget tasks() {
+    return (Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Tab $_currentTab !"),
+        SizedBox(height: 15),
+        RaisedButton(
+          onPressed: () {
+            final provider =
+                Provider.of<GoogleSignInProvider>(context, listen: false);
+            provider.logout();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StartPage()),
+            );
+          },
+          child: Text('Logout'),
+        )
+      ],
+    ));
   }
 }
