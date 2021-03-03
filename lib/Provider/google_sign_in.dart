@@ -22,6 +22,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     "https://www.googleapis.com/auth/user.birthday.read",
     "https://www.googleapis.com/auth/user.gender.read"
   ]);
+  final googleSignInForLogin = GoogleSignIn();
   bool _isSigningIn;
 
   GoogleSignInProvider() {
@@ -38,7 +39,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   Future login() async {
     isSigningIn = true;
 
-    final user = await googleSignIn.signIn();
+    final user = await googleSignInForLogin.signIn();
 
     if (user == null) {
       isSigningIn = false;
