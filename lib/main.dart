@@ -1,3 +1,4 @@
+import 'package:daybook/Pages/create_entry.dart';
 import 'package:daybook/Provider/google_sign_in.dart';
 import 'package:daybook/Provider/email_sign_in.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/signup': (BuildContext context) => Signup(),
         '/login': (BuildContext context) => LoginPage(),
         '/home': (BuildContext context) => HomePage(),
+        '/createEntry': (BuildContext context) => CreateEntryScreen(),
       },
     );
     // ,);
