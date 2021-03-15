@@ -38,6 +38,7 @@ dependencies:
   path:
   image_picker: ^0.6.7+22
   curved_navigation_bar: ^0.3.7
+  group_button: ^1.0.3
   
   # state management
   provider: ^4.3.2+2
@@ -45,6 +46,7 @@ dependencies:
   # icon of google
   font_awesome_flutter: ^8.10.0
   material_design_icons_flutter: 
+
 
 dev_dependencies:
   test: ^1.5.1

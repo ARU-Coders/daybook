@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:daybook/Services/db_services.dart';
+import 'package:daybook/Services/entryService.dart';
 
 class EntriesScreen extends StatefulWidget {
   @override
@@ -9,7 +8,6 @@ class EntriesScreen extends StatefulWidget {
 }
 
 class _EntriesScreenState extends State<EntriesScreen> {
-  final _auth = FirebaseAuth.instance;
   final List<int> colorCodes = <int>[400, 300, 200];
 
   @override
