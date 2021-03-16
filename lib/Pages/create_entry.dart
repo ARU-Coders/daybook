@@ -27,9 +27,32 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   final List<String> menuItems = <String>[
     'Add Images',
     'Add to Journey',
-    'Delete'
+    'Discard'
   ];
   List<String> selectedImages = [];
+
+  Future<bool> _onWillPop() async {
+    //Display the popup if user has entered any text or add images, when back button is pressed.
+    //If user selects "yes", the entry will get discarded.
+
+    return (titleController.text.length > 0 || contentController.text.length > 0 || selectedImages.length > 0) ? (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Hold up !'),
+        content: new Text('Do you want to discard this entry ?'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Yes', style: TextStyle(color: Colors.red),),
+          ),
+        ],
+      ),
+    )) ?? false : true;
+  }
 
   _selectImages() async {
     FilePickerResult result =
@@ -51,7 +74,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     }
   }
 
-  void handleMenuClick(String value) {
+  void handleMenuClick(String value) async {
     switch (value) {
       case 'Add Images':
         {
@@ -65,9 +88,13 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
           print("Selected : $value");
           break;
         }
-      case 'Delete':
+      case 'Discard':
         {
-          print("Selected : $value");
+          bool discard = await _onWillPop();
+          
+          if(discard){
+            Navigator.pop(context);
+          } 
           break;
         }
     }
@@ -76,107 +103,110 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Create Entry",
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.check),
-          onPressed: () {
-            print("Created !");
-            createEntry(titleController.text, contentController.text,
-                moodMap[selectedMoods[0]], selectedImages);
-            Navigator.pop(context);
-          },
-        ),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: handleMenuClick,
-            itemBuilder: (BuildContext context) {
-              return menuItems.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Create Entry",
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              print("Created !");
+              createEntry(titleController.text, contentController.text,
+                  moodMap[selectedMoods[0]], selectedImages);
+              Navigator.pop(context);
             },
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
-                child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                          child: Column(children: [
-                            _moodBar(),
-                            SizedBox(
-                              height: 25.0,
-                            ),
-                            TextFormField(
-                              style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: "Times New Roman"),
-                              controller: titleController,
-                              decoration: InputDecoration(hintText: 'Title'),
-                              autofocus: false,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Title cannot be empty !';
-                                }
-                                return null;
-                              },
-                            ), // name
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: handleMenuClick,
+              itemBuilder: (BuildContext context) {
+                return menuItems.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                  child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: 25.0,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+                            child: Column(children: [
+                              _moodBar(),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                              TextFormField(
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Times New Roman"),
+                                controller: titleController,
+                                decoration: InputDecoration(hintText: 'Title'),
+                                autofocus: false,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Title cannot be empty !';
+                                  }
+                                  return null;
+                                },
+                              ), // name
 
-                            SizedBox(
-                              height: 35.0,
-                            ),
-                            TextFormField(
-                              style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 18,
-                                  fontFamily: "Times New Roman"),
-                              controller: contentController,
-                              minLines: 5,
-                              maxLines: null,
-                              keyboardType: TextInputType.multiline,
-                              decoration: InputDecoration(
-                                  hintText: 'Write something here !'),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Content cannot be empty !';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(
-                              height: 25.0,
-                            ),
-                            selectedImages.length != 0
-                                ? _imagesGrid()
-                                : SizedBox(
-                                    height: 1,
-                                  ),
-                            SizedBox(
-                              height: 25.0,
-                            ),
-                          ]),
-                        ),
-                      ],
-                    ))),
+                              SizedBox(
+                                height: 35.0,
+                              ),
+                              TextFormField(
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 18,
+                                    fontFamily: "Times New Roman"),
+                                controller: contentController,
+                                minLines: 5,
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                decoration: InputDecoration(
+                                    hintText: 'Write something here !'),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Content cannot be empty !';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                              selectedImages.length != 0
+                                  ? _imagesGrid()
+                                  : SizedBox(
+                                      height: 1,
+                                    ),
+                              SizedBox(
+                                height: 25.0,
+                              ),
+                            ]),
+                          ),
+                        ],
+                      ))),
+            ),
           ),
         ),
       ),
