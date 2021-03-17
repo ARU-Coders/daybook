@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/entryService.dart';
@@ -9,7 +11,14 @@ class EntriesScreen extends StatefulWidget {
 
 class _EntriesScreenState extends State<EntriesScreen> {
   final List<int> colorCodes = <int>[400, 300, 200];
-  final String image = 'https://picsum.photos/250?image=9';
+
+  final Map<String, Color> colorMoodMap = {
+    "Terrible": Colors.grey[300],
+    "Bad": Colors.blueGrey,
+    "Neutral": Colors.cyan[200],
+    "Good": Colors.yellow,
+    "Wonderful": Colors.green
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +31,26 @@ class _EntriesScreenState extends State<EntriesScreen> {
                 stream: getEntries(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Text("Loading...");
+                    return Container(
+                        height: double.infinity,
+                        width: double.infinity,
+                        child: CircularProgressIndicator());
+                  }
+                  if (snapshot.data.docs.length == 0) {
+                    return Container(
+                        height: double.infinity,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            "No entries created !! \n Click on + to get started",
+                            style: TextStyle(
+                              fontSize: 27,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ));
                   }
                   return new ListView.builder(
                       padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
@@ -30,7 +58,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return EntryCard(
-                            colorCodes: colorCodes,
+                            colorCodes: colorMoodMap,
                             title: ds["title"],
                             content: ds["content"],
                             index: index,
@@ -76,7 +104,7 @@ class EntryCard extends StatelessWidget {
     @required this.documentSnapshot,
   }) : super(key: key);
 
-  final List<int> colorCodes;
+  final Map<String, Color> colorCodes;
   final String title;
   final String content;
   final String dateCreated;
@@ -94,7 +122,7 @@ class EntryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15.0),
       ),
       margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-      color: Colors.amber[colorCodes[index % 3]],
+      color: colorCodes[mood],
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(17.0),
@@ -103,7 +131,7 @@ class EntryCard extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () {
-                  print("Tapped on entry $entryId");
+                  print("Tapped on entry $documentSnapshot.id");
                 },
                 onLongPress: () {
                   showDialog(
@@ -133,34 +161,10 @@ class EntryCard extends StatelessWidget {
                       ],
                     ),
                   );
-                  // return AlertDialog(
-                  //   title: Text("Detele Entry ?"),
-                  //   content: Text("This will delete the Entry permanently."),
-                  //   actions: <Widget>[
-                  //     Row(
-                  //       children: [
-                  //         TextButton(
-                  //           child: Text('Delete'),
-                  //           onPressed: () {
-                  //             deleteEntry(documentSnapshot);
-                  //           },
-                  //         ),
-                  //         TextButton(
-                  //           child: Text('Cancel'),
-                  //           onPressed: () {
-                  //             Navigator.of(context).pop();
-                  //           },
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // );
-                  // deleteEntry(documentSnapshot);
                 },
                 child: Row(
                   children: [
                     Container(
-                      // padding: EdgeInsets.fromLTRB(16, 10, 16, 0),
                       width: 220,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -210,9 +214,38 @@ class EntryCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => AlertDialog(
+                              title: Text("Detele Entry ?"),
+                              content: Text(
+                                  "This will delete the Entry permanently."),
+                              actions: <Widget>[
+                                Row(
+                                  children: [
+                                    FlatButton(
+                                      onPressed: () {
+                                        deleteEntry(documentSnapshot);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Delete"),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Cancel"),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                         child: Icon(
-                          Icons.star,
+                          Icons.delete,
                           size: 20,
                         ),
                       ),

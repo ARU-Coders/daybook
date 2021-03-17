@@ -39,7 +39,8 @@ dependencies:
   image_picker: ^0.6.7+22
   curved_navigation_bar: ^0.3.7
   group_button: ^1.0.3
-  
+  intl: ^0.16.1
+
   # state management
   provider: ^4.3.2+2
 

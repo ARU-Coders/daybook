@@ -87,13 +87,6 @@ void editEntry(String entryId, String title, String content, String mood,
     List<String> images) async {
   List<String> imagesURLs;
   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
-  // print("title :" + title);
-  // print("content :" + content);
-  // print("mood :" + mood);
-  // print("entryId :" + entryId);
-  DocumentReference entryDoc =
-      FirebaseFirestore.instance.collection('entries').doc(entryId);
-  print("entryDoc : " + entryDoc.toString());
   DateTime now = new DateTime.now();
   Future<void> query = userDoc.collection('entries').doc(entryId).update({
     'title': title,
@@ -102,7 +95,6 @@ void editEntry(String entryId, String title, String content, String mood,
     'mood': mood,
     'images': imagesURLs,
   });
-  print(query);
 }
 
 void deleteEntry(DocumentSnapshot documentSnapshot) async {
