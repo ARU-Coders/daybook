@@ -11,6 +11,7 @@ class CreateEntryScreen extends StatefulWidget {
 }
 
 class _CreateEntryScreenState extends State<CreateEntryScreen> {
+  List<String> selectedImages = [];
   final Map<String, String> moodMap = {
     "😭": "Terrible",
     "😥": "Bad",
@@ -29,32 +30,45 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     'Add to Journey',
     'Discard'
   ];
-  List<String> selectedImages = [];
 
   Future<bool> _onWillPop() async {
     //Display the popup if user has entered any text or add images, when back button is pressed.
     //If user selects "yes", the entry will get discarded.
 
-    return (titleController.text.length > 0 || contentController.text.length > 0 || selectedImages.length > 0) ? (await showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Hold up !'),
-        content: new Text('Do you want to discard this entry ?'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
-          ),
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Yes', style: TextStyle(color: Colors.red),),
-          ),
-        ],
-      ),
-    )) ?? false : true;
+    return (titleController.text.length > 0 ||
+            contentController.text.length > 0 ||
+            selectedImages.length > 0)
+        ? (await showDialog(
+              context: context,
+              builder: (context) => new AlertDialog(
+                title: new Text('Hold up !'),
+                content: new Text('Do you want to discard this entry ?'),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: new Text(
+                      'No',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.green),
+                    ),
+                  ),
+                  new FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: new Text(
+                      'Yes',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
+            )) ??
+            false
+        : true;
   }
 
-  _selectImages() async {
+  Future<List<String>> _selectImages() async {
+    List<String> selectedImages = [];
+    print("abc");
     FilePickerResult result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
 
@@ -72,6 +86,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     } else {
       print("User canceled the picker.");
     }
+    print("inside func" + selectedImages.toString());
+    return selectedImages;
   }
 
   void handleMenuClick(String value) async {
@@ -79,8 +95,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       case 'Add Images':
         {
           print("Selected : $value");
-          _selectImages();
-
+          selectedImages = await _selectImages();
+          print("hello" + selectedImages.toString());
           break;
         }
       case 'Add to Journey':
@@ -91,10 +107,9 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       case 'Discard':
         {
           bool discard = await _onWillPop();
-          
-          if(discard){
+          if (discard) {
             Navigator.pop(context);
-          } 
+          }
           break;
         }
     }
@@ -103,9 +118,23 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final arguments =
+        ModalRoute.of(context).settings.arguments as List<dynamic>;
+    if (arguments.length != 0) {
+      titleController.text = arguments[0];
+      contentController.text = arguments[1];
+      int idx = 0;
+      for (var value in moodMap.values) {
+        if (value == arguments[4]) {
+          selectedMoods[0] = moodList[idx];
+        }
+        idx = idx + 1;
+      }
+    }
+
     return WillPopScope(
-        onWillPop: _onWillPop,
-        child: Scaffold(
+      onWillPop: _onWillPop,
+      child: Scaffold(
         appBar: AppBar(
           title: Text(
             "Create Entry",
@@ -113,10 +142,20 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
           leading: IconButton(
             icon: Icon(Icons.check),
             onPressed: () {
-              print("Created !");
-              createEntry(titleController.text, contentController.text,
-                  moodMap[selectedMoods[0]], selectedImages);
-              Navigator.pop(context);
+              if (_formKey.currentState.validate()) {
+                if (arguments.length != 0) {
+                  editEntry(
+                      arguments[3],
+                      titleController.text,
+                      contentController.text,
+                      moodMap[selectedMoods[0]],
+                      selectedImages);
+                } else {
+                  createEntry(titleController.text, contentController.text,
+                      moodMap[selectedMoods[0]], selectedImages);
+                }
+                Navigator.pop(context);
+              }
             },
           ),
           actions: <Widget>[

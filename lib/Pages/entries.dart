@@ -9,6 +9,7 @@ class EntriesScreen extends StatefulWidget {
 
 class _EntriesScreenState extends State<EntriesScreen> {
   final List<int> colorCodes = <int>[400, 300, 200];
+  final String image = 'https://picsum.photos/250?image=9';
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +30,15 @@ class _EntriesScreenState extends State<EntriesScreen> {
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return EntryCard(
-                          colorCodes: colorCodes,
-                          title: ds["title"],
-                          content: ds["content"],
-                          index: index,
-                          dateCreated: ds["dateCreated"],
-                          entryId: ds.id,
-                        );
+                            colorCodes: colorCodes,
+                            title: ds["title"],
+                            content: ds["content"],
+                            index: index,
+                            dateCreated: ds["dateCreated"],
+                            entryId: ds.id,
+                            images: ds["images"],
+                            mood: ds["mood"],
+                            documentSnapshot: ds);
                       });
                 }),
             Positioned(
@@ -47,7 +50,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                   size: 40,
                 ),
                 onPressed: () => {
-                  Navigator.pushNamed(context, '/createEntry')
+                  Navigator.pushNamed(context, '/createEntry', arguments: [])
                   // print('Button pressed!');
                 },
               ),
@@ -68,6 +71,9 @@ class EntryCard extends StatelessWidget {
     @required this.index,
     @required this.dateCreated,
     @required this.entryId,
+    @required this.images,
+    @required this.mood,
+    @required this.documentSnapshot,
   }) : super(key: key);
 
   final List<int> colorCodes;
@@ -76,6 +82,9 @@ class EntryCard extends StatelessWidget {
   final String dateCreated;
   final int index;
   final String entryId;
+  final List<dynamic> images;
+  final String mood;
+  final DocumentSnapshot documentSnapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +104,58 @@ class EntryCard extends StatelessWidget {
             GestureDetector(
                 onTap: () {
                   print("Tapped on entry $entryId");
+                },
+                onLongPress: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => AlertDialog(
+                      title: Text("Detele Entry ?"),
+                      content: Text("This will delete the Entry permanently."),
+                      actions: <Widget>[
+                        Row(
+                          children: [
+                            FlatButton(
+                              onPressed: () {
+                                deleteEntry(documentSnapshot);
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("Delete"),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("Cancel"),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                  // return AlertDialog(
+                  //   title: Text("Detele Entry ?"),
+                  //   content: Text("This will delete the Entry permanently."),
+                  //   actions: <Widget>[
+                  //     Row(
+                  //       children: [
+                  //         TextButton(
+                  //           child: Text('Delete'),
+                  //           onPressed: () {
+                  //             deleteEntry(documentSnapshot);
+                  //           },
+                  //         ),
+                  //         TextButton(
+                  //           child: Text('Cancel'),
+                  //           onPressed: () {
+                  //             Navigator.of(context).pop();
+                  //           },
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // );
+                  // deleteEntry(documentSnapshot);
                 },
                 child: Row(
                   children: [
@@ -131,7 +192,9 @@ class EntryCard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child: Image.network(
-                          'https://picsum.photos/250?image=9',
+                          images.length == 0
+                              ? 'https://picsum.photos/250?image=9'
+                              : 'https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NXx8cmFuZG9tfGVufDB8fDB8&ixlib=rb-1.2.1&w=1000&q=80',
                           height: 75.0,
                           width: 75.0,
                         ),
@@ -158,7 +221,16 @@ class EntryCard extends StatelessWidget {
                           Icons.edit,
                           size: 20,
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, '/createEntry',
+                              arguments: [
+                                title,
+                                content,
+                                images,
+                                entryId,
+                                mood
+                              ]);
+                        },
                       ),
                     ]),
               ),
