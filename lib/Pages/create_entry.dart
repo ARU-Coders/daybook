@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:group_button/group_button.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateEntryScreen extends StatefulWidget {
   @override
@@ -24,7 +25,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
-
+  String documentId;
+  DocumentSnapshot previousSnapshot;
   final List<String> menuItems = <String>[
     'Add Images',
     'Add to Journey',
@@ -123,6 +125,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     if (arguments.length != 0) {
       titleController.text = arguments[0];
       contentController.text = arguments[1];
+      documentId = arguments[3];
+      previousSnapshot = arguments[5];
       int idx = 0;
       for (var value in moodMap.values) {
         if (value == arguments[4]) {
@@ -141,7 +145,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
           ),
           leading: IconButton(
             icon: Icon(Icons.check),
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState.validate()) {
                 if (arguments.length != 0) {
                   editEntry(
@@ -150,11 +154,21 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                       contentController.text,
                       moodMap[selectedMoods[0]],
                       selectedImages);
+                  DocumentSnapshot updatedDocumentSnapshot =
+                      await previousSnapshot.reference.get();
+                  Navigator.popAndPushNamed(context, '/displayEntry',
+                      arguments: [updatedDocumentSnapshot]);
+                  // Navigator.pop(context);
                 } else {
-                  createEntry(titleController.text, contentController.text,
-                      moodMap[selectedMoods[0]], selectedImages);
+                  DocumentReference docRef = await createEntry(
+                      titleController.text,
+                      contentController.text,
+                      moodMap[selectedMoods[0]],
+                      selectedImages);
+                  DocumentSnapshot documentSnapshot = await docRef.get();
+                  Navigator.popAndPushNamed(context, '/displayEntry',
+                      arguments: [documentSnapshot]);
                 }
-                Navigator.pop(context);
               }
             },
           ),

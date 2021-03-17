@@ -1,8 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/entryService.dart';
+import 'package:intl/intl.dart';
 
 class EntriesScreen extends StatefulWidget {
   @override
@@ -59,13 +58,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return EntryCard(
                             colorCodes: colorMoodMap,
-                            title: ds["title"],
-                            content: ds["content"],
                             index: index,
-                            dateCreated: ds["dateCreated"],
-                            entryId: ds.id,
-                            images: ds["images"],
-                            mood: ds["mood"],
                             documentSnapshot: ds);
                       });
                 }),
@@ -94,24 +87,12 @@ class EntryCard extends StatelessWidget {
   const EntryCard({
     Key key,
     @required this.colorCodes,
-    @required this.title,
-    @required this.content,
     @required this.index,
-    @required this.dateCreated,
-    @required this.entryId,
-    @required this.images,
-    @required this.mood,
     @required this.documentSnapshot,
   }) : super(key: key);
 
   final Map<String, Color> colorCodes;
-  final String title;
-  final String content;
-  final String dateCreated;
   final int index;
-  final String entryId;
-  final List<dynamic> images;
-  final String mood;
   final DocumentSnapshot documentSnapshot;
 
   @override
@@ -122,7 +103,7 @@ class EntryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15.0),
       ),
       margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-      color: colorCodes[mood],
+      color: colorCodes[documentSnapshot['mood']],
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(17.0),
@@ -131,7 +112,9 @@ class EntryCard extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () {
-                  print("Tapped on entry $documentSnapshot.id");
+                  print("Tapped on entry " + documentSnapshot.id);
+                  Navigator.pushNamed(context, '/displayEntry',
+                      arguments: [documentSnapshot]);
                 },
                 onLongPress: () {
                   showDialog(
@@ -170,7 +153,7 @@ class EntryCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            '$title',
+                            documentSnapshot['title'],
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold),
                             overflow: TextOverflow.fade,
@@ -180,7 +163,7 @@ class EntryCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Text(
-                              '$content',
+                              documentSnapshot['content'],
                               style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.black.withOpacity(0.6)),
@@ -196,7 +179,7 @@ class EntryCard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child: Image.network(
-                          images.length == 0
+                          documentSnapshot['images'].length == 0
                               ? 'https://picsum.photos/250?image=9'
                               : 'https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NXx8cmFuZG9tfGVufDB8fDB8&ixlib=rb-1.2.1&w=1000&q=80',
                           height: 75.0,
@@ -257,11 +240,12 @@ class EntryCard extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(context, '/createEntry',
                               arguments: [
-                                title,
-                                content,
-                                images,
-                                entryId,
-                                mood
+                                documentSnapshot['title'],
+                                documentSnapshot['content'],
+                                documentSnapshot['images'],
+                                documentSnapshot.id,
+                                documentSnapshot['mood'],
+                                documentSnapshot
                               ]);
                         },
                       ),
@@ -271,7 +255,8 @@ class EntryCard extends StatelessWidget {
                 width: 20,
               ),
               Text(
-                '$dateCreated',
+                DateFormat.yMMMMd()
+                    .format(DateTime.parse(documentSnapshot['dateCreated'])),
                 style: TextStyle(
                     fontSize: 15, color: Colors.black.withOpacity(0.6)),
               ),

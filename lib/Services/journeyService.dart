@@ -8,20 +8,20 @@ DocumentReference userDoc =
     FirebaseFirestore.instance.collection('users').doc(email);
 
 void createJourney(String title, String description, DateTime startDate,
-    DateTime endDate, bool isFavourite) async {
+    DateTime endDate) async {
   DateTime now = new DateTime.now();
   bool isActive = false;
   if (endDate.isAfter(now)) {
     isActive = true;
   }
-  userDoc.collection('entries').add({
+  userDoc.collection('journeys').add({
     'title': title,
     'description': description,
     'dateCreated': DateTime(now.year, now.month, now.day).toString(),
-    'startDate': DateFormat.yMMMMd().format(startDate),
-    'endDate': DateFormat.yMMMMd().format(endDate),
+    'startDate': startDate,
+    'endDate': endDate,
     'isActive': isActive,
-    'isFavourite': isFavourite,
+    'isFavourite': false,
     'entries': []
   });
 }

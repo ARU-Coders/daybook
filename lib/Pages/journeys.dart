@@ -1,6 +1,7 @@
 import 'package:daybook/Services/journeyService.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class JourneysScreen extends StatefulWidget {
   @override
@@ -48,11 +49,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return JourneyCard(
                             colorCodes: colorCodes,
-                            // title: ds["title"],
-                            // description: ds["description"],
                             index: index,
-                            // dateCreated: ds["dateCreated"],
-                            // journeyId: ds.id,
                             documentSnapshot: ds);
                       });
                 }),
@@ -65,7 +62,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                   size: 40,
                 ),
                 onPressed: () => {
-                  Navigator.pushNamed(context, '/createEntry', arguments: [])
+                  Navigator.pushNamed(context, '/createJourney')
                   // print('Button pressed!');
                 },
               ),
@@ -215,12 +212,7 @@ class JourneyCard extends StatelessWidget {
                           size: 20,
                         ),
                         onTap: () {
-                          Navigator.pushNamed(context, '/createEntry',
-                              arguments: [
-                                documentSnapshot['title'],
-                                documentSnapshot['description'],
-                                documentSnapshot.id,
-                              ]);
+                          Navigator.pushNamed(context, '/createJourney');
                         },
                       ),
                     ]),
@@ -229,7 +221,8 @@ class JourneyCard extends StatelessWidget {
                 width: 20,
               ),
               Text(
-                documentSnapshot['dateCreated'],
+                DateFormat.yMMMMd()
+                    .format(DateTime.parse(documentSnapshot['dateCreated'])),
                 style: TextStyle(
                     fontSize: 15, color: Colors.black.withOpacity(0.6)),
               ),

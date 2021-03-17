@@ -53,7 +53,7 @@ Future<List<String>> uploadFiles(List<String> _images) async {
   return imagesUrls;
 }
 
-void createEntry(
+Future<DocumentReference> createEntry(
     String title, String content, String mood, List<String> images) async {
   print(images);
   List<String> imagesURLs;
@@ -71,6 +71,7 @@ void createEntry(
     'images': imagesURLs,
   });
   print(query);
+  return query;
 }
 
 Stream<QuerySnapshot> getEntries() {
@@ -83,8 +84,8 @@ Future<DocumentSnapshot> getEntry(String entryId) async {
   return doc;
 }
 
-void editEntry(String entryId, String title, String content, String mood,
-    List<String> images) async {
+Future<DocumentReference> editEntry(String entryId, String title,
+    String content, String mood, List<String> images) async {
   List<String> imagesURLs;
   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
   DateTime now = new DateTime.now();

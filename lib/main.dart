@@ -1,4 +1,6 @@
 import 'package:daybook/Pages/create_entry.dart';
+import 'package:daybook/Pages/create_journey.dart';
+import 'package:daybook/Pages/display_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Pages/start.dart';
@@ -29,6 +31,8 @@ class MyApp extends StatelessWidget {
         '/login': (BuildContext context) => LoginPage(),
         '/home': (BuildContext context) => HomePage(),
         '/createEntry': (BuildContext context) => CreateEntryScreen(),
+        '/createJourney': (BuildContext context) => CreateJourneyScreen(),
+        '/displayEntry': (BuildContext context) => DisplayEntryScreen(),
       },
     );
     // ,);
