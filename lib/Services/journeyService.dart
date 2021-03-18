@@ -1,29 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_service.dart';
-import 'package:intl/intl.dart';
 
 String email = getUserEmail();
 
 DocumentReference userDoc =
     FirebaseFirestore.instance.collection('users').doc(email);
 
-void createJourney(String title, String description, DateTime startDate,
-    DateTime endDate) async {
+Future<DocumentReference> createJourney(String title, String description,
+    DateTime startDate, DateTime endDate) async {
   DateTime now = new DateTime.now();
   bool isActive = false;
   if (endDate.isAfter(now)) {
     isActive = true;
   }
-  userDoc.collection('journeys').add({
+  Future<DocumentReference> query = userDoc.collection('journeys').add({
     'title': title,
     'description': description,
     'dateCreated': DateTime(now.year, now.month, now.day).toString(),
-    'startDate': startDate,
-    'endDate': endDate,
+    'startDate': startDate.toString(),
+    'endDate': endDate.toString(),
     'isActive': isActive,
     'isFavourite': false,
     'entries': []
   });
+  return query;
 }
 
 void onCheckFavourite(String journeyId, bool checkedValue) {
@@ -43,28 +43,20 @@ Future<DocumentSnapshot> getJourney(String journeyId) async {
   return doc;
 }
 
-void editJourney(
-    String journeyId,
-    String title,
-    String description,
-    DateTime startDate,
-    DateTime endDate,
-    bool isActive,
-    bool isFavourite) async {
+Future<DocumentReference> editJourney(String journeyId, String title,
+    String description, DateTime startDate, DateTime endDate) async {
   DateTime now = new DateTime.now();
   bool isActive = false;
   if (endDate.isAfter(now)) {
     isActive = true;
   }
-  Future<DocumentReference> query =
-      userDoc.collection('journeys').doc(journeyId).update({
+  Future<void> query = userDoc.collection('journeys').doc(journeyId).update({
     'title': title,
     'description': description,
     'dateCreated': DateTime(now.year, now.month, now.day).toString(),
-    'startDate': startDate,
-    'endDate': endDate,
+    'startDate': startDate.toString(),
+    'endDate': endDate.toString(),
     'isActive': isActive,
-    'isFavourite': isFavourite,
   });
   print(query);
 }

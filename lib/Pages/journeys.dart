@@ -62,7 +62,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                   size: 40,
                 ),
                 onPressed: () => {
-                  Navigator.pushNamed(context, '/createJourney')
+                  Navigator.pushNamed(context, '/createJourney', arguments: [])
                   // print('Button pressed!');
                 },
               ),
@@ -71,25 +71,6 @@ class _JourneysScreenState extends State<JourneysScreen> {
         ),
       ),
     );
-    // Column(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [
-    //     Text("Tab Journeys !"),
-    //     SizedBox(height: 15),
-    //     RaisedButton(
-    //       onPressed: () {
-    //         final provider =
-    //             Provider.of<GoogleSignInProvider>(context, listen: false);
-    //         provider.logout();
-    //         Navigator.push(
-    //           context,
-    //           MaterialPageRoute(builder: (context) => StartPage()),
-    //         );
-    //       },
-    //       child: Text('Logout'),
-    //     )
-    //   ],
-    // ));
   }
 }
 
@@ -123,6 +104,8 @@ class JourneyCard extends StatelessWidget {
             GestureDetector(
                 onTap: () {
                   print("Tapped on journey " + documentSnapshot.id);
+                  Navigator.pushNamed(context, '/displayJourney',
+                      arguments: [documentSnapshot]);
                 },
                 onLongPress: () {
                   showDialog(
@@ -138,7 +121,8 @@ class JourneyCard extends StatelessWidget {
                             FlatButton(
                               onPressed: () {
                                 deleteJourney(documentSnapshot);
-                                Navigator.of(context).pop();
+                                Navigator.pop(context);
+                                Navigator.pop(context);
                               },
                               child: Text("Delete"),
                             ),
@@ -212,7 +196,8 @@ class JourneyCard extends StatelessWidget {
                           size: 20,
                         ),
                         onTap: () {
-                          Navigator.pushNamed(context, '/createJourney');
+                          Navigator.pushNamed(context, '/createJourney',
+                              arguments: [documentSnapshot]);
                         },
                       ),
                     ]),

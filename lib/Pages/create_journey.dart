@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/journeyService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class CreateJourneyScreen extends StatefulWidget {
   @override
@@ -9,45 +11,102 @@ class CreateJourneyScreen extends StatefulWidget {
 class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  String documentId;
+  DocumentSnapshot previousSnapshot;
+
+  bool isEditing = false;
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController startDateController = TextEditingController();
-  TextEditingController endDateController = TextEditingController();
+
+  static String initialStartDate = "Start Date : " + DateFormat.yMMMMd().format(DateTime.now());
+  static String initialEndDate = "Select";
+  
+  //Default value of both Start date and End date will be curret datetime.
+  //If isEditing = True, start and end dates will display values read from the database.
+  String startDate = initialStartDate;
+  String endDate = initialEndDate;
 
   @override
   Widget build(BuildContext context) {
+    final arguments =
+        ModalRoute.of(context).settings.arguments as List<dynamic>;
+    
+    if (arguments != null && arguments.length != 0 && !isEditing) {
+      titleController.text = arguments[0]['title'];
+      descriptionController.text = arguments[0]['description'];
+      documentId = arguments[0].id;
+      startDate = arguments[0]['startDate'];
+      endDate = arguments[0]['endDate'];
+      previousSnapshot = arguments[0];
+      isEditing = true;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "Create Journey",
         ),
-        leading: IconButton(
-          icon: Icon(Icons.check),
-          onPressed: () {
+        leading: Builder(
+          //Using builder here to provide required context to display the Snackbar. 
+          
+          builder:(BuildContext context){
+            return IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () async {
             if (_formKey.currentState.validate()) {
-              createJourney(
-                  titleController.text,
-                  descriptionController.text,
-                  DateTime.parse(startDateController.text),
-                  DateTime.parse(endDateController.text));
-              Navigator.pop(context);
+              
+              //Validation 1 : End date >= Start Date
+              if(DateTime.parse(startDate).isAfter(DateTime.parse(endDate))){
+                  final snackBar = SnackBar(content: Text('End Date can\'t be before start date !'), duration: Duration(seconds: 3),);
+                  Scaffold.of(context).showSnackBar(snackBar);
+                  return;
+                }
+
+              //Validation 2 : Start date cannot be a future date.
+              if(DateTime.parse(startDate).isAfter(DateTime.now())){
+                  final snackBar = SnackBar(content: Text('Start date cannot be a future date !'), duration: Duration(seconds: 3),);
+                  Scaffold.of(context).showSnackBar(snackBar);
+                  return;
+                }
+
+              if (isEditing) {
+                //Edit the journey 
+                editJourney(
+                    arguments[0].id,
+                    titleController.text,
+                    descriptionController.text,
+                    DateTime.parse(startDate),
+                    DateTime.parse(endDate)
+                    
+                    );
+
+                DocumentSnapshot updatedDocumentSnapshot =
+                    await previousSnapshot.reference.get();
+                
+                Navigator.popAndPushNamed(context, '/displayJourney',
+                    arguments: [updatedDocumentSnapshot]);
+              
+              } 
+              else {
+                //Create new journey in the database
+                DocumentReference docRef = await createJourney(
+                    titleController.text,
+                    descriptionController.text,
+                    DateTime.parse(startDate),
+                    DateTime.parse(endDate)
+                    );
+                DocumentSnapshot documentSnapshot = await docRef.get();
+                Navigator.popAndPushNamed(context, '/displayJourney',
+                    arguments: [documentSnapshot]);
+              }
             }
           },
+        );
+        },
         ),
-        // actions: <Widget>[
-        //   PopupMenuButton<String>(
-        //     onSelected: handleMenuClick,
-        //     itemBuilder: (BuildContext context) {
-        //       return menuItems.map((String choice) {
-        //         return PopupMenuItem<String>(
-        //           value: choice,
-        //           child: Text(choice),
-        //         );
-        //       }).toList();
-        //     },
-        //   ),
-        // ],
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -61,12 +120,15 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                         SizedBox(
                           height: 25.0,
                         ),
+
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
                           child: Column(children: [
+                            
                             SizedBox(
                               height: 25.0,
                             ),
+
                             TextFormField(
                               // style: TextStyle(
                               //     color: Colors.black87,
@@ -86,63 +148,79 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                                 return null;
                               },
                             ),
-                            TextFormField(
-                              controller: startDateController,
-                              decoration: InputDecoration(
-                                labelText: "start date",
-                              ),
-                              onTap: () async {
-                                DateTime date = DateTime(1900);
+
+                            SizedBox(
+                              height: 35.0,
+                            ),
+
+                            RaisedButton(
+                            onPressed: () async {
+                                DateTime date = isEditing
+                                    ? DateTime.parse(startDate)
+                                    : DateTime.now();
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
                                 date = await showDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
+                                    initialDate: date,
                                     firstDate: DateTime(1900),
                                     lastDate: DateTime(2100));
-                                startDateController.text =
-                                    date.toIso8601String();
-                              },
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Start Date cannot be empty !';
+                                print("New Start Date :\n");
+                                print(date.toString());
+                                if (date != null) {
+                                setState((){
+                                    startDate = date.toString();
+                                    });
                                 }
-                                return null;
+                                else{
+                                  print("User tapped cancel");
+                                }
+                            
                               },
+                            child: Text(startDate == initialStartDate
+                                        ? 
+                                        startDate 
+                                        : 
+                                        DateFormat.yMMMMd().format(DateTime.parse(startDate)) 
+                                        ),
                             ),
+                            
                             SizedBox(
                               height: 35.0,
                             ),
-                            TextFormField(
-                              controller: endDateController,
-                              decoration: InputDecoration(
-                                labelText: "end date",
-                              ),
-                              onTap: () async {
-                                DateTime date = DateTime(1900);
+
+                            RaisedButton(
+                            onPressed: () async {
+                                DateTime date = isEditing
+                                    ? DateTime.parse(endDate)
+                                    : DateTime.now();
                                 FocusScope.of(context)
                                     .requestFocus(new FocusNode());
                                 date = await showDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
+                                    initialDate: date,
                                     firstDate: DateTime(1900),
                                     lastDate: DateTime(2100));
-                                endDateController.text = date.toIso8601String();
-                              },
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'End Date cannot be empty !';
-                                } else if (DateTime.parse(
-                                        startDateController.text)
-                                    .isAfter(DateTime.parse(value))) {
-                                  return "End Date can't be before start date";
+                                print("New End Date :\n");
+                                print(date.toString());
+                                if (date != null) {
+                                setState((){
+                                    endDate = date.toString();
+                                    });
                                 }
-                                return null;
+                                else{
+                                  print("User tapped cancel");
+                                }
+                            
                               },
+                            child: Text(endDate == initialEndDate
+                                        ? 
+                                        endDate 
+                                        : 
+                                        DateFormat.yMMMMd().format(DateTime.parse(endDate)) 
+                                        ),
                             ),
-                            SizedBox(
-                              height: 35.0,
-                            ),
+                            
                             TextFormField(
                               // style: TextStyle(
                               //     color: Colors.black87,
@@ -165,11 +243,17 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                             ),
                             SizedBox(
                               height: 25.0,
+                            )
+                            ,
+                            SizedBox(
+                              height: 25.0,
                             ),
                           ]),
                         ),
                       ],
-                    ))),
+                    ),
+                  ),
+                ),
           ),
         ),
       ),
