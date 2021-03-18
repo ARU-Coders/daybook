@@ -123,13 +123,13 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     if (arguments.length != 0) {
-      titleController.text = arguments[0];
-      contentController.text = arguments[1];
-      documentId = arguments[3];
-      previousSnapshot = arguments[5];
+      titleController.text = arguments[0]['title'];
+      contentController.text = arguments[0]['content'];
+      documentId = arguments[0].id;
+      previousSnapshot = arguments[0];
       int idx = 0;
       for (var value in moodMap.values) {
-        if (value == arguments[4]) {
+        if (value == arguments[0]['mood']) {
           selectedMoods[0] = moodList[idx];
         }
         idx = idx + 1;
@@ -149,7 +149,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
               if (_formKey.currentState.validate()) {
                 if (arguments.length != 0) {
                   editEntry(
-                      arguments[3],
+                      arguments[0].id,
                       titleController.text,
                       contentController.text,
                       moodMap[selectedMoods[0]],

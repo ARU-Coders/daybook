@@ -104,30 +104,3 @@ void deleteEntry(DocumentSnapshot documentSnapshot) async {
     myTransaction.delete(documentSnapshot.reference);
   });
 }
-
-// void editEntry(String entryId, String title, String content, String mood,
-//     List<String> images) async {
-//   List<String> imagesURLs;
-//   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
-
-//   DocumentReference documentReference =
-//       userDoc.collection('entries').doc(entryId);
-//   FirebaseFirestore.instance.runTransaction((transaction) async {
-//     DocumentSnapshot snapshot = await transaction.get(documentReference);
-//     print("ye wala"+ snapshot.toString());
-//     print("ye wala"+ documentReference.toString());
-//     if (!snapshot.exists) {
-//       print("hello");
-//       throw Exception("Entry does not exist! samja na");
-//     }
-
-//     DateTime now = new DateTime.now();
-//     transaction.update(documentReference, {
-//       'title': title,
-//       'content': content,
-//       'dateLastModified': DateTime(now.year, now.month, now.day).toString(),
-//       'mood': mood,
-//       'images': imagesURLs,
-//     });
-//   });
-// }

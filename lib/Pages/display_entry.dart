@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
 import 'package:daybook/Pages/EnlargedImage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daybook/Pages/home.dart';
 
 class DisplayEntryScreen extends StatefulWidget {
   @override
@@ -53,8 +54,23 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: ClipRRect(
-                        child: Image.file(File(imageUrls[index]),
-                            fit: BoxFit.cover),
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrls[index],
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Container(
+                            width: 5,
+                            height: 5,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: downloadProgress.progress,
+                                strokeWidth: 2.0,
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                          fit: BoxFit.cover,
+                        ),
                         borderRadius: BorderRadius.circular(10),
                       )),
                 ),
@@ -85,7 +101,11 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                         FlatButton(
                           onPressed: () {
                             deleteEntry(documentSnapshot);
-                            Navigator.of(context).pop();
+                            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+                            // Navigator.popAndPushNamed(context, '/home',
+                            //     arguments: [2]);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
                           },
                           child: Text("Delete"),
                         ),
@@ -106,24 +126,28 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
               size: 20,
             ),
           ),
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           GestureDetector(
             child: Icon(
               Icons.edit,
               size: 20,
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/createEntry', arguments: [
-                documentSnapshot["title"],
-                documentSnapshot["content"],
-                documentSnapshot["images"],
-                documentSnapshot.id,
-                documentSnapshot["mood"],
+              Navigator.popAndPushNamed(context, '/createEntry', arguments: [
+                // documentSnapshot["title"],
+                // documentSnapshot["content"],
+                // documentSnapshot["images"],
+                // documentSnapshot.id,
+                // documentSnapshot["mood"],
                 documentSnapshot
               ]);
             },
           ),
-          SizedBox(width: 25,),
+          SizedBox(
+            width: 25,
+          ),
         ],
       ),
       body: SafeArea(
@@ -144,11 +168,22 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                         height: 25.0,
                       ),
                       Text(
-                        documentSnapshot['title'],
+                        "Mood for the day : " + documentSnapshot['mood'],
                         style: TextStyle(
                             color: Colors.black87,
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
+                            fontFamily: "Times New Roman"),
+                      ),
+                      SizedBox(height: 20),
+                      Container(child: Row(children: [])),
+                      Text(
+                        documentSnapshot['title'],
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
                             fontFamily: "Times New Roman"),
                       ),
                       Text(

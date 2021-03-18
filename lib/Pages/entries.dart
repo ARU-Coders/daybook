@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class EntriesScreen extends StatefulWidget {
   @override
@@ -177,14 +178,22 @@ class EntryCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(26, 0, 0, 0),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          documentSnapshot['images'].length == 0
-                              ? 'https://picsum.photos/250?image=9'
-                              : 'https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NXx8cmFuZG9tfGVufDB8fDB8&ixlib=rb-1.2.1&w=1000&q=80',
-                          height: 75.0,
-                          width: 75.0,
-                        ),
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: documentSnapshot['images'].length == 0
+                            ? Image.network(
+                                'https://picsum.photos/250?image=9',
+                                height: 75.0,
+                                width: 75.0,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: documentSnapshot['images'][0],
+
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                                // fit: BoxFit.cover,
+                                height: 75.0,
+                                width: 75.0,
+                              ),
                       ),
                     ),
                   ],
@@ -240,11 +249,11 @@ class EntryCard extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(context, '/createEntry',
                               arguments: [
-                                documentSnapshot['title'],
-                                documentSnapshot['content'],
-                                documentSnapshot['images'],
-                                documentSnapshot.id,
-                                documentSnapshot['mood'],
+                                // documentSnapshot['title'],
+                                // documentSnapshot['content'],
+                                // documentSnapshot['images'],
+                                // documentSnapshot.id,
+                                // documentSnapshot['mood'],
                                 documentSnapshot
                               ]);
                         },
