@@ -94,7 +94,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     return [gender, dob];
   }
 
-  Future<bool> registerWithGoogle() async {
+  void registerWithGoogle() async {
     //Returns true if the sign up process is completed and all user details are stored in respective collection
     //Else, returns false
     isSigningIn = true;
@@ -104,7 +104,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     if (user == null) {
       //No user returned by the googleSignIn method, returning false
       isSigningIn = false;
-      return false;
+      return;
     } else {
       final googleAuth = await user.authentication;
 

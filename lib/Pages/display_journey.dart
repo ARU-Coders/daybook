@@ -128,13 +128,22 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                         SizedBox(
                           height: 25.0,
                         ),
+                        GestureDetector(
+                          child: Container(
+                            child: Text('Add entries'),
+                          ),
+                          onTap: () {
+                            Navigator.popAndPushNamed(context, '/selectEntries',
+                                arguments: [documentSnapshot]);
+                          },
+                        ),
                         FutureBuilder<Stream<QuerySnapshot>>(
                             future: getEntriesOfJourney(documentSnapshot.id),
                             builder: (context, snapshot) {
                               return StreamBuilder(
                                   stream: snapshot.data,
                                   builder: (context, snapshot) {
-                                    if(snapshot.data == null){
+                                    if (snapshot.data == null) {
                                       return Text("Do data retrieved .... yet");
                                     }
                                     print("Stream Builder me len = ");
@@ -167,19 +176,14 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                     return new ListView.builder(
                                         scrollDirection: Axis.vertical,
                                         shrinkWrap: true,
-                                          padding:
-                                              EdgeInsets.fromLTRB(17, 10, 17, 25),
-                                          itemCount: snapshot.data.docs.length,
-                                          itemBuilder: (context, index) {
-                                            DocumentSnapshot ds =
-                                                snapshot.data.docs[index];
-                                            // return JourneyCard(
-                                            //     colorCodes: colorMoodMap,
-                                            //     index: index,
-                                            //     documentSnapshot: ds);
-                                            return Text(ds['title']);
-                                          })
-                                    ;
+                                        padding:
+                                            EdgeInsets.fromLTRB(17, 10, 17, 25),
+                                        itemCount: snapshot.data.docs.length,
+                                        itemBuilder: (context, index) {
+                                          DocumentSnapshot ds =
+                                              snapshot.data.docs[index];
+                                          return Text(ds['title']);
+                                        });
                                   });
                             })
                       ],

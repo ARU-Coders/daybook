@@ -13,11 +13,11 @@ class _EntriesScreenState extends State<EntriesScreen> {
   final List<int> colorCodes = <int>[400, 300, 200];
 
   final Map<String, Color> colorMoodMap = {
-    "Terrible": Colors.grey[300],
-    "Bad": Colors.blueGrey,
-    "Neutral": Colors.cyan[200],
-    "Good": Colors.yellow,
-    "Wonderful": Colors.green
+    "Terrible": Colors.grey[200],
+    "Bad": Colors.blue[200],
+    "Neutral": Colors.red[150],
+    "Good": Colors.yellow[200],
+    "Wonderful": Colors.green[200]
   };
 
   @override
@@ -35,7 +35,8 @@ class _EntriesScreenState extends State<EntriesScreen> {
                         height: double.infinity,
                         width: double.infinity,
                         child: Center(
-                          child: Container(child: CircularProgressIndicator())));
+                            child:
+                                Container(child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
                     return Container(
@@ -114,7 +115,6 @@ class EntryCard extends StatelessWidget {
           children: [
             GestureDetector(
                 onTap: () {
-                  print("Tapped on entry " + documentSnapshot.id);
                   Navigator.pushNamed(context, '/displayEntry',
                       arguments: [documentSnapshot]);
                 },
@@ -180,7 +180,8 @@ class EntryCard extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(26, 0, 0, 0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: (documentSnapshot['images'].length == 0 || documentSnapshot['images'][0] == "")
+                        child: (documentSnapshot['images'].length == 0 ||
+                                documentSnapshot['images'][0] == "")
                             ? Image.network(
                                 'https://picsum.photos/250?image=9',
                                 height: 75.0,

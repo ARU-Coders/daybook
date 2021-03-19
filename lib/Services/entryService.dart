@@ -23,7 +23,6 @@ Future<List<String>> uploadFiles(List<String> _images) async {
 
   List<File> _imageFiles = _images.map((path) => File(path)).toList();
   List<String> imagesUrls = [];
-  String url;
   // print("Starting the upload...\n");
   // print("imagefiles" + _imageFiles.toString());
 
@@ -54,7 +53,7 @@ Future<List<String>> uploadFiles(List<String> _images) async {
 
 Future<DocumentReference> createEntry(
     String title, String content, String mood, List<String> images) async {
-    var randomDoc = await userDoc.collection('entries').doc();
+    DocumentReference randomDoc = userDoc.collection('entries').doc();
     String docId  = randomDoc.id;
 
   print("Ye rahe $images");
@@ -69,7 +68,7 @@ Future<DocumentReference> createEntry(
       UploadTask uploadTask = ref.putFile(File(_image));
 
 
-      TaskSnapshot snapshot = await uploadTask.whenComplete(() async{
+      TaskSnapshot _ = await uploadTask.whenComplete(() async{
         String downloadUrl = await ref.getDownloadURL();
         imagesURLs.add(downloadUrl);
       });
@@ -84,7 +83,7 @@ Future<DocumentReference> createEntry(
   }
 
   DateTime now = new DateTime.now();
-  final task = await userDoc.collection('entries').doc(docId).set({
+  final _ = await userDoc.collection('entries').doc(docId).set({
     'title': title,
     'content': content,
     'dateCreated': DateTime(now.year, now.month, now.day).toString(),

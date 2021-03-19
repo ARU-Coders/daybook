@@ -3,8 +3,9 @@ import 'package:daybook/Widgets/background_painter.dart';
 import 'package:daybook/Widgets/google_signup_button_widget.dart';
 
 class SignUpWidget extends StatelessWidget {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) => Stack(
         fit: StackFit.expand,

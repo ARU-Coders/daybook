@@ -70,7 +70,7 @@ void deleteJourney(DocumentSnapshot documentSnapshot) async {
 
 Future<Stream<QuerySnapshot>> getEntriesOfJourney(String journeyId) async {
   DocumentSnapshot journeyDoc = await getJourney(journeyId);
-  
+
   List<dynamic> entries = journeyDoc['entries'];
 
   Stream<QuerySnapshot> filteredEntries = userDoc
@@ -79,4 +79,12 @@ Future<Stream<QuerySnapshot>> getEntriesOfJourney(String journeyId) async {
       .snapshots();
 
   return filteredEntries;
+}
+
+void addEntriestoJourney(String journeyId, List<dynamic> entries) async {
+  List<String> ens = [];
+  for (dynamic i in entries) {
+    ens.add(i.toString());
+  }
+  userDoc.collection('journeys').doc(journeyId).update({"entries": ens});
 }
