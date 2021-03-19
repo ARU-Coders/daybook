@@ -84,12 +84,12 @@ Future<DocumentSnapshot> getEntry(String entryId) async {
   return doc;
 }
 
-Future<DocumentReference> editEntry(String entryId, String title,
+Future<void> editEntry(String entryId, String title,
     String content, String mood, List<String> images) async {
   List<String> imagesURLs;
   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
   DateTime now = new DateTime.now();
-  Future<void> query = userDoc.collection('entries').doc(entryId).update({
+  Future<void> _ = userDoc.collection('entries').doc(entryId).update({
     'title': title,
     'content': content,
     'dateLastModified': DateTime(now.year, now.month, now.day).toString(),

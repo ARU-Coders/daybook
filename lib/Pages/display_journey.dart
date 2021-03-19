@@ -88,46 +88,94 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                    child: Column(children: [
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      Text(
-                        documentSnapshot['title'],
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      Text(
-                        documentSnapshot['description'],
-                        // '',
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 18,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      Text(
-                        DateFormat.yMMMMd().format(
-                            DateTime.parse(documentSnapshot['startDate'])),
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 18,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      Text(
-                        DateFormat.yMMMMd().format(
-                            DateTime.parse(documentSnapshot['endDate'])),
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 18,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                    ]),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 25.0,
+                        ),
+                        Text(
+                          documentSnapshot['title'],
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: "Times New Roman"),
+                        ),
+                        Text(
+                          documentSnapshot['description'],
+                          // '',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 18,
+                              fontFamily: "Times New Roman"),
+                        ),
+                        Text(
+                          DateFormat.yMMMMd().format(
+                              DateTime.parse(documentSnapshot['startDate'])),
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 18,
+                              fontFamily: "Times New Roman"),
+                        ),
+                        Text(
+                          DateFormat.yMMMMd().format(
+                              DateTime.parse(documentSnapshot['endDate'])),
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 18,
+                              fontFamily: "Times New Roman"),
+                        ),
+                        SizedBox(
+                          height: 25.0,
+                        ),
+                        FutureBuilder<Stream<QuerySnapshot>>(
+                            future: getEntriesOfJourney(documentSnapshot.id),
+                            builder: (context, snapshot) {
+                              return StreamBuilder(
+                                  stream: snapshot.data,
+                                  builder: (context, snapshot) {                  
+                                    if (!snapshot.hasData) {
+                                      return Container(
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          child: Center(
+                                              child: Container(
+                                                  child:
+                                                      CircularProgressIndicator())));
+                                    }
+                                    if (snapshot.data.docs.length == 0) {
+                                      return Container(
+                                          height: double.infinity,
+                                          width: double.infinity,
+                                          child: Center(
+                                            child: Text(
+                                              "No entries added in this journey yet !! \n Click on + to get started",
+                                              style: TextStyle(
+                                                fontSize: 27,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ));
+                                    }
+                                    return new ListView.builder(
+                                        padding:
+                                            EdgeInsets.fromLTRB(17, 10, 17, 25),
+                                        itemCount: snapshot.data.docs.length,
+                                        itemBuilder: (context, index) {
+                                          DocumentSnapshot ds =
+                                              snapshot.data.docs[index];
+                                          // return JourneyCard(
+                                          //     colorCodes: colorMoodMap,
+                                          //     index: index,
+                                          //     documentSnapshot: ds);
+                                          return Text(ds['title']);
+                                        });
+                                  });
+                            })
+                      ],
+                    ),
                   ),
                 ],
               ),

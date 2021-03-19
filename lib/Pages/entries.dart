@@ -34,7 +34,8 @@ class _EntriesScreenState extends State<EntriesScreen> {
                     return Container(
                         height: double.infinity,
                         width: double.infinity,
-                        child: CircularProgressIndicator());
+                        child: Center(
+                          child: Container(child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
                     return Container(
