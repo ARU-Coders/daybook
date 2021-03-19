@@ -43,8 +43,8 @@ Future<DocumentSnapshot> getJourney(String journeyId) async {
   return doc;
 }
 
-Future<void> editJourney(String journeyId, String title,
-    String description, DateTime startDate, DateTime endDate) async {
+Future<void> editJourney(String journeyId, String title, String description,
+    DateTime startDate, DateTime endDate) async {
   DateTime now = new DateTime.now();
   bool isActive = false;
   if (endDate.isAfter(now)) {
@@ -70,11 +70,12 @@ void deleteJourney(DocumentSnapshot documentSnapshot) async {
 
 Future<Stream<QuerySnapshot>> getEntriesOfJourney(String journeyId) async {
   DocumentSnapshot journeyDoc = await getJourney(journeyId);
-  List<String> entries = journeyDoc['entries'];
+  
+  List<dynamic> entries = journeyDoc['entries'];
 
-  Stream<QuerySnapshot> filteredEntries = FirebaseFirestore.instance
-      .collection('users')
-      .where('__name__', arrayContainsAny: entries)
+  Stream<QuerySnapshot> filteredEntries = userDoc
+      .collection('entries')
+      .where('docId', whereIn: entries)
       .snapshots();
 
   return filteredEntries;

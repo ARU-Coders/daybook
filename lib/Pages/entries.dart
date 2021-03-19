@@ -180,7 +180,7 @@ class EntryCard extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(26, 0, 0, 0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
-                        child: documentSnapshot['images'].length == 0
+                        child: (documentSnapshot['images'].length == 0 || documentSnapshot['images'][0] == "")
                             ? Image.network(
                                 'https://picsum.photos/250?image=9',
                                 height: 75.0,

@@ -133,11 +133,16 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                             builder: (context, snapshot) {
                               return StreamBuilder(
                                   stream: snapshot.data,
-                                  builder: (context, snapshot) {                  
+                                  builder: (context, snapshot) {
+                                    if(snapshot.data == null){
+                                      return Text("Do data retrieved .... yet");
+                                    }
+                                    print("Stream Builder me len = ");
+                                    print(snapshot.data.docs.length);
                                     if (!snapshot.hasData) {
                                       return Container(
-                                          height: double.infinity,
-                                          width: double.infinity,
+                                          // height: double.infinity,
+                                          // width: double.infinity,
                                           child: Center(
                                               child: Container(
                                                   child:
@@ -145,33 +150,36 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                     }
                                     if (snapshot.data.docs.length == 0) {
                                       return Container(
-                                          height: double.infinity,
-                                          width: double.infinity,
+                                          // height: double.infinity,
+                                          // width: double.infinity,
                                           child: Center(
-                                            child: Text(
-                                              "No entries added in this journey yet !! \n Click on + to get started",
-                                              style: TextStyle(
-                                                fontSize: 27,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ));
+                                        child: Text(
+                                          "No entries added in this journey yet !! \n Click on + to get started",
+                                          style: TextStyle(
+                                            fontSize: 27,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ));
                                     }
                                     return new ListView.builder(
-                                        padding:
-                                            EdgeInsets.fromLTRB(17, 10, 17, 25),
-                                        itemCount: snapshot.data.docs.length,
-                                        itemBuilder: (context, index) {
-                                          DocumentSnapshot ds =
-                                              snapshot.data.docs[index];
-                                          // return JourneyCard(
-                                          //     colorCodes: colorMoodMap,
-                                          //     index: index,
-                                          //     documentSnapshot: ds);
-                                          return Text(ds['title']);
-                                        });
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                          padding:
+                                              EdgeInsets.fromLTRB(17, 10, 17, 25),
+                                          itemCount: snapshot.data.docs.length,
+                                          itemBuilder: (context, index) {
+                                            DocumentSnapshot ds =
+                                                snapshot.data.docs[index];
+                                            // return JourneyCard(
+                                            //     colorCodes: colorMoodMap,
+                                            //     index: index,
+                                            //     documentSnapshot: ds);
+                                            return Text(ds['title']);
+                                          })
+                                    ;
                                   });
                             })
                       ],

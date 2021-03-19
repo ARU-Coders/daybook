@@ -22,7 +22,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   };
   final List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
   List<String> selectedMoods = ["🙂"];
-
+  bool isEditing = false;
+  
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   String documentId;
@@ -122,10 +123,12 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
-    if (arguments.length != 0) {
+    if (arguments.length != 0 && !isEditing) {
       titleController.text = arguments[0]['title'];
       contentController.text = arguments[0]['content'];
       documentId = arguments[0].id;
+      isEditing = true;
+
       previousSnapshot = arguments[0];
       int idx = 0;
       for (var value in moodMap.values) {
@@ -287,7 +290,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                 onTap: () {
                   print("Tap registered !!");
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return EnlargedImage(selectedImages[index]);
+                    return EnlargedImage(selectedImages[index], isEditing);
                   }));
                 },
                 child: Container(

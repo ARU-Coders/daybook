@@ -44,7 +44,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                   onTap: () {
                     print("Tap registered !!");
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return EnlargedImage(imageUrls[index]);
+                      return EnlargedImage(imageUrls[index], true);
                     }));
                   },
                   child: Container(
@@ -54,7 +54,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                       ),
                       child: ClipRRect(
                         child: CachedNetworkImage(
-                          imageUrl: imageUrls[index],
+                          imageUrl: imageUrls[index] == "" ? 'https://picsum.photos/250?image=9' : imageUrls[index]  ,
                           progressIndicatorBuilder:
                               (context, url, downloadProgress) => Container(
                             width: 5,
