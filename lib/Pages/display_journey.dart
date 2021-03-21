@@ -130,7 +130,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                         ),
                         GestureDetector(
                           child: Container(
-                            child: Text('Add entries'),
+                            child: Icon(Icons.add),
                           ),
                           onTap: () {
                             Navigator.popAndPushNamed(context, '/selectEntries',
@@ -144,14 +144,10 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                   stream: snapshot.data,
                                   builder: (context, snapshot) {
                                     if (snapshot.data == null) {
-                                      return Text("Do data retrieved .... yet");
+                                      return Text("No data retrieved .... yet");
                                     }
-                                    print("Stream Builder me len = ");
-                                    print(snapshot.data.docs.length);
                                     if (!snapshot.hasData) {
                                       return Container(
-                                          // height: double.infinity,
-                                          // width: double.infinity,
                                           child: Center(
                                               child: Container(
                                                   child:
@@ -159,15 +155,13 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                     }
                                     if (snapshot.data.docs.length == 0) {
                                       return Container(
-                                          // height: double.infinity,
-                                          // width: double.infinity,
                                           child: Center(
                                         child: Text(
                                           "No entries added in this journey yet !! \n Click on + to get started",
                                           style: TextStyle(
                                             fontSize: 27,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color: Colors.black87,
                                           ),
                                           textAlign: TextAlign.center,
                                         ),
@@ -182,7 +176,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                         itemBuilder: (context, index) {
                                           DocumentSnapshot ds =
                                               snapshot.data.docs[index];
-                                          return Text(ds['title']);
+                                          return ShortEntryCard(ds: ds);
                                         });
                                   });
                             })
@@ -195,6 +189,39 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ShortEntryCard extends StatelessWidget {
+  const ShortEntryCard({
+    Key key,
+    @required this.ds,
+  }) : super(key: key);
+
+  final DocumentSnapshot ds;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Card(
+        color: Colors.greenAccent,
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+            padding: const EdgeInsets.all(17.0),
+            child: Text(
+              ds['title'],
+              style: TextStyle(color: Colors.black),
+            )),
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, '/displayEntry', arguments: [ds]);
+      },
     );
   }
 }

@@ -73,6 +73,10 @@ Future<Stream<QuerySnapshot>> getEntriesOfJourney(String journeyId) async {
 
   List<dynamic> entries = journeyDoc['entries'];
 
+  if(entries.length == 0){
+    entries =  ['Null'];
+  }
+
   Stream<QuerySnapshot> filteredEntries = userDoc
       .collection('entries')
       .where('docId', whereIn: entries)

@@ -25,7 +25,7 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
     // });
     return Scaffold(
       appBar: AppBar(
-          title: Text("Add to Journey"),
+          title: Text("Add entries to the journey"),
           backgroundColor: Colors.orangeAccent,
           leading: IconButton(
               icon: Icon(Icons.arrow_back_outlined),
@@ -50,8 +50,7 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          // child: Container(
-          child: Expanded(
+
             child: StreamBuilder(
                 stream: getEntries(),
                 builder: (context, snapshot) {
@@ -61,7 +60,10 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                         width: double.infinity,
                         child: Center(
                             child:
-                                Container(child: CircularProgressIndicator())));
+                                Container(
+                                  height : 50,
+                                  width : 50,
+                                  child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
                     return Container(
@@ -69,7 +71,7 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                         width: double.infinity,
                         child: Center(
                           child: Text(
-                            "No entries created !! \n Click on + to get started",
+                            "No entries added yet !! \n Click on + to get started",
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
@@ -80,14 +82,14 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                         ));
                   }
                   return new ListView.builder(
-                      padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
+                      padding: EdgeInsets.fromLTRB(17, 10, 17, 10),
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return ListTile(
                           title: Card(
                             color: selectedEntries.contains(ds.id)
-                                ? Colors.grey[400]
+                                ? Colors.amber[100]
                                 : Colors.grey[100],
                             elevation: 5,
                             shape: RoundedRectangleBorder(
@@ -99,7 +101,7 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                                 padding: const EdgeInsets.all(17.0),
                                 child: Text(
                                   ds['title'],
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.black, fontFamily: "Times New Roman"),
                                 )),
                           ),
                           onTap: () {
@@ -116,11 +118,9 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                           },
                         );
                       });
-                }),
-            // ),
-            // ],
-            // ),
-          ),
+                }
+                ),
+        
         ),
       ),
     );
