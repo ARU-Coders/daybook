@@ -80,109 +80,108 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Container(
+              // child: Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     SizedBox(
+              //       height: 25.0,
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 25.0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        Text(
-                          documentSnapshot['title'],
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "Times New Roman"),
-                        ),
-                        Text(
-                          documentSnapshot['description'],
-                          // '',
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
-                              fontFamily: "Times New Roman"),
-                        ),
-                        Text(
-                          DateFormat.yMMMMd().format(
-                              DateTime.parse(documentSnapshot['startDate'])),
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
-                              fontFamily: "Times New Roman"),
-                        ),
-                        Text(
-                          DateFormat.yMMMMd().format(
-                              DateTime.parse(documentSnapshot['endDate'])),
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
-                              fontFamily: "Times New Roman"),
-                        ),
-                        SizedBox(
-                          height: 25.0,
-                        ),
-                        GestureDetector(
-                          child: Container(
-                            child: Icon(Icons.add),
-                          ),
-                          onTap: () {
-                            Navigator.popAndPushNamed(context, '/selectEntries',
-                                arguments: [documentSnapshot]);
-                          },
-                        ),
-                        FutureBuilder<Stream<QuerySnapshot>>(
-                            future: getEntriesOfJourney(documentSnapshot.id),
-                            builder: (context, snapshot) {
-                              return StreamBuilder(
-                                  stream: snapshot.data,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data == null) {
-                                      return Text("No data retrieved .... yet");
-                                    }
-                                    if (!snapshot.hasData) {
-                                      return Container(
-                                          child: Center(
-                                              child: Container(
-                                                  child:
-                                                      CircularProgressIndicator())));
-                                    }
-                                    if (snapshot.data.docs.length == 0) {
-                                      return Container(
-                                          child: Center(
-                                        child: Text(
-                                          "No entries added in this journey yet !! \n Click on + to get started",
-                                          style: TextStyle(
-                                            fontSize: 27,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black87,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ));
-                                    }
-                                    return new ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        padding:
-                                            EdgeInsets.fromLTRB(17, 10, 17, 25),
-                                        itemCount: snapshot.data.docs.length,
-                                        itemBuilder: (context, index) {
-                                          DocumentSnapshot ds =
-                                              snapshot.data.docs[index];
-                                          return ShortEntryCard(ds: ds);
-                                        });
-                                  });
-                            })
-                      ],
-                    ),
+                  Text(
+                    documentSnapshot['title'],
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: "Times New Roman"),
                   ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    DateFormat.yMMMMd().format(
+                            DateTime.parse(documentSnapshot['startDate'])) +
+                        " - " +
+                        DateFormat.yMMMMd().format(
+                            DateTime.parse(documentSnapshot['endDate'])),
+                    style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: "Times New Roman"),
+                  ),
+                  Text(
+                    documentSnapshot['description'],
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 18,
+                        fontFamily: "Times New Roman"),
+                  ),
+                  SizedBox(
+                    height: 25.0,
+                  ),
+                  GestureDetector(
+                    child: Container(
+                      child: Icon(Icons.add),
+                    ),
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, '/selectEntries',
+                          arguments: [documentSnapshot]);
+                    },
+                  ),
+                  FutureBuilder<Stream<QuerySnapshot>>(
+                      future: getEntriesOfJourney(documentSnapshot.id),
+                      builder: (context, snapshot) {
+                        return StreamBuilder(
+                            stream: snapshot.data,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) {
+                                return Text("No data retrieved .... yet");
+                              }
+                              if (!snapshot.hasData) {
+                                return Container(
+                                    child: Center(
+                                        child: Container(
+                                            child:
+                                                CircularProgressIndicator())));
+                              }
+                              if (snapshot.data.docs.length == 0) {
+                                return Container(
+                                    child: Center(
+                                  child: Text(
+                                    "No entries added in this journey yet !! \n Click on + to get started",
+                                    style: TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ));
+                              }
+                              return new ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
+                                  itemCount: snapshot.data.docs.length,
+                                  itemBuilder: (context, index) {
+                                    DocumentSnapshot ds =
+                                        snapshot.data.docs[index];
+                                    return ShortEntryCard(ds: ds);
+                                  });
+                            });
+                      }
+                      //           )
+                      //     ],
+                      //   ),
+                      // ),
+                      )
                 ],
               ),
             ),

@@ -39,6 +39,7 @@ class StartPage extends StatelessWidget {
             }),
           ],
           child: Scaffold(
+            backgroundColor: Color(0xfff9f9f9),
             body: StreamBuilder(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {

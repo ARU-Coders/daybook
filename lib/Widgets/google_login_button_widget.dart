@@ -7,17 +7,22 @@ class GoogleLoginButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: EdgeInsets.all(4),
-        child: OutlineButton.icon(
+        child: RaisedButton.icon(
           label: Text(
             "Login with Google",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Color(0xffd68598)),
           ),
+          highlightElevation: 1.5,
+          highlightColor: Color(0xDAFFD1DC),
+          color: Color(0xffFFD1DC ),
           shape: StadiumBorder(),
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          highlightedBorderColor: Colors.black,
-          borderSide: BorderSide(color: Colors.black),
           textColor: Colors.black,
-          icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
+          icon: FaIcon(
+            FontAwesomeIcons.google,
+            // color: Colors.red,
+            size: 18,
+          ),
           onPressed: () {
             final provider =
                 Provider.of<GoogleSignInProvider>(context, listen: false);

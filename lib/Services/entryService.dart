@@ -20,7 +20,6 @@ DocumentReference userDoc =
 // }
 
 Future<List<String>> uploadFiles(List<String> _images) async {
-
   List<File> _imageFiles = _images.map((path) => File(path)).toList();
   List<String> imagesUrls = [];
   // print("Starting the upload...\n");
@@ -37,15 +36,15 @@ Future<List<String>> uploadFiles(List<String> _images) async {
     // print("Returned url : " + url.toString());
     // imagesUrls.add(url);
 
-      UploadTask uploadTask = ref.putFile(_image);
-      // uploadTask.whenComplete(() async{
-      uploadTask.then((res) async{
-        // String url = await ref.getDownloadURL();
-        String url = await res.ref.getDownloadURL();
-    //     print(url);
-        imagesUrls.add(url);
+    UploadTask uploadTask = ref.putFile(_image);
+    // uploadTask.whenComplete(() async{
+    uploadTask.then((res) async {
+      // String url = await ref.getDownloadURL();
+      String url = await res.ref.getDownloadURL();
+      //     print(url);
+      imagesUrls.add(url);
     }).catchError((onError) {
-    print(onError);
+      print(onError);
     });
   });
   return imagesUrls;
@@ -53,32 +52,31 @@ Future<List<String>> uploadFiles(List<String> _images) async {
 
 Future<DocumentReference> createEntry(
     String title, String content, String mood, List<String> images) async {
-    DocumentReference randomDoc = userDoc.collection('entries').doc();
-    String docId  = randomDoc.id;
+  DocumentReference randomDoc = userDoc.collection('entries').doc();
+  String docId = randomDoc.id;
 
   print("Ye rahe $images");
   List<String> imagesURLs = [];
-  
-  if(images.length > 0){
+
+  if (images.length > 0) {
     String id = email;
 
-    await Future.wait(images.map((String _image) async {
-      String imageRef = id + '/' + _image.split('/').last;
-      Reference ref = FirebaseStorage.instance.ref(imageRef);
-      UploadTask uploadTask = ref.putFile(File(_image));
+    await Future.wait(
+        images.map((String _image) async {
+          String imageRef = id + '/' + _image.split('/').last;
+          Reference ref = FirebaseStorage.instance.ref(imageRef);
+          UploadTask uploadTask = ref.putFile(File(_image));
 
-
-      TaskSnapshot _ = await uploadTask.whenComplete(() async{
-        String downloadUrl = await ref.getDownloadURL();
-        imagesURLs.add(downloadUrl);
-      });
-
-    }), eagerError: true, cleanUp: (_) {
-      print('eager cleaned up');
-    });
-  }
-
-  else{
+          TaskSnapshot _ = await uploadTask.whenComplete(() async {
+            String downloadUrl = await ref.getDownloadURL();
+            imagesURLs.add(downloadUrl);
+          });
+        }),
+        eagerError: true,
+        cleanUp: (_) {
+          print('eager cleaned up');
+        });
+  } else {
     imagesURLs = [];
   }
 
@@ -92,12 +90,15 @@ Future<DocumentReference> createEntry(
     'images': imagesURLs,
     'docId': docId
   });
-  DocumentReference query =  userDoc.collection('entries').doc(docId);
+  DocumentReference query = userDoc.collection('entries').doc(docId);
   return query;
 }
 
 Stream<QuerySnapshot> getEntries() {
-  Stream<QuerySnapshot> query = userDoc.collection('entries').snapshots();
+  Stream<QuerySnapshot> query = userDoc
+      .collection('entries')
+      .orderBy('dateCreated', descending: true)
+      .snapshots();
   return query;
 }
 
@@ -106,8 +107,8 @@ Future<DocumentSnapshot> getEntry(String entryId) async {
   return doc;
 }
 
-Future<void> editEntry(String entryId, String title,
-    String content, String mood, List<String> images) async {
+Future<void> editEntry(String entryId, String title, String content,
+    String mood, List<String> images) async {
   List<String> imagesURLs;
   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
   DateTime now = new DateTime.now();

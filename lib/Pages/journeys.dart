@@ -122,7 +122,6 @@ class JourneyCard extends StatelessWidget {
                               onPressed: () {
                                 deleteJourney(documentSnapshot);
                                 Navigator.pop(context);
-                                Navigator.pop(context);
                               },
                               child: Text("Delete"),
                             ),

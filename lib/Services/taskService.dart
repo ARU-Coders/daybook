@@ -8,7 +8,11 @@ DocumentReference userDoc =
     FirebaseFirestore.instance.collection('users').doc(email);
 
 Stream<QuerySnapshot> getTasks() {
-  Stream<QuerySnapshot> query = userDoc.collection('tasks').orderBy('isChecked').orderBy('dueDate').snapshots();
+  Stream<QuerySnapshot> query = userDoc
+      .collection('tasks')
+      .orderBy('isChecked')
+      .orderBy('dueDate')
+      .snapshots();
   return query;
 }
 
@@ -19,8 +23,8 @@ Future<DocumentSnapshot> getTask(String taskId) async {
 
 Future<DocumentReference> createTask(
     String title, String note, DateTime dueDate) async {
-    DocumentReference randomDoc = userDoc.collection('tasks').doc();
-    String docId  = randomDoc.id;
+  DocumentReference randomDoc = userDoc.collection('tasks').doc();
+  String docId = randomDoc.id;
 
   DateTime now = new DateTime.now();
   final _ = await userDoc.collection('tasks').doc(docId).set({
@@ -28,17 +32,17 @@ Future<DocumentReference> createTask(
     'note': note,
     'dateCreated': now.toString(),
     'dateLastModified': now.toString(),
-    'dueDate':dueDate.toString(),
+    'dueDate': dueDate.toString(),
     'isChecked': false,
     'taskId': docId
   });
 
-  DocumentReference query =  userDoc.collection('tasks').doc(docId);
+  DocumentReference query = userDoc.collection('tasks').doc(docId);
   return query;
 }
 
-Future<void> editTask(String taskId, String title, String note, DateTime dueDate) async {
-  
+Future<void> editTask(
+    String taskId, String title, String note, DateTime dueDate) async {
   DateTime now = new DateTime.now();
   Future<void> _ = userDoc.collection('tasks').doc(taskId).update({
     'title': title,

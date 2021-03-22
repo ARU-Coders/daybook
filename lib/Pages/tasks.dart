@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/taskService.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -64,16 +63,50 @@ class _TasksScreenState extends State<TasksScreen> {
                         child: Padding(
                           padding: EdgeInsets.all(10.0),
                           child: Column(children: [
-                            CheckboxListTile(
-                              title: Text(ds['title']),
-                              value: ds['isChecked'],
-                              onChanged: (newValue) {
-                                onCheckTask(ds['taskId'], !ds['isChecked']);
+                            GestureDetector(
+                              onLongPress: () {
+                                //delete ka alert
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (context) => AlertDialog(
+                                    title: Text("Detele Task ?"),
+                                    content: Text(
+                                        "This will delete the Task permanently."),
+                                    actions: <Widget>[
+                                      Row(
+                                        children: [
+                                          FlatButton(
+                                            onPressed: () {
+                                              deleteTask(ds);
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("Delete"),
+                                          ),
+                                          FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("Cancel"),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
-                              controlAffinity: ListTileControlAffinity
-                                  .leading, //  <-- leading Checkbox
+                              child: CheckboxListTile(
+                                title: Text(ds['title']),
+                                value: ds['isChecked'],
+
+                                onChanged: (newValue) {
+                                  onCheckTask(ds['taskId'], !ds['isChecked']);
+                                },
+                                controlAffinity: ListTileControlAffinity
+                                    .leading, //  <-- leading Checkbox
+                              ),
                             ),
-                            ]),
+                          ]),
                         ),
                       );
                     },
