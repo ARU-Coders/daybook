@@ -23,3 +23,9 @@ Future<Map<String, String>> getUserInfo() async {
   print(user);
   return user;
 }
+
+Future<DocumentSnapshot> getUserProfile() async{
+  // final userInfo = await getUserInfo();
+  DocumentSnapshot doc = await userDoc.get();
+  return doc;
+}

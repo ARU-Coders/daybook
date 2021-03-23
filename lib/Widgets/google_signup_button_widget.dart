@@ -14,17 +14,18 @@ class GoogleSignupButtonWidget extends StatelessWidget {
             final provider = Provider.of<GoogleSignInProvider>(context);
             return Container(
               padding: EdgeInsets.all(4),
-              child: OutlineButton.icon(
+              child: RaisedButton.icon(
                 label: Text(
                   "Register with Google",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: Color(0xffd68598)),
                 ),
                 shape: StadiumBorder(),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                highlightedBorderColor: Colors.black,
-                borderSide: BorderSide(color: Colors.black),
-                textColor: Colors.black,
-                icon: FaIcon(FontAwesomeIcons.google, color: Colors.red),
+                padding: EdgeInsets.symmetric(horizontal: 17, vertical: 10),
+                highlightElevation: 1.5,
+                highlightColor: Color(0xDAFFD1DC),
+                color: Color(0xffFFD1DC ),
+                // textColor: Colors.black,
+                icon: FaIcon(FontAwesomeIcons.google, color: Colors.black87,size: 18,),
                 onPressed: () {
                   provider.registerWithGoogle();
                 },

@@ -38,7 +38,10 @@ class MyApp extends StatelessWidget {
             800: Color.fromRGBO(4, 131, 184, .9),
             900: Color.fromRGBO(4, 131, 184, 1),
           }),
-          backgroundColor: Color(0xffd9dde9)),
+          backgroundColor: Color(0xffFFD1DC) // pink
+          // Color(0xffd9dde9) --> grey
+          // Color(0xff8ebbf2)--> blue
+          ),
       home: StartPage(),
       routes: <String, WidgetBuilder>{
         '/start': (BuildContext context) => StartPage(),

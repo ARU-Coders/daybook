@@ -47,7 +47,8 @@ class _TasksScreenState extends State<TasksScreen> {
                   return ListView.builder(
                     padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
                     itemCount: snapshot.data.docs.length,
-                    itemBuilder: (BuildContext context, int index) {
+                  
+                  itemBuilder: (BuildContext context, int index) {
                       DocumentSnapshot ds = snapshot.data.docs[index];
 
                       return Container(

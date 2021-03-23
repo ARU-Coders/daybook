@@ -1,4 +1,5 @@
 import 'package:daybook/Pages/signup.dart';
+import 'package:daybook/Pages/signup_details.dart';
 import 'package:daybook/Pages/start.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Widgets/google_login_button_widget.dart';
@@ -219,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Signup()),
+                                    builder: (context) => SignupDetails()),
                               );
                             })
                     ]),

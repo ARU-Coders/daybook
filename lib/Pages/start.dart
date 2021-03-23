@@ -6,29 +6,9 @@ import 'package:daybook/Widgets/background_painter.dart';
 import 'package:provider/provider.dart';
 import 'package:daybook/Pages/home.dart';
 import 'login.dart';
-// import 'signup.dart';
 
 class StartPage extends StatelessWidget {
   @override
-  // Widget build(BuildContext context) => Scaffold(
-  //       body: ChangeNotifierProvider(
-  //         create: (context) => GoogleSignInProvider(),
-  //         child: StreamBuilder(
-  //           stream: FirebaseAuth.instance.authStateChanges(),
-  //           builder: (context, snapshot) {
-  //             final provider = Provider.of<GoogleSignInProvider>(context);
-
-  //             if (provider.isSigningIn) {
-  //               return buildLoading();
-  //             } else if (snapshot.hasData) {
-  //               return HomePage();
-  //             } else {
-  //               return LoginPage();
-  //             }
-  //           },
-  //         ),
-  //       ),
-  //     );
   Widget build(BuildContext context) => MultiProvider(
           providers: [
             ChangeNotifierProvider<GoogleSignInProvider>(create: (context) {
@@ -39,6 +19,7 @@ class StartPage extends StatelessWidget {
             }),
           ],
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Color(0xfff9f9f9),
             body: StreamBuilder(
               stream: FirebaseAuth.instance.authStateChanges(),
@@ -63,7 +44,6 @@ class StartPage extends StatelessWidget {
   Widget buildLoading() => Stack(
         fit: StackFit.expand,
         children: [
-          CustomPaint(painter: BackgroundPainter()),
           Center(child: CircularProgressIndicator()),
         ],
       );

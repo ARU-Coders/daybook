@@ -2,6 +2,7 @@ import 'package:daybook/Services/journeyService.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:daybook/Widgets/LoadingPage.dart';
 
 class JourneysScreen extends StatefulWidget {
   @override
@@ -9,22 +10,24 @@ class JourneysScreen extends StatefulWidget {
 }
 
 class _JourneysScreenState extends State<JourneysScreen> {
-  final List<int> colorCodes = <int>[400, 300, 200];
+  final List<Color> colorCodes = [
+    Color(0xfff5dea4),
+    Color(0xffdde1eb),
+    Color(0xffbddafc),
+    Color(0xfffdefcc),
+  ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Color(0xFF111111),
+        color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
                 stream: getJourneys(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: CircularProgressIndicator());
+                    return LoadingPage();
                   }
                   if (snapshot.data.docs.length == 0) {
                     return Container(
@@ -36,7 +39,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -57,13 +60,13 @@ class _JourneysScreenState extends State<JourneysScreen> {
               bottom: 15,
               right: 15,
               child: FloatingActionButton(
+                backgroundColor: Color(0xffd68598),
                 child: Icon(
                   Icons.add,
                   size: 40,
                 ),
                 onPressed: () => {
                   Navigator.pushNamed(context, '/createJourney', arguments: [])
-                  // print('Button pressed!');
                 },
               ),
             ),
@@ -82,7 +85,7 @@ class JourneyCard extends StatelessWidget {
     @required this.documentSnapshot,
   }) : super(key: key);
 
-  final List<int> colorCodes;
+  final List<Color> colorCodes;
   final int index;
   final DocumentSnapshot documentSnapshot;
 
@@ -90,11 +93,11 @@ class JourneyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(15.0),
+      // ),
       margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-      color: Colors.amber[colorCodes[index % 3]],
+      color: Color(0xfffdefcc),
       clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(17.0),
@@ -187,6 +190,7 @@ class JourneyCard extends StatelessWidget {
                               ? Icons.favorite
                               : Icons.favorite_outline_rounded,
                           size: 20,
+                          color: Colors.red,
                         ),
                       ),
                       GestureDetector(

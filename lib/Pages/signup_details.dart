@@ -1,3 +1,4 @@
+import 'package:daybook/Widgets/google_signup_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/provider/email_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -43,28 +44,38 @@ class _SignupDetailsState extends State<SignupDetails> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          // ClipRRect(
+                          //   borderRadius: BorderRadius.circular(25.0),
+                          //   child: Image.asset(
+                          //     "assets/images/noImage.jpg",
+                          //     fit: BoxFit.cover,
+                          //     height: 150.0,
+                          //     width: 150.0,
+                          //   ),
+                          // ),
                           SizedBox(
                             height: 15,
                           ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(25.0),
-                            child: Image.asset(
-                              "assets/images/noImage.jpg",
-                              fit: BoxFit.cover,
-                              height: 150.0,
-                              width: 150.0,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/logo.png',
+                                width: 50,
+                                height: 50,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Sign Up",
+                                style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30,
+                                ),
+                              ),
+                            ]
                           ),
-                          SizedBox(
-                            height: 25,
-                          ),
-                          Text(
-                            "Sign Up",
-                            style: TextStyle(
-                                color: Colors.blueGrey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
+                          
                           SizedBox(
                             height: 25,
                           ),
@@ -196,39 +207,66 @@ class _SignupDetailsState extends State<SignupDetails> {
                           ),
                           Container(
                             padding: EdgeInsets.all(4),
-                            child: OutlineButton.icon(
-                                label: Text(
-                                  "Register",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
+                            child: RaisedButton(
+                              child: Text(
+                                "Register",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Color(0xffd68598)
                                 ),
-                                shape: StadiumBorder(),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                highlightedBorderColor: Colors.black,
-                                borderSide: BorderSide(color: Colors.black),
-                                textColor: Colors.black,
-                                icon: FaIcon(FontAwesomeIcons.signInAlt,
-                                    color: Colors.red),
-                                onPressed: () {
-                                  if (_formKey.currentState.validate()) {
-                                    if (passwordController.text ==
-                                        confirmPasswordController.text) {
-                                      provider.register(
-                                          nameController.text,
-                                          emailController.text,
-                                          passwordController.text,
-                                          dropdownValue,
-                                          birthdayController.text);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => StartPage()),
-                                      );
-                                    }
+                              ),
+                              shape: StadiumBorder(),
+                              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                              textColor: Colors.black,
+                              highlightElevation: 1.5,
+                              highlightColor: Color(0xDAFFD1DC),
+                              color: Color(0xffFFD1DC ),
+                              // icon: FaIcon(
+                              //   FontAwesomeIcons.signInAlt,
+                              //   color: Colors.red
+                              // ),
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  if (passwordController.text ==
+                                      confirmPasswordController.text) {
+                                    provider.register(
+                                      nameController.text,
+                                      emailController.text,
+                                      passwordController.text,
+                                      dropdownValue,
+                                      birthdayController.text
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => StartPage()),
+                                    );
                                   }
-                                }),
+                                }
+                              }
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                  child: Divider(
+                                thickness: 2,
+                              )),
+                              Text(" OR "),
+                              Expanded(
+                                  child: Divider(
+                                thickness: 2,
+                              )),
+                            ]
+                          ),
+                          SizedBox(height: 15),
+                          GoogleSignupButtonWidget(),
+                          SizedBox(
+                            height: 25,
                           ),
                         ],
                       ))),

@@ -24,7 +24,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Color(0xFF111111),
+        color: Color(0xffdde1eb),
         child: Stack(
           children: [
             StreamBuilder(
@@ -69,6 +69,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
               bottom: 15,
               right: 15,
               child: FloatingActionButton(
+                backgroundColor: Color(0xffd68598),
                 child: Icon(
                   Icons.add,
                   size: 40,
