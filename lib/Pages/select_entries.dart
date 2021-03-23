@@ -23,34 +23,34 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
       selectedEntries = documentSnapshot['entries'];
     }
     // });
-    return Scaffold(
-      appBar: AppBar(
-          title: Text("Add entries to the journey"),
-          backgroundColor: Colors.orangeAccent,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back_outlined),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          actions: <Widget>[
-            GestureDetector(
-                child: Icon(
-                  Icons.check,
-                  size: 25,
-                ),
-                onTap: () {
-                  addEntriestoJourney(documentSnapshot.id, selectedEntries);
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+            title: Text("Add entries to the journey"),
+            backgroundColor: Color(0xDAFFD1DC),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back_outlined),
+                onPressed: () {
                   Navigator.pop(context);
                 }),
-            SizedBox(
-              width: 20,
-            )
-          ]),
-      backgroundColor: Color(0xFF111111),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-
+            actions: <Widget>[
+              GestureDetector(
+                  child: Icon(
+                    Icons.check,
+                    size: 25,
+                  ),
+                  onTap: () {
+                    addEntriestoJourney(documentSnapshot.id, selectedEntries);
+                    Navigator.pop(context);
+                  }),
+              SizedBox(
+                width: 20,
+              )
+            ]),
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: StreamBuilder(
                 stream: getEntries(),
                 builder: (context, snapshot) {
@@ -59,11 +59,10 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                         height: double.infinity,
                         width: double.infinity,
                         child: Center(
-                            child:
-                                Container(
-                                  height : 50,
-                                  width : 50,
-                                  child: CircularProgressIndicator())));
+                            child: Container(
+                                height: 50,
+                                width: 50,
+                                child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
                     return Container(
@@ -71,11 +70,11 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                         width: double.infinity,
                         child: Center(
                           child: Text(
-                            "No entries added yet !! \n Click on + to get started",
+                            "No entries added yet !!",
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -90,7 +89,7 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                           title: Card(
                             color: selectedEntries.contains(ds.id)
                                 ? Colors.amber[100]
-                                : Colors.grey[100],
+                                : Color(0xffd9dde9),
                             elevation: 5,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
@@ -101,7 +100,9 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                                 padding: const EdgeInsets.all(17.0),
                                 child: Text(
                                   ds['title'],
-                                  style: TextStyle(color: Colors.black, fontFamily: "Times New Roman"),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Times New Roman"),
                                 )),
                           ),
                           onTap: () {
@@ -118,9 +119,8 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
                           },
                         );
                       });
-                }
-                ),
-        
+                }),
+          ),
         ),
       ),
     );

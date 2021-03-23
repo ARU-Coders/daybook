@@ -31,14 +31,14 @@ class EmailSignInProvider extends ChangeNotifier {
         email: email, password: password);
     if (newUser != null) {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      Future<DocumentReference> query = firestore.collection('users').doc(email)
-        .set({
+      Future<DocumentReference> query =
+          firestore.collection('users').doc(email).set({
         'name': name,
         'email': email,
         'birthdate': dob,
         'gender': gender,
         'dateJoined': DateTime.now().toString(),
-        'profileURL':
+        'photo':
             "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg"
       });
       print(query);

@@ -21,15 +21,13 @@ Future<DocumentSnapshot> getTask(String taskId) async {
   return doc;
 }
 
-Future<DocumentReference> createTask(
-    String title, String note, DateTime dueDate) async {
+Future<DocumentReference> createTask(String title, DateTime dueDate) async {
   DocumentReference randomDoc = userDoc.collection('tasks').doc();
   String docId = randomDoc.id;
 
   DateTime now = new DateTime.now();
   final _ = await userDoc.collection('tasks').doc(docId).set({
     'title': title,
-    'note': note,
     'dateCreated': now.toString(),
     'dateLastModified': now.toString(),
     'dueDate': dueDate.toString(),
@@ -41,12 +39,10 @@ Future<DocumentReference> createTask(
   return query;
 }
 
-Future<void> editTask(
-    String taskId, String title, String note, DateTime dueDate) async {
+Future<void> editTask(String taskId, String title, DateTime dueDate) async {
   DateTime now = new DateTime.now();
   Future<void> _ = userDoc.collection('tasks').doc(taskId).update({
     'title': title,
-    'note': note,
     'dateLastModified': now.toString(),
     'dueDate': dueDate.toString()
   });

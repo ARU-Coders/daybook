@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:daybook/Services/taskService.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class TasksScreen extends StatefulWidget {
   @override
@@ -10,16 +11,15 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   TextEditingController titleController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
+  DateTime pickedDate;
+  TimeOfDay time;
   bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Color(0xFF111111),
+        color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
@@ -38,7 +38,7 @@ class _TasksScreenState extends State<TasksScreen> {
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -47,62 +47,77 @@ class _TasksScreenState extends State<TasksScreen> {
                   return ListView.builder(
                     padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
                     itemCount: snapshot.data.docs.length,
-                  
-                  itemBuilder: (BuildContext context, int index) {
+                    itemBuilder: (BuildContext context, int index) {
                       DocumentSnapshot ds = snapshot.data.docs[index];
 
                       return Container(
                         decoration: BoxDecoration(
                           color: ds['isChecked']
-                              ? Colors.grey[400]
-                              : Colors.blueGrey[200],
+                              ? Color(0xffc3cade)
+                              : Color(0xffadd2ff),
                           borderRadius: BorderRadius.all(
                             Radius.circular(8.0),
                           ),
                         ),
                         margin: const EdgeInsets.all(10.0),
                         child: Padding(
-                          padding: EdgeInsets.all(10.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Column(children: [
                             GestureDetector(
-                              onLongPress: () {
-                                //delete ka alert
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (context) => AlertDialog(
-                                    title: Text("Detele Task ?"),
-                                    content: Text(
-                                        "This will delete the Task permanently."),
-                                    actions: <Widget>[
-                                      Row(
-                                        children: [
-                                          FlatButton(
-                                            onPressed: () {
-                                              deleteTask(ds);
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("Delete"),
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("Cancel"),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
                               child: CheckboxListTile(
-                                title: Text(ds['title']),
+                                // checkColor: Colors.blue,
+                                // activeColor: Colors.red,
+                                title: Text(
+                                  ds['title'],
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(top: 6.0),
+                                  child: Text(
+                                    DateFormat.yMMMMd()
+                                        .format(DateTime.parse(ds['dueDate'])),
+                                  ),
+                                ),
                                 value: ds['isChecked'],
-
                                 onChanged: (newValue) {
                                   onCheckTask(ds['taskId'], !ds['isChecked']);
                                 },
+                                secondary: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  color: Colors.black87,
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => AlertDialog(
+                                        title: Text("Detele Task ?"),
+                                        content: Text(
+                                            "This will delete the Task permanently."),
+                                        actions: <Widget>[
+                                          Row(
+                                            children: [
+                                              FlatButton(
+                                                onPressed: () {
+                                                  deleteTask(ds);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Delete"),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Cancel"),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                                 controlAffinity: ListTileControlAffinity
                                     .leading, //  <-- leading Checkbox
                               ),
@@ -117,12 +132,17 @@ class _TasksScreenState extends State<TasksScreen> {
               bottom: 15,
               right: 15,
               child: FloatingActionButton(
+                backgroundColor: Color(0xffd68598),
                 child: Icon(
                   Icons.add,
                   size: 40,
                 ),
                 onPressed: () async {
-                  return await buildShowDialog(context);
+                  await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return MyDialog();
+                      });
                 },
               ),
             ),
@@ -131,87 +151,145 @@ class _TasksScreenState extends State<TasksScreen> {
       ),
     );
   }
+}
 
-  Future<Widget> buildShowDialog(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text("Add new Task"),
-        content: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Times New Roman"),
-                controller: titleController,
-                decoration: InputDecoration(hintText: 'Title'),
-                autofocus: false,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Title cannot be empty !';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Times New Roman"),
-                controller: noteController,
-                decoration: InputDecoration(hintText: 'Description'),
-                autofocus: false,
-                minLines: 2,
-                maxLines: 4,
-                validator: (value) {
-                  print("Note is empty");
-                  // if (value.isEmpty) {
-                  //   return 'Title cannot be empty !';
-                  // }
-                  return null;
-                },
-              ),
-            ],
-          ),
+class MyDialog extends StatefulWidget {
+  @override
+  _MyDialogState createState() => _MyDialogState();
+}
+
+class _MyDialogState extends State<MyDialog> {
+  int flag = 0;
+  DateTime pickedDate;
+  TimeOfDay time;
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController titleController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    setState(() {
+      if (flag == 0) {
+        pickedDate = DateTime.now();
+        time = TimeOfDay.now();
+        flag = 1;
+      }
+    });
+
+    return AlertDialog(
+      title: Text("Add new Task"),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "Times New Roman"),
+              controller: titleController,
+              decoration: InputDecoration(hintText: 'Title'),
+              autofocus: false,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Title cannot be empty !';
+                }
+                return null;
+              },
+            ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(5, 30, 35, 5),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Reminder:",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Times New Roman"),
+                      textAlign: TextAlign.start,
+                    ))),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  child: Chip(
+                    label: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Text(
+                        "${DateFormat.yMMMMd().format(pickedDate)}  ${time.format(context)}",
+                        style: TextStyle(
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    avatar: Icon(Icons.alarm),
+                    backgroundColor: Color(0xffffe9b3),
+                  ),
+                  onTap: _pickDate,
+                ),
+              ],
+            ),
+          ],
         ),
-        actions: <Widget>[
-          Row(
-            children: [
-              FlatButton(
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    //Todo : Get due date (& time) from user
-                    DateTime dueDate = DateTime.now();
-
-                    //Save task
-                    await createTask(
-                        titleController.text, noteController.text, dueDate);
-
-                    //Clear text controller values after saving the task.
-                    titleController.clear();
-                    noteController.clear();
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Text("Add Task"),
-              ),
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("Cancel"),
-              ),
-            ],
-          ),
-        ],
       ),
+      actions: <Widget>[
+        Row(
+          children: [
+            FlatButton(
+              onPressed: () async {
+                if (_formKey.currentState.validate()) {
+                  //Todo : Get due date (& time) from user
+                  DateTime dueDate = DateTime(pickedDate.year, pickedDate.month,
+                      pickedDate.day, time.hour, time.minute);
+
+                  print("New Date " + dueDate.toString());
+                  //Save task
+                  await createTask(titleController.text, dueDate);
+
+                  //Clear text controller values after saving the task.
+                  titleController.clear();
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text("Add Task"),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Cancel"),
+            ),
+          ],
+        ),
+      ],
     );
+  }
+
+  _pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: pickedDate,
+    );
+
+    if (date != null) {
+      TimeOfDay t = await showTimePicker(context: context, initialTime: time);
+
+      if (t != null) {
+        pickedDate = date;
+        time = t;
+        print(date);
+        print(t);
+        setState(() {
+          pickedDate = date;
+          time = t;
+        });
+      }
+    }
   }
 }

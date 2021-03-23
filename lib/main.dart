@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xffFFD1DC) // pink
           // Color(0xffd9dde9) --> grey
           // Color(0xff8ebbf2)--> blue
+          
           ),
       home: StartPage(),
       routes: <String, WidgetBuilder>{

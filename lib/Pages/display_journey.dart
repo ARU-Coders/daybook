@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:daybook/Services/journeyService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:daybook/Widgets/LoadingPage.dart';
 
 class DisplayJourneyScreen extends StatefulWidget {
   @override
@@ -23,202 +22,234 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
     print("checking :" + documentSnapshot['title']);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Journey",
-          ),
-          actions: <Widget>[
-            GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => AlertDialog(
-                    title: Text("Detele Journey ?"),
-                    content: Text("This will delete the Journey permanently."),
-                    actions: <Widget>[
-                      Row(
-                        children: [
-                          FlatButton(
-                            onPressed: () {
-                              deleteJourney(documentSnapshot);
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Delete"),
-                          ),
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text("Cancel"),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.delete,
-                size: 20,
-              ),
-            ),
-            SizedBox(
-              width: 30,
-            ),
-            GestureDetector(
-              child: Icon(
-                Icons.edit,
-                size: 20,
-              ),
-              onTap: () {
-                Navigator.popAndPushNamed(context, '/createJourney',
-                    arguments: [documentSnapshot]);
-              },
-            ),
-            SizedBox(
-              width: 25,
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            height: newheight,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      Text(
-                        documentSnapshot['title'],
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 25,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        DateFormat.yMMMMd().format(
-                                DateTime.parse(documentSnapshot['startDate'])) +
-                            " - " +
-                            DateFormat.yMMMMd().format(
-                                DateTime.parse(documentSnapshot['endDate'])),
-                        style: TextStyle(
-                            color: Colors.grey[400],
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Text(
-                        documentSnapshot['description'],
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 20,
-                            fontFamily: "Times New Roman"),
-                      ),
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      // GestureDetector(
-                      //   child: Container(
-                      //     child: Icon(Icons.add),
-                      //   ),
-                      //   onTap: () {
-                      //     Navigator.popAndPushNamed(context, '/selectEntries',
-                      //         arguments: [documentSnapshot]);
-                      //   },
-                      // ),
-                      FutureBuilder<Stream<QuerySnapshot>>(
-                          future: getEntriesOfJourney(documentSnapshot.id),
-                          builder: (context, snapshot) {
-                            return StreamBuilder(
-                                stream: snapshot.data,
-                                builder: (context, snapshot) {
-                                  if (snapshot.data == null) {
-                                    return Center(
-                                      child: Container(
-                                        child: CircularProgressIndicator(),
+        resizeToAvoidBottomPadding: false,
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Container(
+                    height: 200.0,
+                    width: width,
+                    decoration: new BoxDecoration(
+                      color: Color(0xff8ebbf2),
+                      // boxShadow: [new BoxShadow(blurRadius: 10.0)],
+                      borderRadius: new BorderRadius.vertical(
+                          bottom: new Radius.elliptical(width, 40.0)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(Icons.arrow_back),
+                              ),
+                            ),
+                            Container(
+                              height: appbarHeight,
+                              child: Row(children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => AlertDialog(
+                                        title: Text("Detele Journey ?"),
+                                        content: Text(
+                                            "This will delete the Journey permanently."),
+                                        actions: <Widget>[
+                                          Row(
+                                            children: [
+                                              FlatButton(
+                                                onPressed: () {
+                                                  deleteJourney(
+                                                      documentSnapshot);
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Delete"),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Cancel"),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     );
-                                  }
-                                  if (!snapshot.hasData) {
-                                    return Container(
-                                        child: Center(
-                                            child: Container(
-                                                child:
-                                                    CircularProgressIndicator())));
-                                  }
-                                  if (snapshot.data.docs.length == 0) {
-                                    return Container(
-                                        //     child: Center(
-                                        //   child: Text(
-                                        //     "No entries added in this journey yet !! \n Click on + to get started",
-                                        //     style: TextStyle(
-                                        //       fontSize: 27,
-                                        //       fontWeight: FontWeight.bold,
-                                        //       color: Colors.black87,
-                                        //     ),
-                                        //     textAlign: TextAlign.center,
-                                        //   ),
-                                        // )
-                                        );
-                                  }
-                                  return new ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      padding:
-                                          EdgeInsets.fromLTRB(17, 10, 17, 25),
-                                      itemCount: snapshot.data.docs.length,
-                                      itemBuilder: (context, index) {
-                                        DocumentSnapshot ds =
-                                            snapshot.data.docs[index];
-                                        return ShortEntryCard(ds: ds);
-                                      });
-                                });
-                          }
-                          //           )
-                          //     ],
-                          //   ),
-                          // ),
+                                  },
+                                  child: Icon(
+                                    Icons.delete,
+                                    size: 20,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                GestureDetector(
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 20,
+                                  ),
+                                  onTap: () {
+                                    Navigator.popAndPushNamed(
+                                        context, '/createJourney',
+                                        arguments: [documentSnapshot]);
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 25,
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 30),
+                        Column(
+                          children: [
+                            Text(
+                              documentSnapshot['title'],
+                              style: TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: "Times New Roman"),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              DateFormat.yMMMMd().format(DateTime.parse(
+                                      documentSnapshot['startDate'])) +
+                                  " - " +
+                                  DateFormat.yMMMMd().format(DateTime.parse(
+                                      documentSnapshot['endDate'])),
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: "Times New Roman"),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 30,
+                        )
+                      ],
+                    )),
+                SizedBox(
+                  height: 25,
+                ),
+                Expanded(
+                  // flex: 1,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Container(
+                            // color: Color(0xfff0f0f0),
+                            child: Text(
+                              documentSnapshot['description'],
+                              softWrap: true,
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 15,
+                                  letterSpacing: 0.2,
+                                  fontFamily: "Montserrat"),
+                            ),
                           ),
-                      Spacer()
-                    ],
-                  ),
-                  Positioned(
-                    bottom: 15,
-                    right: width / 4.5,
-                    child: RaisedButton(
-                      child: Text("Add Entries",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Color(0xff5685bf),
-                          )),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                      shape: StadiumBorder(),
-                      color: Color(0xff8ebbf2),
-                      onPressed: () => {
-                        Navigator.popAndPushNamed(context, '/selectEntries',
-                            arguments: [documentSnapshot])
-                      },
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        FutureBuilder<Stream<QuerySnapshot>>(
+                            future: getEntriesOfJourney(documentSnapshot.id),
+                            builder: (context, snapshot) {
+                              return StreamBuilder(
+                                  stream: snapshot.data,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data == null) {
+                                      return Center(
+                                        child: Container(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    }
+                                    if (!snapshot.hasData) {
+                                      return Container(
+                                          child: Center(
+                                              child: Container(
+                                                  child:
+                                                      CircularProgressIndicator())));
+                                    }
+                                    if (snapshot.data.docs.length == 0) {
+                                      return Container();
+                                    }
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 50.0, left: 30, right: 30),
+                                      child: Container(
+                                        // color: Color(0xfff0f0f0),
+                                        height: 300,
+                                        child: new ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            padding: EdgeInsets.fromLTRB(
+                                                5, 0, 5, 25),
+                                            itemCount:
+                                                snapshot.data.docs.length,
+                                            itemBuilder: (context, index) {
+                                              DocumentSnapshot ds =
+                                                  snapshot.data.docs[index];
+                                              return ShortEntryCard(ds: ds);
+                                            }),
+                                      ),
+                                    );
+                                  });
+                            }),
+                      ],
                     ),
                   ),
-                ],
+                )
+              ],
+            ),
+            Positioned(
+              bottom: 10,
+              right: width / 4.5,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: RaisedButton(
+                  child: Text("Add Entries",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Color(0xff5685bf),
+                      )),
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  shape: StadiumBorder(),
+                  color: Color(0xff8ebbf2),
+                  onPressed: () => {
+                    Navigator.popAndPushNamed(context, '/selectEntries',
+                        arguments: [documentSnapshot])
+                  },
+                ),
               ),
             ),
-          ),
+            // SizedBox(
+            //   height: 20,
+            // )
+          ],
         ),
       ),
     );
@@ -235,25 +266,36 @@ class ShortEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Card(
-        color: Colors.greenAccent,
-        elevation: 5,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-            padding: const EdgeInsets.all(17.0),
-            child: Text(
-              ds['title'],
-              style: TextStyle(color: Colors.black),
-            )),
+    return Container(
+      margin: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        boxShadow: [BoxShadow(color: Colors.grey[100])],
       ),
-      onTap: () {
-        Navigator.pushNamed(context, '/displayEntry', arguments: [ds]);
-      },
+      child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+          // tileColor: Colors.cyan,
+          leading: Container(
+            padding: EdgeInsets.only(right: 12.0),
+            decoration: new BoxDecoration(
+                border: new Border(
+                    right: new BorderSide(width: 2.0, color: Colors.black))),
+            child: Icon(
+              Icons.sticky_note_2_outlined,
+              color: Colors.black,
+              size: 25,
+            ),
+          ),
+          title: Text(
+            ds['title'],
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(ds['mood'], style: TextStyle(color: Colors.black)),
+          trailing: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/displayEntry', arguments: [ds]);
+              },
+              child: Icon(Icons.keyboard_arrow_right,
+                  color: Colors.black, size: 30.0))),
     );
   }
 }

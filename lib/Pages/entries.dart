@@ -13,18 +13,18 @@ class _EntriesScreenState extends State<EntriesScreen> {
   final List<int> colorCodes = <int>[400, 300, 200];
 
   final Map<String, Color> colorMoodMap = {
-    "Terrible": Colors.grey[200],
-    "Bad": Colors.blue[200],
-    "Neutral": Colors.red[150],
-    "Good": Colors.yellow[200],
-    "Wonderful": Colors.green[200]
+    "Terrible": Color(0xffffa194), //red
+    "Bad": Color(0xffa3a8b8), //grey
+    "Neutral": Color(0xdaffffff), //white
+    "Good": Color(0xfffdefcc), //yellow
+    "Wonderful": Color(0xffadd2ff) //blue
   };
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Color(0xffdde1eb),
+        color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
@@ -48,7 +48,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
