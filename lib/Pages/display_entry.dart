@@ -282,9 +282,13 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                               width: 5,
                               height: 5,
                               child: Center(
-                                child: CircularProgressIndicator(
-                                  value: downloadProgress.progress,
-                                  strokeWidth: 2.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    strokeWidth: 2.0,
+                                  ),
                                 ),
                               ),
                             ),

@@ -71,13 +71,15 @@ class _TasksScreenState extends State<TasksScreen> {
                                   ds['title'],
                                   style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.bold,
+                                      decoration: ds['isChecked']? TextDecoration.lineThrough: null),
                                 ),
                                 subtitle: Padding(
                                   padding: const EdgeInsets.only(top: 6.0),
                                   child: Text(
                                     DateFormat.yMMMMd()
                                         .format(DateTime.parse(ds['dueDate'])),
+                                  style: TextStyle(decoration: ds['isChecked']? TextDecoration.lineThrough: null),
                                   ),
                                 ),
                                 value: ds['isChecked'],
@@ -103,13 +105,13 @@ class _TasksScreenState extends State<TasksScreen> {
                                                   deleteTask(ds);
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Delete"),
+                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 14),),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancel"),
+                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 16),),
                                               ),
                                             ],
                                           ),
@@ -248,11 +250,11 @@ class _MyDialogState extends State<MyDialog> {
 
                   print("New Date " + dueDate.toString());
                   //Save task
+                  Navigator.of(context).pop();
                   await createTask(titleController.text, dueDate);
+                  titleController.clear();
 
                   //Clear text controller values after saving the task.
-                  titleController.clear();
-                  Navigator.of(context).pop();
                 }
               },
               child: Text("Add Task"),

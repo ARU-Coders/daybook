@@ -93,9 +93,6 @@ class JourneyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(15.0),
-      // ),
       margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
       color: Color(0xfffdefcc),
       clipBehavior: Clip.antiAlias,
@@ -126,13 +123,13 @@ class JourneyCard extends StatelessWidget {
                                 deleteJourney(documentSnapshot);
                                 Navigator.pop(context);
                               },
-                              child: Text("Delete"),
+                              child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 14),),
                             ),
                             FlatButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Cancel"),
+                              child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 16),),
                             ),
                           ],
                         ),

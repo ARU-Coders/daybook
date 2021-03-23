@@ -74,13 +74,13 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Delete"),
+                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 14),),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancel"),
+                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 16),),
                                               ),
                                             ],
                                           ),
@@ -166,7 +166,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                   color: Colors.black87,
                                   fontSize: 15,
                                   letterSpacing: 0.2,
-                                  fontFamily: "Montserrat"),
+                                  fontFamily: "Times New Roman"),
                             ),
                           ),
                         ),

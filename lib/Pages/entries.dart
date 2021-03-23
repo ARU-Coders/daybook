@@ -120,38 +120,12 @@ class EntryCard extends StatelessWidget {
                       arguments: [documentSnapshot]);
                 },
                 onLongPress: () {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) => AlertDialog(
-                      title: Text("Detele Entry ?"),
-                      content: Text("This will delete the Entry permanently."),
-                      actions: <Widget>[
-                        Row(
-                          children: [
-                            FlatButton(
-                              onPressed: () {
-                                deleteEntry(documentSnapshot);
-                                Navigator.of(context).pop();
-                              },
-                              child: Text("Delete"),
-                            ),
-                            FlatButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text("Cancel"),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                  buildDeleteDialog(context, documentSnapshot);
                 },
                 child: Row(
                   children: [
                     Container(
-                      width: 220,
+                      width: 200,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -178,13 +152,13 @@ class EntryCard extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(26, 0, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: (documentSnapshot['images'].length == 0 ||
                                 documentSnapshot['images'][0] == "")
-                            ? Image.network(
-                                'https://picsum.photos/250?image=9',
+                            ? Image.asset(
+                                'assets/images/entry-placeholder.jpg',
                                 height: 75.0,
                                 width: 75.0,
                               )
@@ -210,34 +184,7 @@ class EntryCard extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => AlertDialog(
-                              title: Text("Detele Entry ?"),
-                              content: Text(
-                                  "This will delete the Entry permanently."),
-                              actions: <Widget>[
-                                Row(
-                                  children: [
-                                    FlatButton(
-                                      onPressed: () {
-                                        deleteEntry(documentSnapshot);
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Delete"),
-                                    ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Cancel"),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
+                          buildDeleteDialog(context, documentSnapshot);
                         },
                         child: Icon(
                           Icons.delete,
@@ -252,11 +199,6 @@ class EntryCard extends StatelessWidget {
                         onTap: () {
                           Navigator.pushNamed(context, '/createEntry',
                               arguments: [
-                                // documentSnapshot['title'],
-                                // documentSnapshot['content'],
-                                // documentSnapshot['images'],
-                                // documentSnapshot.id,
-                                // documentSnapshot['mood'],
                                 documentSnapshot
                               ]);
                         },
@@ -277,5 +219,36 @@ class EntryCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future buildDeleteDialog(BuildContext context, DocumentSnapshot documentSnapshot) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: Text("Detele Entry ?"),
+          content: Text(
+              "This will delete the Entry permanently."),
+          actions: <Widget>[
+            Row(
+              children: [
+                FlatButton(
+                  onPressed: () {
+                    deleteEntry(documentSnapshot);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Delete",style: TextStyle(color: Colors.red,fontSize: 14),),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Cancel",style: TextStyle(color: Colors.green, fontSize: 16),),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
   }
 }

@@ -45,7 +45,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
               context: context,
               builder: (context) => new AlertDialog(
                 title: new Text('Hold up !'),
-                content: new Text('Do you want to discard this entry ?'),
+                content: new Text(isEditing?'Do you want to discard the changes in this entry ?':'Do you want to discard this entry ?'),
                 actions: <Widget>[
                   new FlatButton(
                     onPressed: () => Navigator.of(context).pop(false),
