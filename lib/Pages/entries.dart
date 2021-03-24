@@ -123,7 +123,7 @@ class EntryCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 220,
+                      width: 200,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [

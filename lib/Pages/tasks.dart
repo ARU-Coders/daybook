@@ -3,6 +3,7 @@ import 'package:daybook/Services/taskService.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class TasksScreen extends StatefulWidget {
   @override
@@ -161,11 +162,57 @@ class MyDialog extends StatefulWidget {
 }
 
 class _MyDialogState extends State<MyDialog> {
+  void initState() {
+  super.initState();
+  var initializationSettingsAndroid = AndroidInitializationSettings('logo');
+  var initializationSettingsIOs = IOSInitializationSettings();
+  var initSetttings = InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOs);
+
+  flutterLocalNotificationsPlugin.initialize(initSetttings,
+      onSelectNotification: onSelectNotification);
+}
+
   int flag = 0;
   DateTime pickedDate;
   TimeOfDay time;
+  bool setReminder = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  Future<void> cancelNotification(int notifId) async {
+    await flutterLocalNotificationsPlugin.cancel(notifId);
+  }
+  Future onSelectNotification(String notifId) async{
+  await cancelNotification(int.parse(notifId));
+  print("Notif canceled");
+  return "Notif canceled";
+  // return Navigator.pushNamed(context, '/start');
+}
+
+  Future<void> scheduleNotification(DateTime scheduledNotificationDateTime, String notifTitle) async {
+    // var scheduledNotificationDateTime =
+    //     DateTime.now().add(Duration(seconds: 5));
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      '1',
+      'Tasks',
+      'Reminders of Tasks',
+      // icon: 'flutter_devs',
+      // largeIcon: BitmapFactory.decodeFile(Image.asset('assets/images/logo.png')),
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    int notifId = DateTime.now().millisecondsSinceEpoch % 10000;
+    await flutterLocalNotificationsPlugin.schedule(
+        notifId,
+        notifTitle,
+        'Don\'t forget to complete your task on time !',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics,
+        payload: notifId.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,19 +248,35 @@ class _MyDialogState extends State<MyDialog> {
               },
             ),
             Padding(
-                padding: EdgeInsets.fromLTRB(5, 30, 35, 5),
+                padding: EdgeInsets.fromLTRB(0, 30, 50, 5),
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Reminder:",
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: "Times New Roman"),
-                      textAlign: TextAlign.start,
-                    ))),
-            Row(
+                    child: ListTile(
+                        title: Text(
+                        "Reminder",
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Times New Roman"),
+                        textAlign: TextAlign.start,
+                      ),
+                      trailing: Switch(  
+                        value: setReminder,
+                        inactiveTrackColor: Color(0xffc3cade),
+                        activeColor: Color(0xffadd2ff),
+                        onChanged: (value) {  
+                          setState(() {  
+                            setReminder = value;  
+                            print(setReminder);
+                          });  
+                        },  
+                      ),  
+                    ),
+                    ),
+                    ),
+
+            setReminder?Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -234,7 +297,7 @@ class _MyDialogState extends State<MyDialog> {
                   onTap: _pickDate,
                 ),
               ],
-            ),
+            ):SizedBox(),
           ],
         ),
       ),
@@ -249,8 +312,10 @@ class _MyDialogState extends State<MyDialog> {
                       pickedDate.day, time.hour, time.minute);
 
                   print("New Date " + dueDate.toString());
+
                   //Save task
                   Navigator.of(context).pop();
+                  setReminder ? await scheduleNotification(dueDate, titleController.text):null;
                   await createTask(titleController.text, dueDate);
                   titleController.clear();
 

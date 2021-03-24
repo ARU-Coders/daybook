@@ -45,7 +45,8 @@ dependencies:
   
   # state management
   provider: ^4.3.2+2
-
+  flutter_local_notifications: ^1.4.4+1
+  
   # icon of google
   font_awesome_flutter: ^8.10.0
   material_design_icons_flutter: 
