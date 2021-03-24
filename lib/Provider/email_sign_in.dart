@@ -1,3 +1,4 @@
+// import 'package:daybook/Services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,7 @@ class EmailSignInProvider extends ChangeNotifier {
     final user = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     print(user);
+    // setUserEmail(email);
     return;
   }
 
@@ -42,10 +44,12 @@ class EmailSignInProvider extends ChangeNotifier {
             "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg"
       });
       print(query);
+      // setUserEmail(email);
     }
   }
 
   void logout() async {
+    // setUserEmail("");
     await _firebaseAuth.signOut();
   }
 }

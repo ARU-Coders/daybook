@@ -51,7 +51,7 @@ Future<List<String>> uploadFiles(List<String> _images) async {
 }
 
 Future<DocumentReference> createEntry(
-    String title, String content, String mood, List<String> images) async {
+    String title, String content, String mood, List<String> images, DateTime dateCreated) async {
   DocumentReference randomDoc = userDoc.collection('entries').doc();
   String docId = randomDoc.id;
 
@@ -79,13 +79,14 @@ Future<DocumentReference> createEntry(
   } else {
     imagesURLs = [];
   }
+  print("Creating: dc = ${dateCreated.toString()}");
 
   DateTime now = new DateTime.now();
   final _ = await userDoc.collection('entries').doc(docId).set({
     'title': title,
     'content': content,
-    'dateCreated': DateTime(now.year, now.month, now.day).toString(),
-    'dateLastModified': DateTime(now.year, now.month, now.day).toString(),
+    'dateCreated': dateCreated.toString(),
+    'dateLastModified': now.toString(),
     'mood': mood,
     'images': imagesURLs,
     'docId': docId
@@ -108,14 +109,17 @@ Future<DocumentSnapshot> getEntry(String entryId) async {
 }
 
 Future<void> editEntry(String entryId, String title, String content,
-    String mood, List<String> images) async {
+    String mood, List<String> images, DateTime dateCreated) async {
   List<String> imagesURLs;
   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
   DateTime now = new DateTime.now();
+  print("Editing: dc = ${dateCreated.toString()}");
+
   Future<void> _ = userDoc.collection('entries').doc(entryId).update({
     'title': title,
     'content': content,
-    'dateLastModified': DateTime(now.year, now.month, now.day).toString(),
+    'dateCreated':dateCreated.toString(),
+    'dateLastModified': now.toString(),
     'mood': mood,
     'images': imagesURLs,
   });

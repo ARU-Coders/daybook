@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:group_button/group_button.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class CreateEntryScreen extends StatefulWidget {
   @override
@@ -28,6 +29,9 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   TextEditingController contentController = TextEditingController();
   String documentId;
   DocumentSnapshot previousSnapshot;
+  DateTime dateCreated = DateTime.now();
+  TimeOfDay time =TimeOfDay.fromDateTime(DateTime.now());
+
   final List<String> menuItems = <String>[
     'Add Images',
     'Add to Journey',
@@ -67,6 +71,30 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
             )) ??
             false
         : true;
+  }
+
+    _pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(DateTime.now().year - 5),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: dateCreated,
+    );
+
+    if (date != null) {
+      TimeOfDay t = await showTimePicker(context: context, initialTime: time);
+
+      if (t != null) {
+        dateCreated = date;
+        time = t;
+        print(date);
+        print(t);
+        setState(() {
+          dateCreated = date;
+          time = t;
+        });
+      }
+    }
   }
 
   Future<List<String>> _selectImages() async {
@@ -128,7 +156,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       contentController.text = arguments[0]['content'];
       documentId = arguments[0].id;
       isEditing = true;
-
+      dateCreated = DateTime.parse(arguments[0]['dateCreated']);
+      time = TimeOfDay.fromDateTime(dateCreated);
       previousSnapshot = arguments[0];
       int idx = 0;
       for (var value in moodMap.values) {
@@ -144,30 +173,38 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Create Entry",
+            isEditing?"Edit Entry":"Create Entry",
           ),
           leading: IconButton(
             icon: Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 if (arguments.length != 0) {
+                  DateTime dateAndTimeCreated = DateTime(dateCreated.year, dateCreated.month,
+                      dateCreated.day, time.hour, time.minute);
                   editEntry(
                       arguments[0].id,
                       titleController.text,
                       contentController.text,
                       moodMap[selectedMoods[0]],
-                      selectedImages);
+                      selectedImages,
+                      dateAndTimeCreated);
                   DocumentSnapshot updatedDocumentSnapshot =
                       await previousSnapshot.reference.get();
                   Navigator.popAndPushNamed(context, '/displayEntry',
                       arguments: [updatedDocumentSnapshot]);
                   // Navigator.pop(context);
                 } else {
+                  DateTime dateAndTimeCreated = DateTime(dateCreated.year, dateCreated.month,
+                      dateCreated.day, time.hour, time.minute);
+
                   DocumentReference docRef = await createEntry(
                       titleController.text,
                       contentController.text,
                       moodMap[selectedMoods[0]],
-                      selectedImages);
+                      selectedImages,
+                      dateAndTimeCreated
+                      );
                   DocumentSnapshot documentSnapshot = await docRef.get();
                   Navigator.popAndPushNamed(context, '/displayEntry',
                       arguments: [documentSnapshot]);
@@ -203,49 +240,79 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                             height: 25.0,
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                             child: Column(children: [
                               _moodBar(),
-                              SizedBox(
-                                height: 25.0,
+                              SizedBox(height: 15),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    child: Chip(
+                                      label: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 5),
+                                        child: Text(
+                                          "${DateFormat.yMMMMd().format(dateCreated)}  ${time.format(context)}",
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ),
+                                      avatar: Icon(Icons.calendar_today_outlined),
+                                      backgroundColor: Color(0xffffe9b3),
+                                    ),
+                                    onTap: _pickDate
+                                    ,
+                                  ),
+                                ],
                               ),
-                              TextFormField(
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Times New Roman"),
-                                controller: titleController,
-                                decoration: InputDecoration(hintText: 'Title'),
-                                autofocus: false,
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Title cannot be empty !';
-                                  }
-                                  return null;
-                                },
+                              SizedBox(
+                                height: 35.0,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal:15.0),
+                                child: TextFormField(
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Times New Roman"),
+                                  controller: titleController,
+                                  decoration: InputDecoration(hintText: 'Title'),
+                                  autofocus: false,
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Title cannot be empty !';
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ), // name
 
                               SizedBox(
                                 height: 35.0,
                               ),
-                              TextFormField(
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                    fontFamily: "Times New Roman"),
-                                controller: contentController,
-                                minLines: 5,
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                decoration: InputDecoration(
-                                    hintText: 'Write something here !'),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Content cannot be empty !';
-                                  }
-                                  return null;
-                                },
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal:15.0),
+                                child: TextFormField(
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 18,
+                                      fontFamily: "Times New Roman"),
+                                  controller: contentController,
+                                  minLines: 5,
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  decoration: InputDecoration(
+                                      hintText: 'Write something here !'),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Content cannot be empty !';
+                                    }
+                                    return null;
+                                  },
+                                ),
                               ),
                               SizedBox(
                                 height: 25.0,

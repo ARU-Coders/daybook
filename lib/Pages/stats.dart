@@ -11,24 +11,27 @@ class StatsScreen extends StatefulWidget {
 class _StatsScreenState extends State<StatsScreen> {
   @override
   Widget build(BuildContext context) {
-    return (Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Tab Stats !"),
-        SizedBox(height: 15),
-        RaisedButton(
-          onPressed: () {
-            final provider =
-                Provider.of<GoogleSignInProvider>(context, listen: false);
-            provider.logout();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StartPage()),
-            );
-          },
-          child: Text('Logout'),
-        )
-      ],
-    ));
+    return Center(
+      child: (Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Stats", style: TextStyle(fontSize: 25),),
+          SizedBox(height: 15),
+          RaisedButton(
+            color:  Color(0xfffdefcc),
+            onPressed: () {
+              final provider =
+                  Provider.of<GoogleSignInProvider>(context, listen: false);
+              provider.logout();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StartPage()),
+              );
+            },
+            child: Text('Logout'),
+          )
+        ],
+      )),
+    );
   }
 }

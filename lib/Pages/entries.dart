@@ -10,13 +10,11 @@ class EntriesScreen extends StatefulWidget {
 }
 
 class _EntriesScreenState extends State<EntriesScreen> {
-  final List<int> colorCodes = <int>[400, 300, 200];
-
   final Map<String, Color> colorMoodMap = {
-    "Terrible": Color(0xffffa194), //red
-    "Bad": Color(0xffa3a8b8), //grey
-    "Neutral": Color(0xdaffffff), //white
-    "Good": Color(0xfffdefcc), //yellow
+    "Terrible": Color(0xffa3a8b8), //darkgrey
+    "Bad": Color(0xffcbcbcb), //grey
+    "Neutral": Color(0xfffdefcc), //yellow
+    "Good": Color(0xffffa194), //red
     "Wonderful": Color(0xffadd2ff) //blue
   };
 
@@ -24,7 +22,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        // color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
@@ -125,7 +123,7 @@ class EntryCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 200,
+                      width: 220,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -198,9 +196,7 @@ class EntryCard extends StatelessWidget {
                         ),
                         onTap: () {
                           Navigator.pushNamed(context, '/createEntry',
-                              arguments: [
-                                documentSnapshot
-                              ]);
+                              arguments: [documentSnapshot]);
                         },
                       ),
                     ]),
@@ -221,34 +217,40 @@ class EntryCard extends StatelessWidget {
     );
   }
 
-  Future buildDeleteDialog(BuildContext context, DocumentSnapshot documentSnapshot) {
+  Future buildDeleteDialog(
+      BuildContext context, DocumentSnapshot documentSnapshot) {
     return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Text("Detele Entry ?"),
-          content: Text(
-              "This will delete the Entry permanently."),
-          actions: <Widget>[
-            Row(
-              children: [
-                FlatButton(
-                  onPressed: () {
-                    deleteEntry(documentSnapshot);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Delete",style: TextStyle(color: Colors.red,fontSize: 14),),
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text("Detele Entry ?"),
+        content: Text("This will delete the Entry permanently."),
+        actions: <Widget>[
+          Row(
+            children: [
+              FlatButton(
+                onPressed: () {
+                  deleteEntry(documentSnapshot);
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "Delete",
+                  style: TextStyle(color: Colors.red, fontSize: 15),
                 ),
-                FlatButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("Cancel",style: TextStyle(color: Colors.green, fontSize: 16),),
+              ),
+              FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.green, fontSize: 15),
                 ),
-              ],
-            ),
-          ],
-        ),
-      );
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

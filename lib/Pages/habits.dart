@@ -11,24 +11,27 @@ class HabitsScreen extends StatefulWidget {
 class _HabitsScreenState extends State<HabitsScreen> {
   @override
   Widget build(BuildContext context) {
-    return (Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Tab Habits !"),
-        SizedBox(height: 15),
-        RaisedButton(
-          onPressed: () {
-            final provider =
-                Provider.of<GoogleSignInProvider>(context, listen: false);
-            provider.logout();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StartPage()),
-            );
-          },
-          child: Text('Logout'),
-        )
-      ],
-    ));
+    return Center(
+      child: (Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Habits", style: TextStyle(fontSize: 25),),
+          SizedBox(height: 15),
+          RaisedButton(
+            color:  Color(0xfffdefcc),
+            onPressed: () {
+              final provider =
+                  Provider.of<GoogleSignInProvider>(context, listen: false);
+              provider.logout();
+              Navigator.popAndPushNamed(
+                context,
+                '/start',
+              );
+            },
+            child: Text('Logout'),
+          )
+        ],
+      )),
+    );
   }
 }

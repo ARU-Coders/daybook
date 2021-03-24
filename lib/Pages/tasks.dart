@@ -105,13 +105,13 @@ class _TasksScreenState extends State<TasksScreen> {
                                                   deleteTask(ds);
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 14),),
+                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 15),),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 16),),
+                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 15),),
                                               ),
                                             ],
                                           ),
@@ -257,13 +257,13 @@ class _MyDialogState extends State<MyDialog> {
                   //Clear text controller values after saving the task.
                 }
               },
-              child: Text("Add Task"),
+              child: Text("Add Task", style: TextStyle(fontSize: 15),),
             ),
             FlatButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Cancel"),
+              child: Text("Cancel", style: TextStyle(fontSize: 15),),
             ),
           ],
         ),

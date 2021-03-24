@@ -74,13 +74,13 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 14),),
+                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 15),),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 16),),
+                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 15),),
                                               ),
                                             ],
                                           ),

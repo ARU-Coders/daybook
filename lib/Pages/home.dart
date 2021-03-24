@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     StatsScreen()
   ];
   final _title = ["My Journeys", "My Habits", "Entries", "My Tasks", "Stats"];
-  int _currentTab = 0;
+  int _currentTab = 2;
   @override
   Widget build(BuildContext context) {
     // curUser = await getUserInfo();
@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage> {
           child: _tabs[_currentTab],
         ),
         bottomNavigationBar: CurvedNavigationBar(
+          index: _currentTab,
           key: _bottomNavigationKey,
           color: Color(0xDAFFD1DC),
           backgroundColor: Color(0xffd68598),

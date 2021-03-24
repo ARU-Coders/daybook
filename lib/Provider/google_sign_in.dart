@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+// import 'package:daybook/Services/auth_service.dart';
 /*
 GET https://people.googleapis.com/v1/people/me?personFields=genders%2Cbirthdays&key=[YOUR_API_KEY] HTTP/1.1
 
@@ -64,6 +64,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
       if (doc != null) {
         await FirebaseAuth.instance.signInWithCredential(credential);
+        // setUserEmail(user.email);
       }
       isSigningIn = false;
     }
@@ -135,6 +136,8 @@ class GoogleSignInProvider extends ChangeNotifier {
 
         //Save user details
         addUserToFirestore(user, gender, dob);
+        // setUserEmail(user.email);
+
       } else {
         //Todo:
         //Handle registering with existing email address
@@ -164,6 +167,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   void logout() async {
     //Handle email logout separately
+    // setUserEmail("");
     await googleSignInForLogin.disconnect();
     await _firebaseAuth.signOut();
   }

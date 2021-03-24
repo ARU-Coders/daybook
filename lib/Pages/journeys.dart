@@ -123,13 +123,13 @@ class JourneyCard extends StatelessWidget {
                                 deleteJourney(documentSnapshot);
                                 Navigator.pop(context);
                               },
-                              child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 14),),
+                              child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 15),),
                             ),
                             FlatButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 16),),
+                              child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 15),),
                             ),
                           ],
                         ),
