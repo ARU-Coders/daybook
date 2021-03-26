@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,6 +15,10 @@ class CreateEntryScreen extends StatefulWidget {
 
 class _CreateEntryScreenState extends State<CreateEntryScreen> {
   List<String> selectedImages = [];
+
+  List<String> deletedImages = [];
+  List<String> previousImages = [];
+
   final Map<String, String> moodMap = {
     "😭": "Terrible",
     "😥": "Bad",
@@ -21,16 +26,17 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     "😃": "Good",
     "😁": "Wonderful"
   };
+
   final List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
   List<String> selectedMoods = ["🙂"];
   bool isEditing = false;
-  
+
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   String documentId;
   DocumentSnapshot previousSnapshot;
   DateTime dateCreated = DateTime.now();
-  TimeOfDay time =TimeOfDay.fromDateTime(DateTime.now());
+  TimeOfDay time = TimeOfDay.fromDateTime(DateTime.now());
 
   final List<String> menuItems = <String>[
     'Add Images',
@@ -49,7 +55,9 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
               context: context,
               builder: (context) => new AlertDialog(
                 title: new Text('Hold up !'),
-                content: new Text(isEditing?'Do you want to discard the changes in this entry ?':'Do you want to discard this entry ?'),
+                content: new Text(isEditing
+                    ? 'Do you want to discard the changes in this entry ?'
+                    : 'Do you want to discard this entry ?'),
                 actions: <Widget>[
                   new FlatButton(
                     onPressed: () => Navigator.of(context).pop(false),
@@ -73,7 +81,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
         : true;
   }
 
-    _pickDate() async {
+  _pickDate() async {
     DateTime date = await showDatePicker(
       context: context,
       firstDate: DateTime(DateTime.now().year - 5),
@@ -98,8 +106,6 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   }
 
   Future<List<String>> _selectImages() async {
-    List<String> selectedImages = [];
-    print("abc");
     FilePickerResult result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
 
@@ -159,6 +165,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       dateCreated = DateTime.parse(arguments[0]['dateCreated']);
       time = TimeOfDay.fromDateTime(dateCreated);
       previousSnapshot = arguments[0];
+      previousImages = List<String>.from(arguments[0]['images']);
       int idx = 0;
       for (var value in moodMap.values) {
         if (value == arguments[0]['mood']) {
@@ -173,21 +180,27 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            isEditing?"Edit Entry":"Create Entry",
+            isEditing ? "Edit Entry" : "Create Entry",
           ),
           leading: IconButton(
             icon: Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState.validate()) {
                 if (arguments.length != 0) {
-                  DateTime dateAndTimeCreated = DateTime(dateCreated.year, dateCreated.month,
-                      dateCreated.day, time.hour, time.minute);
-                  editEntry(
+                  DateTime dateAndTimeCreated = DateTime(
+                      dateCreated.year,
+                      dateCreated.month,
+                      dateCreated.day,
+                      time.hour,
+                      time.minute);
+                  await editEntry(
                       arguments[0].id,
                       titleController.text,
                       contentController.text,
                       moodMap[selectedMoods[0]],
                       selectedImages,
+                      previousImages,
+                      deletedImages,
                       dateAndTimeCreated);
                   DocumentSnapshot updatedDocumentSnapshot =
                       await previousSnapshot.reference.get();
@@ -195,16 +208,19 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                       arguments: [updatedDocumentSnapshot]);
                   // Navigator.pop(context);
                 } else {
-                  DateTime dateAndTimeCreated = DateTime(dateCreated.year, dateCreated.month,
-                      dateCreated.day, time.hour, time.minute);
+                  DateTime dateAndTimeCreated = DateTime(
+                      dateCreated.year,
+                      dateCreated.month,
+                      dateCreated.day,
+                      time.hour,
+                      time.minute);
 
                   DocumentReference docRef = await createEntry(
                       titleController.text,
                       contentController.text,
                       moodMap[selectedMoods[0]],
                       selectedImages,
-                      dateAndTimeCreated
-                      );
+                      dateAndTimeCreated);
                   DocumentSnapshot documentSnapshot = await docRef.get();
                   Navigator.popAndPushNamed(context, '/displayEntry',
                       arguments: [documentSnapshot]);
@@ -251,7 +267,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                                   GestureDetector(
                                     child: Chip(
                                       label: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5),
                                         child: Text(
                                           "${DateFormat.yMMMMd().format(dateCreated)}  ${time.format(context)}",
                                           style: TextStyle(
@@ -259,11 +276,11 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                                           ),
                                         ),
                                       ),
-                                      avatar: Icon(Icons.calendar_today_outlined),
+                                      avatar:
+                                          Icon(Icons.calendar_today_outlined),
                                       backgroundColor: Color(0xffffe9b3),
                                     ),
-                                    onTap: _pickDate
-                                    ,
+                                    onTap: _pickDate,
                                   ),
                                 ],
                               ),
@@ -271,7 +288,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                                 height: 35.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:15.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
                                 child: TextFormField(
                                   style: TextStyle(
                                       color: Colors.black87,
@@ -279,7 +297,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                                       fontWeight: FontWeight.w500,
                                       fontFamily: "Times New Roman"),
                                   controller: titleController,
-                                  decoration: InputDecoration(hintText: 'Title'),
+                                  decoration:
+                                      InputDecoration(hintText: 'Title'),
                                   autofocus: false,
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -294,7 +313,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                                 height: 35.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal:15.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
                                 child: TextFormField(
                                   style: TextStyle(
                                       color: Colors.black87,
@@ -317,7 +337,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                               SizedBox(
                                 height: 25.0,
                               ),
-                              selectedImages.length != 0
+                              (selectedImages.length != 0 ||
+                                      previousImages.length != 0)
                                   ? _imagesGrid()
                                   : SizedBox(
                                       height: 1,
@@ -336,7 +357,16 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     );
   }
 
+  List<dynamic> getImageIndex(String url) {
+    if (selectedImages.indexOf(url) != -1) {
+      return [selectedImages.indexOf(url), false];
+    }
+    return [previousImages.indexOf(url), true];
+  }
+
   Widget _imagesGrid() {
+    List<String> allImages = previousImages + selectedImages;
+
     return Container(
       height: 140,
       child: GridView.count(
@@ -344,36 +374,52 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
         crossAxisSpacing: 2,
         mainAxisSpacing: 4,
         crossAxisCount: 1,
-        children: List.generate(selectedImages.length, (index) {
-          return Column(
-            children: <Widget>[
-              GestureDetector(
-                onLongPress: () {
-                  print("Long Press Registered !!!");
-                  setState(() {
-                    selectedImages.removeAt(index);
-                  });
-                },
-                onTap: () {
-                  print("Tap registered !!");
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return EnlargedImage(selectedImages[index], isEditing);
-                  }));
-                },
-                child: Container(
-                    height: 130,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ClipRRect(
-                      child: Image.file(File(selectedImages[index]),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(10),
-                    )),
-              ),
-            ],
-          );
-        }),
+        children: List.generate(
+          allImages.length,
+          (index) {
+            List<dynamic> lst = getImageIndex(allImages[index]);
+            final idx = lst[0];
+            final isFirebaseImage = lst[1];
+            return Column(
+              children: <Widget>[
+                GestureDetector(
+                  onLongPress: () {
+                    print("Long Press Registered !!!");
+                    setState(() {
+                      if (isFirebaseImage) {
+                        deletedImages.add(previousImages[idx]);
+                        previousImages.removeAt(idx);
+                      } else {
+                        selectedImages.removeAt(idx);
+                      }
+                    });
+                  },
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      return EnlargedImage(allImages[index], isFirebaseImage);
+                    }));
+                  },
+                  child: Container(
+                      height: 130,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(
+                        child: isFirebaseImage
+                            ? CachedNetworkImage(
+                                imageUrl: allImages[index],
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              )
+                            : Image.file(File(allImages[index]),
+                                fit: BoxFit.cover),
+                        borderRadius: BorderRadius.circular(10),
+                      )),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -3,46 +3,23 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'auth_service.dart';
 import 'dart:io';
 
-// Future<String> uploadImage(Reference ref, File _image) async {
-//   String url;
-//   UploadTask uploadTask = ref.putFile(_image);
-//   uploadTask.whenComplete(() async {
-//     url = await ref.getDownloadURL();
-//     print("Function wala url :" + url.toString());
-//     return url;
-//   });
-//   return '';
-// }
-
-Future<List<String>> uploadFiles(List<String> _images) async {
-  List<File> _imageFiles = _images.map((path) => File(path)).toList();
-  List<String> imagesUrls = [];
-  // print("Starting the upload...\n");
-  // print("imagefiles" + _imageFiles.toString());
-
-  String id = AuthService.getUserEmail();
-  _imageFiles.forEach((_image) async {
-    String imageRef = id + '/' + _image.path.split('/').last;
-    // print(imageRef);
-    Reference ref = FirebaseStorage.instance.ref(imageRef);
-    // print("reference" + ref.toString());
-
-    // url = await uploadImage(ref, _image);
-    // print("Returned url : " + url.toString());
-    // imagesUrls.add(url);
-
-    UploadTask uploadTask = ref.putFile(_image);
-    // uploadTask.whenComplete(() async{
-    uploadTask.then((res) async {
-      // String url = await ref.getDownloadURL();
-      String url = await res.ref.getDownloadURL();
-      //     print(url);
-      imagesUrls.add(url);
-    }).catchError((onError) {
-      print(onError);
-    });
+Future<void> deleteImages(List<String> deleteImages) async {
+  //Delete everu filein List from Firebase Storage
+  deleteImages.forEach((url) async {
+    //Get filename (with extension) from download url
+    String fileName = url
+        .replaceAll("/o/", "*")
+        .replaceAll("?", "*")
+        .split("*")[1]
+        .split("%2F")[1];
+    Reference storageReferance = FirebaseStorage.instance.ref();
+    storageReferance
+        .child(AuthService.getUserEmail())
+        .child(fileName)
+        .delete()
+        .then((_) => print('Successfully deleted $fileName storage item'))
+        .catchError((e) => print("Delete nai hua because: " + e.toString()));
   });
-  return imagesUrls;
 }
 
 Future<DocumentReference> createEntry(String title, String content, String mood,
@@ -53,7 +30,6 @@ Future<DocumentReference> createEntry(String title, String content, String mood,
   DocumentReference randomDoc = userDoc.collection('entries').doc();
   String docId = randomDoc.id;
 
-  print("Ye rahe $images");
   List<String> imagesURLs = [];
 
   if (images.length > 0) {
@@ -77,7 +53,6 @@ Future<DocumentReference> createEntry(String title, String content, String mood,
   } else {
     imagesURLs = [];
   }
-  print("Creating: dc = ${dateCreated.toString()}");
 
   DateTime now = new DateTime.now();
   final _ = await userDoc.collection('entries').doc(docId).set({
@@ -112,13 +87,42 @@ Future<DocumentSnapshot> getEntry(String entryId) async {
   return doc;
 }
 
-Future<void> editEntry(String entryId, String title, String content,
-    String mood, List<String> images, DateTime dateCreated) async {
+Future<void> editEntry(
+    String entryId,
+    String title,
+    String content,
+    String mood,
+    List<String> selectedImages,
+    List<String> previousImagesURLs,
+    List<String> deletedImages,
+    DateTime dateCreated) async {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
-  List<String> imagesURLs;
-  imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
+  List<String> selectedImagesURLs = [];
+  if (selectedImages.length > 0) {
+    String id = email;
+
+    await Future.wait(
+        selectedImages.map((String _image) async {
+          String imageRef = id + '/' + _image.split('/').last;
+          Reference ref = FirebaseStorage.instance.ref(imageRef);
+          UploadTask uploadTask = ref.putFile(File(_image));
+
+          TaskSnapshot _ = await uploadTask.whenComplete(() async {
+            String downloadUrl = await ref.getDownloadURL();
+            selectedImagesURLs.add(downloadUrl);
+          });
+        }),
+        eagerError: true,
+        cleanUp: (_) {
+          print('eager cleaned up');
+        });
+  } else {
+    selectedImagesURLs = [];
+  }
+  List<String> imagesURLs = selectedImagesURLs + previousImagesURLs;
+
   DateTime now = new DateTime.now();
   print("Editing: dc = ${dateCreated.toString()}");
 
@@ -130,9 +134,12 @@ Future<void> editEntry(String entryId, String title, String content,
     'mood': mood,
     'images': imagesURLs,
   });
+  deletedImages.length > 0 ? deleteImages(deletedImages) : null;
 }
 
 void deleteEntry(DocumentSnapshot documentSnapshot) async {
+  await deleteImages(List<String>.from(documentSnapshot['images']));
+
   await FirebaseFirestore.instance
       .runTransaction((Transaction myTransaction) async {
     myTransaction.delete(documentSnapshot.reference);
