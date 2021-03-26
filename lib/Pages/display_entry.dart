@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+
 class DisplayEntryScreen extends StatefulWidget {
   @override
   _DisplayEntryScreenState createState() => _DisplayEntryScreenState();
@@ -21,18 +22,18 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
   final Map<String, String> moodText = {
     "Terrible": "Terrible 😭",
     "Bad": "Bad 😥",
-    "Neutral": "Neutral 🙂", 
-    "Good": "Good 😃", 
+    "Neutral": "Neutral 🙂",
+    "Good": "Good 😃",
     "Wonderful": "Wonderful 😁"
   };
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).padding;
+    // double height = MediaQuery.of(context).size.height;
+    // var padding = MediaQuery.of(context).padding;
     var appbarHeight = AppBar().preferredSize.height;
-    double newheight = height - padding.top - padding.bottom - appbarHeight;
+    // double newheight = height - padding.top - padding.bottom - appbarHeight;
 
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
@@ -226,7 +227,8 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                             ),
                             Chip(
                               label: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
                                 child: Text(
                                   "${DateFormat.yMMMMd().format(DateTime.parse(documentSnapshot['dateCreated']))}  ${DateFormat.jm().format(DateTime.parse(documentSnapshot['dateCreated']))}",
                                   style: TextStyle(

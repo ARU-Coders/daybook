@@ -1,4 +1,4 @@
-// import 'package:daybook/Services/auth_service.dart';
+import 'package:daybook/Services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,6 +24,7 @@ class EmailSignInProvider extends ChangeNotifier {
         email: email, password: password);
     print(user);
     // setUserEmail(email);
+    final _ = AuthService.updateEmail();
     return;
   }
 
@@ -45,6 +46,7 @@ class EmailSignInProvider extends ChangeNotifier {
       });
       print(query);
       // setUserEmail(email);
+      final _ = AuthService.updateEmail();
     }
   }
 

@@ -1,4 +1,3 @@
-import 'package:daybook/Pages/signup.dart';
 import 'package:daybook/Pages/signup_details.dart';
 import 'package:daybook/Pages/start.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:daybook/Widgets/google_login_button_widget.dart';
 import 'package:daybook/provider/email_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -34,9 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      
       fit: StackFit.expand,
-      
       children: [
         // CustomPaint(painter: BackgroundPainter()),
         // buildSignUp(context),
@@ -143,41 +139,37 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 25),
               Container(
                 padding: EdgeInsets.all(4),
-                child: 
-                  RaisedButton(
-                      child: Text(
-                        "Login",
+                child: RaisedButton(
+                    child: Text("Login",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            
-                            fontSize: 20,
-                            color: Color(0xffd68598),)
-                      ),
-                      shape: StadiumBorder(),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                      highlightElevation: 1.5,
-                      highlightColor: Color(0xDAFFD1DC),
-                      color: Color(0xffFFD1DC ),
-                      textColor: Colors.black,
-                      // icon: FaIcon(
-                      //   FontAwesomeIcons.signInAlt,
-                      //   color: Colors.black87,
-                      //   size: 18,
-                      // ),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          final provider = Provider.of<EmailSignInProvider>(
-                              context,
-                              listen: false);
-                          provider.login(
-                              emailController.text, passwordController.text);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => StartPage()));
-                        }
-                      }),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Color(0xffd68598),
+                        )),
+                    shape: StadiumBorder(),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                    highlightElevation: 1.5,
+                    highlightColor: Color(0xDAFFD1DC),
+                    color: Color(0xffFFD1DC),
+                    textColor: Colors.black,
+                    // icon: FaIcon(
+                    //   FontAwesomeIcons.signInAlt,
+                    //   color: Colors.black87,
+                    //   size: 18,
+                    // ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        final provider = Provider.of<EmailSignInProvider>(
+                            context,
+                            listen: false);
+                        provider.login(
+                            emailController.text, passwordController.text);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StartPage()));
+                      }
+                    }),
                 // ),
               ),
               SizedBox(height: 25),

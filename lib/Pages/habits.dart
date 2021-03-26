@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:daybook/Pages/start.dart';
 
 class HabitsScreen extends StatefulWidget {
   @override
@@ -15,10 +14,13 @@ class _HabitsScreenState extends State<HabitsScreen> {
       child: (Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Habits", style: TextStyle(fontSize: 25),),
+          Text(
+            "Habits",
+            style: TextStyle(fontSize: 25),
+          ),
           SizedBox(height: 15),
           RaisedButton(
-            color:  Color(0xfffdefcc),
+            color: Color(0xfffdefcc),
             onPressed: () {
               final provider =
                   Provider.of<GoogleSignInProvider>(context, listen: false);

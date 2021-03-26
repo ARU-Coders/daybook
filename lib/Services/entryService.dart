@@ -3,11 +3,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'auth_service.dart';
 import 'dart:io';
 
-String email = getUserEmail();
-
-DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('users').doc(email);
-
 // Future<String> uploadImage(Reference ref, File _image) async {
 //   String url;
 //   UploadTask uploadTask = ref.putFile(_image);
@@ -25,7 +20,7 @@ Future<List<String>> uploadFiles(List<String> _images) async {
   // print("Starting the upload...\n");
   // print("imagefiles" + _imageFiles.toString());
 
-  String id = email;
+  String id = AuthService.getUserEmail();
   _imageFiles.forEach((_image) async {
     String imageRef = id + '/' + _image.path.split('/').last;
     // print(imageRef);
@@ -50,8 +45,11 @@ Future<List<String>> uploadFiles(List<String> _images) async {
   return imagesUrls;
 }
 
-Future<DocumentReference> createEntry(
-    String title, String content, String mood, List<String> images, DateTime dateCreated) async {
+Future<DocumentReference> createEntry(String title, String content, String mood,
+    List<String> images, DateTime dateCreated) async {
+  String email = AuthService.getUserEmail();
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   DocumentReference randomDoc = userDoc.collection('entries').doc();
   String docId = randomDoc.id;
 
@@ -96,6 +94,9 @@ Future<DocumentReference> createEntry(
 }
 
 Stream<QuerySnapshot> getEntries() {
+  String email = AuthService.getUserEmail();
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   Stream<QuerySnapshot> query = userDoc
       .collection('entries')
       .orderBy('dateCreated', descending: true)
@@ -104,12 +105,18 @@ Stream<QuerySnapshot> getEntries() {
 }
 
 Future<DocumentSnapshot> getEntry(String entryId) async {
+  String email = AuthService.getUserEmail();
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   DocumentSnapshot doc = await userDoc.collection('entries').doc(entryId).get();
   return doc;
 }
 
 Future<void> editEntry(String entryId, String title, String content,
     String mood, List<String> images, DateTime dateCreated) async {
+  String email = AuthService.getUserEmail();
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   List<String> imagesURLs;
   imagesURLs = images.length > 0 ? await uploadFiles(images) : [];
   DateTime now = new DateTime.now();
@@ -118,7 +125,7 @@ Future<void> editEntry(String entryId, String title, String content,
   Future<void> _ = userDoc.collection('entries').doc(entryId).update({
     'title': title,
     'content': content,
-    'dateCreated':dateCreated.toString(),
+    'dateCreated': dateCreated.toString(),
     'dateLastModified': now.toString(),
     'mood': mood,
     'images': imagesURLs,

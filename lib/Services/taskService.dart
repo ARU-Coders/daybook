@@ -2,12 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_service.dart';
 // import 'dart:io';
 
-String email = getUserEmail();
-
-DocumentReference userDoc =
-    FirebaseFirestore.instance.collection('users').doc(email);
-
 Stream<QuerySnapshot> getTasks() {
+  String email = AuthService.getUserEmail();
+
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   Stream<QuerySnapshot> query = userDoc
       .collection('tasks')
       .orderBy('isChecked')
@@ -17,11 +16,19 @@ Stream<QuerySnapshot> getTasks() {
 }
 
 Future<DocumentSnapshot> getTask(String taskId) async {
+  String email = AuthService.getUserEmail();
+
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   DocumentSnapshot doc = await userDoc.collection('tasks').doc(taskId).get();
   return doc;
 }
 
 Future<DocumentReference> createTask(String title, DateTime dueDate) async {
+  String email = AuthService.getUserEmail();
+
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   DocumentReference randomDoc = userDoc.collection('tasks').doc();
   String docId = randomDoc.id;
 
@@ -40,6 +47,10 @@ Future<DocumentReference> createTask(String title, DateTime dueDate) async {
 }
 
 Future<void> editTask(String taskId, String title, DateTime dueDate) async {
+  String email = AuthService.getUserEmail();
+
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   DateTime now = new DateTime.now();
   Future<void> _ = userDoc.collection('tasks').doc(taskId).update({
     'title': title,
@@ -49,6 +60,10 @@ Future<void> editTask(String taskId, String title, DateTime dueDate) async {
 }
 
 void onCheckTask(String taskId, bool checkedValue) {
+  String email = AuthService.getUserEmail();
+
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
   userDoc.collection('tasks').doc(taskId).update({
     'isChecked': checkedValue,
   });

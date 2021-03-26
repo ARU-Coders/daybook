@@ -211,7 +211,10 @@ class _MyDialogState extends State<MyDialog> {
         'Don\'t forget to complete your task on time !',
         scheduledNotificationDateTime,
         platformChannelSpecifics,
-        payload: notifId.toString());
+        payload: notifId.toString(),
+      
+        
+        );
   }
 
   @override

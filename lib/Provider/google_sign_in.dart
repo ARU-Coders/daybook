@@ -1,6 +1,6 @@
+import 'package:daybook/Services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
@@ -64,7 +64,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
       if (doc != null) {
         await FirebaseAuth.instance.signInWithCredential(credential);
-        // setUserEmail(user.email);
+        final _ = AuthService.updateEmail();
       }
       isSigningIn = false;
     }
@@ -136,8 +136,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
         //Save user details
         addUserToFirestore(user, gender, dob);
-        // setUserEmail(user.email);
-
+        final _ = AuthService.updateEmail();
       } else {
         //Todo:
         //Handle registering with existing email address

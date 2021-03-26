@@ -12,10 +12,10 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).padding;
+    // double height = MediaQuery.of(context).size.height;
+    // var padding = MediaQuery.of(context).padding;
     var appbarHeight = AppBar().preferredSize.height;
-    double newheight = height - padding.top - padding.bottom - appbarHeight;
+    // double newheight = height - padding.top - padding.bottom - appbarHeight;
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     DocumentSnapshot documentSnapshot = arguments[0];
@@ -74,13 +74,23 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 15),),
+                                                child: Text(
+                                                  "Delete",
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 15),
+                                                ),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 15),),
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontSize: 15),
+                                                ),
                                               ),
                                             ],
                                           ),

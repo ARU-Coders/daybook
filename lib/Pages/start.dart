@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:daybook/provider/email_sign_in.dart';
-import 'package:daybook/Widgets/background_painter.dart';
 import 'package:provider/provider.dart';
 import 'package:daybook/Pages/home.dart';
 import 'login.dart';
