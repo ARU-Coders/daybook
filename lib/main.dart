@@ -1,4 +1,5 @@
 import 'package:daybook/Pages/create_entry.dart';
+import 'package:daybook/Pages/create_habit.dart';
 import 'package:daybook/Pages/create_journey.dart';
 import 'package:daybook/Pages/display_entry.dart';
 import 'package:daybook/Pages/display_journey.dart';
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xffFFD1DC) // pink
           // Color(0xffd9dde9) --> grey
           // Color(0xff8ebbf2)--> blue
-          
+
           ),
       home: StartPage(),
       routes: <String, WidgetBuilder>{
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/home': (BuildContext context) => HomePage(),
         '/createEntry': (BuildContext context) => CreateEntryScreen(),
         '/createJourney': (BuildContext context) => CreateJourneyScreen(),
+        '/createHabit': (BuildContext context) => CreateHabitScreen(),
         '/displayEntry': (BuildContext context) => DisplayEntryScreen(),
         '/displayJourney': (BuildContext context) => DisplayJourneyScreen(),
         '/selectEntries': (BuildContext context) => SelectEntriesScreen(),
