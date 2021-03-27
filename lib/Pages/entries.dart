@@ -107,111 +107,117 @@ class EntryCard extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
       color: colorCodes[documentSnapshot['mood']],
       clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(17.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/displayEntry',
-                      arguments: [documentSnapshot]);
-                },
-                onLongPress: () {
-                  buildDeleteDialog(context, documentSnapshot);
-                },
-                child: Row(
-                  children: [
-                    Container(
-                      width: 200,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            documentSnapshot['title'],
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.fade,
-                            maxLines: 1,
-                          ),
-                          SizedBox(height: 6),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            child: Text(
-                              documentSnapshot['content'],
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black.withOpacity(0.6)),
-                              overflow: TextOverflow.fade,
-                              maxLines: 3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: (documentSnapshot['images'].length == 0 ||
-                                documentSnapshot['images'][0] == "")
-                            ? Image.asset(
-                                'assets/images/entry-placeholder.jpg',
-                                height: 75.0,
-                                width: 75.0,
-                              )
-                            : CachedNetworkImage(
-                                imageUrl: documentSnapshot['images'][0],
-
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                                // fit: BoxFit.cover,
-                                height: 75.0,
-                                width: 75.0,
-                              ),
-                      ),
-                    ),
-                  ],
-                )),
-            SizedBox(height: 20),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Container(
-                width: 60,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: InkWell(
+        onTap: () {
+          print("Tapped on an entry");
+        },
+        splashColor: Colors.white54,
+        child: Padding(
+          padding: const EdgeInsets.all(17.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/displayEntry',
+                        arguments: [documentSnapshot]);
+                  },
+                  onLongPress: () {
+                    buildDeleteDialog(context, documentSnapshot);
+                  },
+                  child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          buildDeleteDialog(context, documentSnapshot);
-                        },
-                        child: Icon(
-                          Icons.delete,
-                          size: 20,
+                      Container(
+                        width: 200,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              documentSnapshot['title'],
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                            ),
+                            SizedBox(height: 6),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                              child: Text(
+                                documentSnapshot['content'],
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black.withOpacity(0.6)),
+                                overflow: TextOverflow.fade,
+                                maxLines: 3,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      GestureDetector(
-                        child: Icon(
-                          Icons.edit,
-                          size: 20,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: (documentSnapshot['images'].length == 0 ||
+                                  documentSnapshot['images'][0] == "")
+                              ? Image.asset(
+                                  'assets/images/entry-placeholder.jpg',
+                                  height: 75.0,
+                                  width: 75.0,
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: documentSnapshot['images'][0],
+
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                  // fit: BoxFit.cover,
+                                  height: 75.0,
+                                  width: 75.0,
+                                ),
                         ),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/createEntry',
-                              arguments: [documentSnapshot]);
-                        },
                       ),
-                    ]),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text(
-                DateFormat.yMMMMd()
-                    .format(DateTime.parse(documentSnapshot['dateCreated'])),
-                style: TextStyle(
-                    fontSize: 15, color: Colors.black.withOpacity(0.6)),
-              ),
-            ]),
-          ],
+                    ],
+                  )),
+              SizedBox(height: 20),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Container(
+                  width: 60,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            buildDeleteDialog(context, documentSnapshot);
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            size: 20,
+                          ),
+                        ),
+                        GestureDetector(
+                          child: Icon(
+                            Icons.edit,
+                            size: 20,
+                          ),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/createEntry',
+                                arguments: [documentSnapshot]);
+                          },
+                        ),
+                      ]),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  DateFormat.yMMMMd()
+                      .format(DateTime.parse(documentSnapshot['dateCreated'])),
+                  style: TextStyle(
+                      fontSize: 15, color: Colors.black.withOpacity(0.6)),
+                ),
+              ]),
+            ],
+          ),
         ),
       ),
     );

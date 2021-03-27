@@ -115,7 +115,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                 child: Stack(children: [
               Column(children: [
                 Container(
-                    height: 200,
+                    // height: 200,
                     width: width,
                     decoration: new BoxDecoration(
                       color: colorMoodMap[documentSnapshot['mood']],
