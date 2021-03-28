@@ -13,6 +13,7 @@ Stream<QuerySnapshot> getHabits() {
 
 Future<DocumentReference> createHabit(String title, TimeOfDay reminder,
     {bool setReminder = true}) async {
+  int notifId = 0;
   String email = AuthService.getUserEmail();
 
   DocumentReference userDoc =
@@ -25,6 +26,14 @@ Future<DocumentReference> createHabit(String title, TimeOfDay reminder,
       reminder.hour.toString() + ":" + reminder.minute.toString();
 
   DateTime now = new DateTime.now();
+
+  DocumentReference query = userDoc.collection('habits').doc(docId);
+  if (setReminder) {
+    final notification = Notif.Notification();
+    notifId = await notification.scheduleNotificationForHabit(
+        reminder, title, "This is your daily reminder");
+  }
+
   final _ = await userDoc.collection('habits').doc(docId).set({
     'title': title,
     'dateCreated': now.toString(),
@@ -32,15 +41,9 @@ Future<DocumentReference> createHabit(String title, TimeOfDay reminder,
     'frequency': 'daily',
     'reminder': reminderTimString,
     'habitId': docId,
-    'daysComleted': []
+    'daysComleted': [],
+    'notifId': notifId
   });
-
-  DocumentReference query = userDoc.collection('habits').doc(docId);
-  if (setReminder) {
-    final notification = Notif.Notification();
-    notification.scheduleNotificationForHabit(
-        reminder, title, "This is your daily reminder");
-  }
   return query;
 }
 
@@ -61,6 +64,8 @@ Future<DocumentReference> markADone(String habitId) async {
 }
 
 void deleteHabit(DocumentSnapshot documentSnapshot) async {
+  final notification = Notif.Notification();
+  notification.cancelNotification(documentSnapshot['notifId']);
   await FirebaseFirestore.instance
       .runTransaction((Transaction myTransaction) async {
     myTransaction.delete(documentSnapshot.reference);

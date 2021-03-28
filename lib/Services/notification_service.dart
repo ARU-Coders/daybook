@@ -27,11 +27,11 @@ class Notification {
     await flutterLocalNotificationsPlugin.cancel(notifId);
   }
 
-  Future<void> scheduleNotificationForHabit(TimeOfDay scheduledNotificationTime,
+  Future<int> scheduleNotificationForHabit(TimeOfDay scheduledNotificationTime,
       String notifTitle, String notifSubtitle) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         '2', 'Habit', 'Reminders of Habit',
-        priority: Priority.Max);
+        importance: Importance.Max, priority: Priority.High);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
@@ -49,5 +49,7 @@ class Notification {
       platformChannelSpecifics,
       payload: notifId.toString(),
     );
+    print("Notif scheduled");
+    return notifId;
   }
 }
