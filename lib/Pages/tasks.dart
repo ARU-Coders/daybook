@@ -66,21 +66,24 @@ class _TasksScreenState extends State<TasksScreen> {
                           child: Column(children: [
                             GestureDetector(
                               child: CheckboxListTile(
-                                // checkColor: Colors.blue,
-                                // activeColor: Colors.red,
                                 title: Text(
                                   ds['title'],
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      decoration: ds['isChecked']? TextDecoration.lineThrough: null),
+                                      decoration: ds['isChecked']
+                                          ? TextDecoration.lineThrough
+                                          : null),
                                 ),
                                 subtitle: Padding(
                                   padding: const EdgeInsets.only(top: 6.0),
                                   child: Text(
                                     DateFormat.yMMMMd()
                                         .format(DateTime.parse(ds['dueDate'])),
-                                  style: TextStyle(decoration: ds['isChecked']? TextDecoration.lineThrough: null),
+                                    style: TextStyle(
+                                        decoration: ds['isChecked']
+                                            ? TextDecoration.lineThrough
+                                            : null),
                                   ),
                                 ),
                                 value: ds['isChecked'],
@@ -106,13 +109,23 @@ class _TasksScreenState extends State<TasksScreen> {
                                                   deleteTask(ds);
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 15),),
+                                                child: Text(
+                                                  "Delete",
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 15),
+                                                ),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 15),),
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontSize: 15),
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -163,15 +176,15 @@ class MyDialog extends StatefulWidget {
 
 class _MyDialogState extends State<MyDialog> {
   void initState() {
-  super.initState();
-  var initializationSettingsAndroid = AndroidInitializationSettings('logo');
-  var initializationSettingsIOs = IOSInitializationSettings();
-  var initSetttings = InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOs);
+    super.initState();
+    var initializationSettingsAndroid = AndroidInitializationSettings('logo');
+    var initializationSettingsIOs = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOs);
 
-  flutterLocalNotificationsPlugin.initialize(initSetttings,
-      onSelectNotification: onSelectNotification);
-}
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: onSelectNotification);
+  }
 
   int flag = 0;
   DateTime pickedDate;
@@ -179,19 +192,22 @@ class _MyDialogState extends State<MyDialog> {
   bool setReminder = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> cancelNotification(int notifId) async {
     await flutterLocalNotificationsPlugin.cancel(notifId);
   }
-  Future onSelectNotification(String notifId) async{
-  await cancelNotification(int.parse(notifId));
-  print("Notif canceled");
-  return "Notif canceled";
-  // return Navigator.pushNamed(context, '/start');
-}
 
-  Future<void> scheduleNotification(DateTime scheduledNotificationDateTime, String notifTitle) async {
+  Future onSelectNotification(String notifId) async {
+    await cancelNotification(int.parse(notifId));
+    print("Notif canceled");
+    return "Notif canceled";
+    // return Navigator.pushNamed(context, '/start');
+  }
+
+  Future<void> scheduleNotification(
+      DateTime scheduledNotificationDateTime, String notifTitle) async {
     // var scheduledNotificationDateTime =
     //     DateTime.now().add(Duration(seconds: 5));
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -206,15 +222,13 @@ class _MyDialogState extends State<MyDialog> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     int notifId = DateTime.now().millisecondsSinceEpoch % 10000;
     await flutterLocalNotificationsPlugin.schedule(
-        notifId,
-        notifTitle,
-        'Don\'t forget to complete your task on time !',
-        scheduledNotificationDateTime,
-        platformChannelSpecifics,
-        payload: notifId.toString(),
-      
-        
-        );
+      notifId,
+      notifTitle,
+      'Don\'t forget to complete your task on time !',
+      scheduledNotificationDateTime,
+      platformChannelSpecifics,
+      payload: notifId.toString(),
+    );
   }
 
   @override
@@ -251,56 +265,57 @@ class _MyDialogState extends State<MyDialog> {
               },
             ),
             Padding(
-                padding: EdgeInsets.fromLTRB(0, 30, 50, 5),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ListTile(
-                        title: Text(
-                        "Reminder",
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Times New Roman"),
-                        textAlign: TextAlign.start,
-                      ),
-                      trailing: Switch(  
-                        value: setReminder,
-                        inactiveTrackColor: Color(0xffc3cade),
-                        activeColor: Color(0xffadd2ff),
-                        onChanged: (value) {  
-                          setState(() {  
-                            setReminder = value;  
-                            print(setReminder);
-                          });  
-                        },  
-                      ),  
-                    ),
-                    ),
-                    ),
-
-            setReminder?Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  child: Chip(
-                    label: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Text(
-                        "${DateFormat.yMMMMd().format(pickedDate)}  ${time.format(context)}",
-                        style: TextStyle(
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
-                    avatar: Icon(Icons.alarm),
-                    backgroundColor: Color(0xffffe9b3),
+              padding: EdgeInsets.fromLTRB(0, 30, 50, 5),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: ListTile(
+                  title: Text(
+                    "Reminder",
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Times New Roman"),
+                    textAlign: TextAlign.start,
                   ),
-                  onTap: _pickDate,
+                  trailing: Switch(
+                    value: setReminder,
+                    inactiveTrackColor: Color(0xffc3cade),
+                    activeColor: Color(0xffadd2ff),
+                    onChanged: (value) {
+                      setState(() {
+                        setReminder = value;
+                        print(setReminder);
+                      });
+                    },
+                  ),
                 ),
-              ],
-            ):SizedBox(),
+              ),
+            ),
+            setReminder
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        child: Chip(
+                          label: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Text(
+                              "${DateFormat.yMMMMd().format(pickedDate)}  ${time.format(context)}",
+                              style: TextStyle(
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          avatar: Icon(Icons.alarm),
+                          backgroundColor: Color(0xffffe9b3),
+                        ),
+                        onTap: _pickDate,
+                      ),
+                    ],
+                  )
+                : SizedBox(),
           ],
         ),
       ),
@@ -310,7 +325,6 @@ class _MyDialogState extends State<MyDialog> {
             FlatButton(
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  //Todo : Get due date (& time) from user
                   DateTime dueDate = DateTime(pickedDate.year, pickedDate.month,
                       pickedDate.day, time.hour, time.minute);
 
@@ -318,20 +332,28 @@ class _MyDialogState extends State<MyDialog> {
 
                   //Save task
                   Navigator.of(context).pop();
-                  setReminder ? await scheduleNotification(dueDate, titleController.text):null;
+                  setReminder
+                      ? await scheduleNotification(
+                          dueDate, titleController.text)
+                      : null;
                   await createTask(titleController.text, dueDate);
-                  titleController.clear();
-
                   //Clear text controller values after saving the task.
+                  titleController.clear();
                 }
               },
-              child: Text("Add Task", style: TextStyle(fontSize: 15),),
+              child: Text(
+                "Add Task",
+                style: TextStyle(fontSize: 15),
+              ),
             ),
             FlatButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Cancel", style: TextStyle(fontSize: 15),),
+              child: Text(
+                "Cancel",
+                style: TextStyle(fontSize: 15),
+              ),
             ),
           ],
         ),

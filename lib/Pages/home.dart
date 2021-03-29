@@ -10,6 +10,7 @@ import 'stats.dart';
 import 'package:daybook/Services/db_services.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,11 +59,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // curUser = await getUserInfo();
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_title[_currentTab]),
+          title: Text(
+            _title[_currentTab],
+            // style: GoogleFonts.getFont('Lato'),
+          ),
           leading: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Image.asset(

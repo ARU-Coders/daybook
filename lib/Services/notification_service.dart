@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Notification {
+  Map<String, int> dayMap = {
+    'Sunday': 0,
+    'Monday': 1,
+    'Tuesday': 2,
+    'Wednesday': 3,
+    'Thursday': 4,
+    'Friday': 5,
+    'Saturday': 6
+  };
+
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   Notification() {
@@ -27,8 +37,12 @@ class Notification {
     await flutterLocalNotificationsPlugin.cancel(notifId);
   }
 
-  Future<int> scheduleNotificationForHabit(TimeOfDay scheduledNotificationTime,
-      String notifTitle, String notifSubtitle) async {
+  Future<int> scheduleNotificationForHabit(
+      String frequency,
+      TimeOfDay scheduledNotificationTime,
+      String notifTitle,
+      String notifSubtitle,
+      {String day}) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         '2', 'Habit', 'Reminders of Habit',
         importance: Importance.Max, priority: Priority.High);
@@ -41,15 +55,30 @@ class Notification {
       scheduledNotificationTime.hour,
       scheduledNotificationTime.minute,
     );
-    await flutterLocalNotificationsPlugin.showDailyAtTime(
-      notifId,
-      notifTitle,
-      notifSubtitle,
-      scheduleTime,
-      platformChannelSpecifics,
-      payload: notifId.toString(),
-    );
-    print("Notif scheduled");
+
+    if (frequency == 'Daily') {
+      await flutterLocalNotificationsPlugin.showDailyAtTime(
+        notifId,
+        notifTitle,
+        notifSubtitle,
+        scheduleTime,
+        platformChannelSpecifics,
+        payload: notifId.toString(),
+      );
+      print("Daily Notif scheduled");
+    } else {
+      await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
+        notifId,
+        notifTitle,
+        notifSubtitle,
+        Day(dayMap[day]),
+        scheduleTime,
+        platformChannelSpecifics,
+        payload: notifId.toString(),
+      );
+      print(Day(dayMap[day]).toString());
+      print("Weekly Notif scheduled");
+    }
     return notifId;
   }
 }

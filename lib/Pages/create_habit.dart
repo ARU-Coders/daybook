@@ -12,7 +12,9 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
   TextEditingController titleController = TextEditingController();
   TimeOfDay time;
   int flag = 0;
+  String _chosenValue = 'Daily';
   bool isExpanded = false;
+  String _chosenDay = 'Monday';
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,12 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
               icon: Icon(Icons.check),
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  createHabit(titleController.text, time);
+                  if (_chosenValue == 'Daily') {
+                    createHabit(titleController.text, time, _chosenValue);
+                  } else {
+                    createHabit(titleController.text, time, _chosenValue,
+                        day: _chosenDay);
+                  }
                   Navigator.pop(context);
                   print("Habit form validated");
                 }
@@ -74,22 +81,55 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                     SizedBox(
                       height: 15.0,
                     ),
-                    GestureDetector(
-                      child: Chip(
-                        label: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Text(
-                            "${time.format(context)}",
-                            style: TextStyle(
-                              color: Colors.black87,
-                            ),
-                          ),
+
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: DropdownButton<String>(
+                        focusColor: Colors.white,
+                        value: _chosenValue,
+                        elevation: 5,
+                        underline: Container(
+                          height: 1,
+                          color: Colors.black87,
                         ),
-                        avatar: Icon(Icons.alarm),
-                        backgroundColor: Color(0xffffe9b3),
+                        isExpanded: true,
+                        style: TextStyle(color: Colors.white),
+                        iconEnabledColor: Colors.black,
+                        items: <String>[
+                          'Daily',
+                          'Weekly',
+                          // 'Monthly',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          );
+                        }).toList(),
+                        hint: Text(
+                          "Please choose any one",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        onChanged: (String value) {
+                          setState(() {
+                            _chosenValue = value;
+                          });
+                        },
                       ),
-                      onTap: _pickTime,
-                    )
+                    ),
+                    if (_chosenValue == 'Daily') _dailyFormFields(),
+                    if (_chosenValue == 'Weekly') _weeklyFormFields(),
+                    // if (_chosenValue == 'Monthly') _monthlyFormFields(),
+                    // _chosenValue == 'Weekly' ? Text('Chose Weekly'): null;
+                    // _chosenValue == 'Monthly' ? Text('Chose Monthly'): null;
                   ]),
                 ),
               ),
@@ -99,6 +139,92 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
       ),
     );
   }
+
+  Widget _dailyFormFields() {
+    return GestureDetector(
+      child: Chip(
+        label: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Text(
+            "${time.format(context)}",
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        avatar: Icon(Icons.alarm),
+        backgroundColor: Color(0xffffe9b3),
+      ),
+      onTap: _pickTime,
+    );
+  }
+
+  Widget _weeklyFormFields() {
+    return Column(children: [
+      Container(
+        width: MediaQuery.of(context).size.width,
+        child: DropdownButton<String>(
+          focusColor: Colors.white,
+          value: _chosenDay,
+          elevation: 5,
+          underline: Container(
+            height: 1,
+            color: Colors.black87,
+          ),
+          isExpanded: true,
+          style: TextStyle(color: Colors.white),
+          iconEnabledColor: Colors.black,
+          items: <String>[
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+          ].map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(
+                value,
+                style: TextStyle(color: Colors.black),
+              ),
+            );
+          }).toList(),
+          hint: Text(
+            "Please choose any one",
+            style: TextStyle(
+                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+          onChanged: (String value) {
+            setState(() {
+              _chosenDay = value;
+            });
+          },
+        ),
+      ),
+      GestureDetector(
+        child: Chip(
+          label: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Text(
+              "${time.format(context)}",
+              style: TextStyle(
+                color: Colors.black87,
+              ),
+            ),
+          ),
+          avatar: Icon(Icons.alarm),
+          backgroundColor: Color(0xffffe9b3),
+        ),
+        onTap: _pickTime,
+      )
+    ]);
+  }
+
+  // Widget _monthlyFormFields() {
+  //   return Text('');
+  // }
 
   _pickTime() async {
     TimeOfDay t = await showTimePicker(context: context, initialTime: time);

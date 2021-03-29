@@ -26,6 +26,12 @@ class _SignupDetailsState extends State<SignupDetails> {
   String dropdownValue = 'Male';
 
   final _formKey = GlobalKey<FormState>();
+  bool isValidEmail(email) {
+    return RegExp(
+            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+        .hasMatch(email);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -105,6 +111,9 @@ class _SignupDetailsState extends State<SignupDetails> {
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'Email ID cannot be empty !';
+                                }
+                                if (!isValidEmail(value)) {
+                                  return 'Invalid email !';
                                 }
                                 return null;
                               },

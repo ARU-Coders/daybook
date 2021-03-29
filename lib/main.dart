@@ -10,6 +10,7 @@ import 'Pages/start.dart';
 import 'Pages/signup.dart';
 import 'Pages/login.dart';
 import 'Pages/home.dart';
+import 'dart:async';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

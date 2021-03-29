@@ -8,6 +8,10 @@ class HabitsScreen extends StatefulWidget {
 }
 
 class _HabitsScreenState extends State<HabitsScreen> {
+  // DateTime now = DateTime.now();
+  DateTime today =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
   final Map<String, Color> colorCodes = {
     "Terrible": Color(0xffa3a8b8), //darkgrey
     "Bad": Color(0xffcbcbcb), //grey
@@ -15,14 +19,23 @@ class _HabitsScreenState extends State<HabitsScreen> {
     "Good": Color(0xffffa194), //red
     "Wonderful": Color(0xffadd2ff) //blue
   };
+
+  String formatTime(time, frequency, context, [day]) {
+    int h = int.parse(time.split(":")[0]);
+    int m = int.parse(time.split(":")[1]);
+    String formattedTime = TimeOfDay(hour: h, minute: m).format(context);
+    String timeString = frequency == "Daily"
+        ? "Everyday at $formattedTime"
+        : "Every $day at $formattedTime";
+    return timeString;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        // color: Colors.white,
         child: Stack(
           children: [
-            // Text("Atomic Habits By james Clear. NYT bestseller. 5million+ copies sold."),
             StreamBuilder(
                 stream: getHabits(),
                 builder: (context, snapshot) {
@@ -55,11 +68,16 @@ class _HabitsScreenState extends State<HabitsScreen> {
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
-                        String time = ds['reminder'].toString();
-                        int h = int.parse(time.split(":")[0]);
-                        int m = int.parse(time.split(":")[1]);
+
+                        String timeString = formatTime(
+                            ds['reminder'].toString(),
+                            ds['frequency'].toString(),
+                            context,
+                            ds['frequency'].toString() == "Weekly"
+                                ? ds['day'].toString()
+                                : null);
                         return GestureDetector(
-                          child: ListTile(
+                          child: CheckboxListTile(
                             title: Text(
                               ds['title'],
                               style: TextStyle(
@@ -69,12 +87,17 @@ class _HabitsScreenState extends State<HabitsScreen> {
                             ),
                             subtitle: Padding(
                               padding: const EdgeInsets.only(top: 6.0),
-                              child: Text(
-                                  "${TimeOfDay(hour: h, minute: m).format(context)}"),
+                              child: Text("$timeString"),
                             ),
-                            // onTap: () {
-                            // },
-                            trailing: IconButton(
+                            value: List<String>.from(ds['daysCompleted'])
+                                .contains(today.toString()),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (newValue) {
+                              print("Habit: $newValue");
+                              onCheckHabit(ds['habitId'],
+                                  List<String>.from(ds['daysCompleted']));
+                            },
+                            secondary: IconButton(
                               icon: Icon(Icons.delete),
                               color: Colors.black87,
                               onPressed: () {
@@ -131,10 +154,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                   Icons.add,
                   size: 40,
                 ),
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/createHabit')
-                  // print('Button pressed!')
-                },
+                onPressed: () => {Navigator.pushNamed(context, '/createHabit')},
               ),
             ),
           ],
