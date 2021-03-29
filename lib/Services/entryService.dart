@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'auth_service.dart';
+import 'db_services.dart';
 import 'dart:io';
 
 Future<void> deleteImages(List<String> deleteImages) async {
-  //Delete everu filein List from Firebase Storage
+  //Delete every file in List from Firebase Storage
   deleteImages.forEach((url) async {
     //Get filename (with extension) from download url
     String fileName = url
@@ -25,9 +26,11 @@ Future<void> deleteImages(List<String> deleteImages) async {
 Future<DocumentReference> createEntry(String title, String content, String mood,
     List<String> images, DateTime dateCreated) async {
   String email = AuthService.getUserEmail();
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
+
+  DocumentReference userDoc = await getUserDocRef();
+
   DocumentReference randomDoc = userDoc.collection('entries').doc();
+
   String docId = randomDoc.id;
 
   List<String> imagesURLs = [];
@@ -72,6 +75,7 @@ Stream<QuerySnapshot> getEntries() {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
+
   Stream<QuerySnapshot> query = userDoc
       .collection('entries')
       .orderBy('dateCreated', descending: true)
@@ -80,9 +84,7 @@ Stream<QuerySnapshot> getEntries() {
 }
 
 Future<DocumentSnapshot> getEntry(String entryId) async {
-  String email = AuthService.getUserEmail();
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
+  DocumentReference userDoc = await getUserDocRef();
   DocumentSnapshot doc = await userDoc.collection('entries').doc(entryId).get();
   return doc;
 }
@@ -97,8 +99,7 @@ Future<void> editEntry(
     List<String> deletedImages,
     DateTime dateCreated) async {
   String email = AuthService.getUserEmail();
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
+  DocumentReference userDoc = await getUserDocRef();
   List<String> selectedImagesURLs = [];
   if (selectedImages.length > 0) {
     String id = email;

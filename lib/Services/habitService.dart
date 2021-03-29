@@ -1,7 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
+import 'db_services.dart';
 import 'notification_service.dart' as Notif;
+
+Future<DocumentSnapshot> getHabit(String habitId) async {
+  DocumentReference userDoc = await getUserDocRef();
+  DocumentSnapshot doc = await userDoc.collection('habits').doc(habitId).get();
+  return doc;
+}
 
 Stream<QuerySnapshot> getHabits() {
   String email = AuthService.getUserEmail();
@@ -15,13 +22,10 @@ Future<DocumentReference> createHabit(
     String title, TimeOfDay reminder, String frequency,
     {bool setReminder = true, String day}) async {
   int notifId = 0;
-  String email = AuthService.getUserEmail();
 
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
+  DocumentReference userDoc = await getUserDocRef();
 
   DocumentReference randomDoc = userDoc.collection('habits').doc();
-
   String docId = randomDoc.id;
   String reminderTimString =
       reminder.hour.toString() + ":" + reminder.minute.toString();
@@ -66,9 +70,7 @@ Future<DocumentReference> createHabit(
 
 Future<DocumentReference> onCheckHabit(
     String habitId, List<dynamic> daysCompleted) async {
-  String email = AuthService.getUserEmail();
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
+  DocumentReference userDoc = await getUserDocRef();
 
   DateTime today =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
@@ -76,10 +78,8 @@ Future<DocumentReference> onCheckHabit(
   int idx = daysCompleted.indexOf(today.toString());
 
   if (idx == -1) {
-    //append the date
     daysCompleted.add(today.toString());
   } else {
-    //remove the date
     daysCompleted.removeAt(idx);
   }
 
@@ -101,13 +101,3 @@ void deleteHabit(DocumentSnapshot documentSnapshot) async {
   });
 }
 
-// void onCheckHabit(String habitId) {}
-// void onCheckTask(String habitId, bool checkedValue) {
-//   String email = AuthService.getUserEmail();
-
-//   DocumentReference userDoc =
-//       FirebaseFirestore.instance.collection('users').doc(email);
-//   userDoc.collection('habits').doc(taskId).update({
-//     'isChecked': checkedValue,
-//   });
-// }

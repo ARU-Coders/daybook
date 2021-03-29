@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_service.dart';
 
-Future<Map<String, String>> getUserInfo() async {
-  //birthdate. dateJoined, email, gender,name, photo
+Future<DocumentReference> getUserDocRef() async {
   String email = AuthService.getUserEmail();
-
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
+  return userDoc;
+}
+
+Future<Map<String, String>> getUserInfo() async {
+  //birthdate. dateJoined, email, gender,name, photo
+  DocumentReference userDoc = await getUserDocRef();
+
   Map<String, String> user = Map();
   if (AuthService.getUserEmail() != null) {
     DocumentSnapshot doc = await userDoc.get();
@@ -23,11 +28,7 @@ Future<Map<String, String>> getUserInfo() async {
 }
 
 Future<DocumentSnapshot> getUserProfile() async {
-  String email = AuthService.getUserEmail();
-
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
-  // final userInfo = await getUserInfo();
+  DocumentReference userDoc = await getUserDocRef();
   DocumentSnapshot doc = await userDoc.get();
   return doc;
 }
