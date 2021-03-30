@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/journeyService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class CreateJourneyScreen extends StatefulWidget {
@@ -45,7 +46,8 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Create Journey",
+          isEditing ?"Edit Journey":"Create Journey",
+          style: GoogleFonts.getFont('Lato'),
         ),
         leading: Builder(
           //Using builder here to provide required context to display the Snackbar.
@@ -199,7 +201,7 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                                       ? startDate
                                       : DateFormat.yMMMMd()
                                           .format(DateTime.parse(startDate)),
-                                  style: TextStyle(
+                                  style: GoogleFonts.getFont('Oxygen',
                                       color: Colors.black, fontSize: 15.0),
                                 ),
                               ],
@@ -263,7 +265,7 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                                       ? endDate
                                       : DateFormat.yMMMMd()
                                           .format(DateTime.parse(endDate)),
-                                  style: TextStyle(
+                                  style: GoogleFonts.getFont('Oxygen',
                                       color: Colors.black, fontSize: 15.0),
                                 ),
                               ],

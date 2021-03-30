@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:daybook/Services/journeyService.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SelectEntriesScreen extends StatefulWidget {
   @override
@@ -26,7 +27,8 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            title: Text("Add entries to the journey"),
+            title: Text("Add entries to the journey",
+            style: GoogleFonts.getFont('Lato'),),
             backgroundColor: Color(0xDAFFD1DC),
             leading: IconButton(
                 icon: Icon(Icons.arrow_back_outlined),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:daybook/Services/taskService.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -36,7 +37,7 @@ class _TasksScreenState extends State<TasksScreen> {
                         child: Center(
                           child: Text(
                             "No tasks created !! \n Click on + to get started",
-                            style: TextStyle(
+                            style: GoogleFonts.getFont('Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -68,9 +69,9 @@ class _TasksScreenState extends State<TasksScreen> {
                               child: CheckboxListTile(
                                 title: Text(
                                   ds['title'],
-                                  style: TextStyle(
+                                  style: GoogleFonts.getFont('Merriweather',
                                       fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w600,
                                       decoration: ds['isChecked']
                                           ? TextDecoration.lineThrough
                                           : null),
@@ -80,10 +81,11 @@ class _TasksScreenState extends State<TasksScreen> {
                                   child: Text(
                                     DateFormat.yMMMMd()
                                         .format(DateTime.parse(ds['dueDate'])),
-                                    style: TextStyle(
-                                        decoration: ds['isChecked']
-                                            ? TextDecoration.lineThrough
-                                            : null),
+                                    style: GoogleFonts.getFont('Oxygen',
+                                      fontSize: 13,
+                                      decoration: ds['isChecked']
+                                          ? TextDecoration.lineThrough
+                                          : null),
                                   ),
                                 ),
                                 value: ds['isChecked'],
@@ -303,7 +305,7 @@ class _MyDialogState extends State<MyDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Text(
                               "${DateFormat.yMMMMd().format(pickedDate)}  ${time.format(context)}",
-                              style: TextStyle(
+                              style: GoogleFonts.getFont('Oxygen',
                                 color: Colors.black87,
                               ),
                             ),

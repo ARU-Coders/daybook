@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/entryService.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -43,7 +44,7 @@ class _EntriesScreenState extends State<EntriesScreen> {
                         child: Center(
                           child: Text(
                             "No entries created !! \n Click on + to get started",
-                            style: TextStyle(
+                            style: GoogleFonts.getFont('Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -134,19 +135,21 @@ class EntryCard extends StatelessWidget {
                           children: [
                             Text(
                               documentSnapshot['title'],
-                              style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
+                              style: GoogleFonts.getFont('Merriweather',
+                              fontSize: 17, 
+                              fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                             ),
                             SizedBox(height: 6),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                               child: Text(
                                 documentSnapshot['content'],
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black.withOpacity(0.6)),
+                                style: GoogleFonts.getFont('Nunito',
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,    
+                                color: Colors.black.withOpacity(0.6)),
                                 overflow: TextOverflow.fade,
                                 maxLines: 3,
                               ),
@@ -212,8 +215,8 @@ class EntryCard extends StatelessWidget {
                 Text(
                   DateFormat.yMMMMd()
                       .format(DateTime.parse(documentSnapshot['dateCreated'])),
-                  style: TextStyle(
-                      fontSize: 15, color: Colors.black.withOpacity(0.6)),
+                  style: GoogleFonts.getFont('Oxygen',
+                      fontSize: 13, color: Colors.black.withOpacity(0.6)),
                 ),
               ]),
             ],

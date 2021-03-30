@@ -1,6 +1,7 @@
 import 'package:daybook/Services/journeyService.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
 
@@ -36,7 +37,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                         child: Center(
                           child: Text(
                             "No journeys created !! \n Click on + to get started",
-                            style: TextStyle(
+                            style: GoogleFonts.getFont('Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -147,8 +148,9 @@ class JourneyCard extends StatelessWidget {
                         children: [
                           Text(
                             documentSnapshot['title'],
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
+                            style: GoogleFonts.getFont('Merriweather',
+                                fontSize: 17, 
+                                fontWeight: FontWeight.w600),
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                           ),
@@ -157,9 +159,10 @@ class JourneyCard extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Text(
                               documentSnapshot['description'],
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black.withOpacity(0.6)),
+                              style: GoogleFonts.getFont('Nunito',
+                              fontSize: 15,
+                              fontWeight:FontWeight.w600,
+                              color: Colors.black.withOpacity(0.6)),
                               overflow: TextOverflow.fade,
                               maxLines: 3,
                             ),
@@ -208,8 +211,8 @@ class JourneyCard extends StatelessWidget {
               Text(
                 DateFormat.yMMMMd()
                     .format(DateTime.parse(documentSnapshot['dateCreated'])),
-                style: TextStyle(
-                    fontSize: 15, color: Colors.black.withOpacity(0.6)),
+                style: GoogleFonts.getFont('Oxygen',
+                    fontSize: 13, color: Colors.black.withOpacity(0.6)),
               ),
             ]),
           ],

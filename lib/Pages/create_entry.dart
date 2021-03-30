@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:group_button/group_button.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
@@ -181,6 +182,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
         appBar: AppBar(
           title: Text(
             isEditing ? "Edit Entry" : "Create Entry",
+            style: GoogleFonts.getFont('Lato'),
           ),
           leading: IconButton(
             icon: Icon(Icons.check),
@@ -271,7 +273,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                                             vertical: 5),
                                         child: Text(
                                           "${DateFormat.yMMMMd().format(dateCreated)}  ${time.format(context)}",
-                                          style: TextStyle(
+                                          style: GoogleFonts.getFont('Oxygen',
                                             color: Colors.black87,
                                           ),
                                         ),

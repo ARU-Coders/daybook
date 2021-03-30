@@ -3,6 +3,7 @@ import 'package:daybook/Services/entryService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class DisplayEntryScreen extends StatefulWidget {
@@ -150,7 +151,8 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                       builder: (context) => AlertDialog(
                                         title: Text("Detele Entry ?"),
                                         content: Text(
-                                            "This will delete the Entry permanently."),
+                                            "This will delete the Entry permanently.",
+                                            ),
                                         actions: <Widget>[
                                           Row(
                                             children: [
@@ -203,24 +205,26 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                         SizedBox(height: 20),
                         Column(
                           children: [
-                            Text(
-                              documentSnapshot['title'],
-                              style: TextStyle(
-                                  color: Colors.grey[900],
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w900,
-                                  fontFamily: "Times New Roman"),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal:20.0),
+                              child: Text(
+                                documentSnapshot['title'],
+                                style: GoogleFonts.getFont('Merriweather',
+                                    color: Colors.grey[900],
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w500,
+                                    ),
+                              ),
                             ),
                             SizedBox(
                               height: 10,
                             ),
                             Text(
                               "Mood: " + moodText[documentSnapshot['mood']],
-                              style: TextStyle(
+                              style: GoogleFonts.getFont('Lora',
                                   color: Colors.grey[700],
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: "Times New Roman"),
+                                  fontWeight: FontWeight.w700,),
                             ),
                             SizedBox(
                               height: 10,
@@ -231,7 +235,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                     const EdgeInsets.symmetric(vertical: 5),
                                 child: Text(
                                   "${DateFormat.yMMMMd().format(DateTime.parse(documentSnapshot['dateCreated']))}  ${DateFormat.jm().format(DateTime.parse(documentSnapshot['dateCreated']))}",
-                                  style: TextStyle(
+                                  style: GoogleFonts.getFont('Oxygen',
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -254,11 +258,10 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                   child: Text(
                     documentSnapshot['content'],
                     softWrap: true,
-                    style: TextStyle(
+                    style: GoogleFonts.getFont('Nunito',
                         color: Colors.black87,
-                        fontSize: 15,
-                        letterSpacing: 0.2,
-                        fontFamily: "Times New Roman"),
+                        fontSize: 17,
+                        letterSpacing: 0.2,),
                   ),
                 ),
                 SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/habitService.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HabitsScreen extends StatefulWidget {
   @override
@@ -54,7 +55,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                         child: Center(
                           child: Text(
                             "No habits created !! \n Click on + to get started",
-                            style: TextStyle(
+                            style: GoogleFonts.getFont('Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -80,9 +81,9 @@ class _HabitsScreenState extends State<HabitsScreen> {
                           child: CheckboxListTile(
                             title: Text(
                               ds['title'],
-                              style: TextStyle(
+                              style: GoogleFonts.getFont('Merriweather',
                                 fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             subtitle: Padding(

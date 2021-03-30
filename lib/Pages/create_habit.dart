@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/habitService.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CreateHabitScreen extends StatefulWidget {
   @override
@@ -29,6 +30,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
       appBar: AppBar(
         title: Text(
           "Create Habit",
+          style: GoogleFonts.getFont('Lato'),
         ),
         leading: Builder(
           //Using builder here to provide required context to display the Snackbar.

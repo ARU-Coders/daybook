@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/journeyService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class DisplayJourneyScreen extends StatefulWidget {
@@ -129,11 +130,10 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                           children: [
                             Text(
                               documentSnapshot['title'],
-                              style: TextStyle(
+                              style: GoogleFonts.getFont('Merriweather',
                                   color: Colors.grey[900],
                                   fontSize: 25,
-                                  fontWeight: FontWeight.w900,
-                                  fontFamily: "Times New Roman"),
+                                  fontWeight: FontWeight.w600,),
                             ),
                             SizedBox(
                               height: 10,
@@ -297,9 +297,13 @@ class ShortEntryCard extends StatelessWidget {
           ),
           title: Text(
             ds['title'],
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: GoogleFonts.getFont('Merriweather',
+              color: Colors.black, fontWeight: FontWeight.w500),
           ),
-          subtitle: Text(ds['mood'], style: TextStyle(color: Colors.black)),
+          subtitle: Text(ds['mood'], 
+          style: GoogleFonts.getFont('Lora',
+          color: Colors.black,),
+          ),
           trailing: GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, '/displayEntry', arguments: [ds]);
