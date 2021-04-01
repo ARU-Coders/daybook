@@ -11,6 +11,7 @@ import 'package:daybook/Services/db_services.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,7 +20,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey _bottomNavigationKey = GlobalKey();
-
+  final _url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  
   final _tabs = [
     JourneysScreen(),
     HabitsScreen(),
@@ -30,6 +32,10 @@ class _HomePageState extends State<HomePage> {
   final _title = ["My Journeys", "My Habits", "Entries", "My Tasks", "Stats"];
   int _currentTab = 2;
   final List<String> menuItems = <String>['Profile', 'Settings', 'Logout'];
+  
+  void _launchURL() async =>
+    await canLaunch(_url) ? await launch(_url) : print('Could not launch $_url');
+  
   void handleMenuClick(String value) async {
     switch (value) {
       case 'Profile':
@@ -67,12 +73,17 @@ class _HomePageState extends State<HomePage> {
             _title[_currentTab],
             style: GoogleFonts.getFont('Lato'),
           ),
-          leading: Padding(
+          leading: InkWell(
+            borderRadius: BorderRadius.circular(40),
+            splashColor: Colors.white70,
+            onDoubleTap: _launchURL,
+            child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Image.asset(
               'assets/images/logo.png',
               height: 10,
               width: 10,
+            ),
             ),
           ),
           backgroundColor: Color(0xDAFFD1DC),

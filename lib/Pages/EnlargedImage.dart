@@ -10,7 +10,11 @@ class EnlargedImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
+      body: InteractiveViewer(
+        panEnabled: true, // Set it to false
+        boundaryMargin: EdgeInsets.all(100),
+        minScale: 1,
+        maxScale: 2,
         child: Center(
           child: isFirebaseImage
               ? CachedNetworkImage(
@@ -24,9 +28,6 @@ class EnlargedImage extends StatelessWidget {
                   child: Image.file(File(imagePath)),
                 ),
         ),
-        onTap: () {
-          Navigator.pop(context);
-        },
       ),
     );
   }
