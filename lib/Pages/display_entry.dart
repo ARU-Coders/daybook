@@ -5,6 +5,7 @@ import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 
 class DisplayEntryScreen extends StatefulWidget {
   @override
@@ -111,168 +112,195 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
 
     return SafeArea(
         child: Scaffold(
-            resizeToAvoidBottomPadding: false,
-            body: SingleChildScrollView(
-                child: Stack(children: [
-              Column(children: [
-                Container(
-                    // height: 200,
-                    width: width,
-                    decoration: new BoxDecoration(
-                      color: colorMoodMap[documentSnapshot['mood']],
-                      // boxShadow: [new BoxShadow(blurRadius: 10.0)],
-                      borderRadius: new BorderRadius.vertical(
-                          bottom: new Radius.elliptical(width, 40.0)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // resizeToAvoidBottomPadding: false,
+            body: Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Stack(
+                  children: [
+                  SingleChildScrollView(
+                  child: Stack(
+                  children: [
+                    Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Container(
+                        width: width,
+                        decoration: new BoxDecoration(
+                          color: colorMoodMap[documentSnapshot['mood']],
+                          // boxShadow: [new BoxShadow(blurRadius: 10.0)],
+                          borderRadius: new BorderRadius.vertical(
+                              bottom: new Radius.elliptical(width, 40.0)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Icon(Icons.arrow_back),
-                              ),
-                            ),
-                            Container(
-                              height: appbarHeight,
-                              child: Row(children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (context) => AlertDialog(
-                                        title: Text("Detele Entry ?"),
-                                        content: Text(
-                                            "This will delete the Entry permanently.",
-                                            ),
-                                        actions: <Widget>[
-                                          Row(
-                                            children: [
-                                              FlatButton(
-                                                onPressed: () {
-                                                  deleteEntry(documentSnapshot);
-                                                  Navigator.of(context).pop();
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("Delete"),
-                                              ),
-                                              FlatButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("Cancel"),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Icon(Icons.arrow_back),
+                                  ),
+                                ),
+                                Container(
+                                  height: appbarHeight,
+                                  child: Row(children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (context) => AlertDialog(
+                                            title: Text("Detele Entry ?"),
+                                            content: Text(
+                                                "This will delete the Entry permanently.",
+                                                ),
+                                            actions: <Widget>[
+                                              Row(
+                                                children: [
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      deleteEntry(documentSnapshot);
+                                                      Navigator.of(context).pop();
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text("Delete"),
+                                                  ),
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text("Cancel"),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.delete_outline,
+                                        size: 20,
                                       ),
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.delete,
-                                    size: 20,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 30,
-                                ),
-                                GestureDetector(
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 20,
-                                  ),
-                                  onTap: () {
-                                    Navigator.popAndPushNamed(
-                                        context, '/createEntry',
-                                        arguments: [documentSnapshot]);
-                                  },
-                                ),
-                                SizedBox(
-                                  width: 25,
-                                ),
-                              ]),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal:20.0),
-                              child: Text(
-                                documentSnapshot['title'],
-                                style: GoogleFonts.getFont('Merriweather',
-                                    color: Colors.grey[900],
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.w500,
                                     ),
-                              ),
+                                  
+                                    SizedBox(
+                                      width: 25,
+                                    ),
+                                    GestureDetector(
+                                      child: Icon(
+                                        Icons.share_outlined,
+                                        size: 20,
+                                      ),
+                                      onTap: () {
+                                        String subject = documentSnapshot['title'].toString();
+                                        String text =  '*' + subject + '*' + "\n\nFeeling " + documentSnapshot['mood'].toString() + "\n\n" + documentSnapshot['content'].toString();
+                                        Share.share(text);
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                  ]),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              "Mood: " + moodText[documentSnapshot['mood']],
-                              style: GoogleFonts.getFont('Lora',
-                                  color: Colors.grey[700],
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Chip(
-                              label: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Text(
-                                  "${DateFormat.yMMMMd().format(DateTime.parse(documentSnapshot['dateCreated']))}  ${DateFormat.jm().format(DateTime.parse(documentSnapshot['dateCreated']))}",
-                                  style: GoogleFonts.getFont('Oxygen',
-                                    color: Colors.black87,
+                            SizedBox(height: 20),
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal:20.0),
+                                  child: Text(
+                                    documentSnapshot['title'],
+                                    style: GoogleFonts.getFont('Merriweather',
+                                        color: Colors.grey[900],
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500,
+                                        ),
                                   ),
                                 ),
-                              ),
-                              // avatar: Icon(Icons.alarm),
-                              backgroundColor: Color(0xffffe9b3),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Feeling " + moodText[documentSnapshot['mood']],
+                                  style: GoogleFonts.getFont('Lora',
+                                      color: Colors.grey[700],
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Chip(
+                                  label: Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(
+                                      "${DateFormat.yMMMMd().format(DateTime.parse(documentSnapshot['dateCreated']))}  ${DateFormat.jm().format(DateTime.parse(documentSnapshot['dateCreated']))}",
+                                      style: GoogleFonts.getFont('Oxygen',
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                  // avatar: Icon(Icons.alarm),
+                                  backgroundColor: Color(0xffffe9b3),
+                                ),
+                              ],
                             ),
+                            SizedBox(
+                              height: 5,
+                            )
                           ],
-                        ),
-                        SizedBox(
-                          height: 5,
-                        )
-                      ],
-                    )),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                  child: Text(
-                    documentSnapshot['content'],
-                    softWrap: true,
-                    style: GoogleFonts.getFont('Nunito',
-                        color: Colors.black87,
-                        fontSize: 17,
-                        letterSpacing: 0.2,),
-                  ),
-                ),
-                SizedBox(
-                  height: 25.0,
-                ),
-                imageUrls.length != 0
-                    ? _imagesGrid()
-                    : SizedBox(
-                        height: 1,
+                        )),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                      child: Text(
+                        documentSnapshot['content'],
+                        softWrap: true,
+                        style: GoogleFonts.getFont('Nunito',
+                            color: Colors.black87,
+                            fontSize: 17,
+                            letterSpacing: 0.2,),
                       ),
-              ])
-            ]))));
+                    ),
+                    SizedBox(
+                      height: 25.0,
+                    ),
+                    imageUrls.length != 0
+                        ? _imagesGrid()
+                        : SizedBox(
+                            height: 1,
+                          ),
+                  ],
+                  ),
+                    
+                ])),
+              Positioned(
+                    bottom: 15,
+                    right: 15,
+                    child: FloatingActionButton(
+                      backgroundColor: Color(0xffd68598),
+                      child: Icon(
+                        Icons.edit_outlined,
+                        // size: 40,
+                      ),
+                      onPressed: () => {
+                        Navigator.popAndPushNamed(context, '/createEntry', arguments: [documentSnapshot])
+                        // print('Button pressed!');
+                      },
+                    ),
+                  ),
+              
+              ]),
+            )));
   }
 }

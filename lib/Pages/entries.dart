@@ -110,7 +110,12 @@ class EntryCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
+          Navigator.pushNamed(context, '/displayEntry',
+                        arguments: [documentSnapshot]);
           print("Tapped on an entry");
+        },
+        onLongPress: (){
+          buildDeleteDialog(context, documentSnapshot);
         },
         splashColor: Colors.white54,
         child: Padding(
