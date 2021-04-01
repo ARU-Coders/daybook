@@ -31,7 +31,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   final List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
   List<String> selectedMoods = ["🙂"];
   bool isEditing = false;
-
+  bool isLoading = false;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   String documentId;
@@ -153,6 +153,11 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     }
   }
 
+  void showSnackBar(BuildContext buildContext, String message, {int duration = 3}){
+    final snackBar = SnackBar( content: Text(message), duration: Duration(seconds: duration),);
+    Scaffold.of(buildContext).showSnackBar(snackBar);
+  }
+
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -184,52 +189,85 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
             isEditing ? "Edit Entry" : "Create Entry",
             style: GoogleFonts.getFont('Lato'),
           ),
-          leading: IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () async {
-              if (_formKey.currentState.validate()) {
-                if (arguments.length != 0) {
-                  DateTime dateAndTimeCreated = DateTime(
-                      dateCreated.year,
-                      dateCreated.month,
-                      dateCreated.day,
-                      time.hour,
-                      time.minute);
-                  await editEntry(
-                      arguments[0].id,
-                      titleController.text,
-                      contentController.text,
-                      moodMap[selectedMoods[0]],
-                      selectedImages,
-                      previousImages,
-                      deletedImages,
-                      dateAndTimeCreated);
-                  DocumentSnapshot updatedDocumentSnapshot =
-                      await previousSnapshot.reference.get();
-                  Navigator.popAndPushNamed(context, '/displayEntry',
-                      arguments: [updatedDocumentSnapshot]);
-                  // Navigator.pop(context);
-                } else {
-                  DateTime dateAndTimeCreated = DateTime(
-                      dateCreated.year,
-                      dateCreated.month,
-                      dateCreated.day,
-                      time.hour,
-                      time.minute);
+          leading: Builder(
+            builder: (BuildContext context) {
+            return isLoading ?
+              Container(
+                height: 5,
+                width: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: CircularProgressIndicator(),
+                )):
+              IconButton(
+              icon: Icon(Icons.check),              
+              onPressed: () async {
+                if (_formKey.currentState.validate()) {
+                  if (arguments.length != 0) {
+                    if(selectedImages.length + previousImages.length > 10){
+                      showSnackBar(context, "You can't add more than 10 images !");
+                      return;
+                    }
 
-                  DocumentReference docRef = await createEntry(
-                      titleController.text,
-                      contentController.text,
-                      moodMap[selectedMoods[0]],
-                      selectedImages,
-                      dateAndTimeCreated);
-                  DocumentSnapshot documentSnapshot = await docRef.get();
-                  Navigator.popAndPushNamed(context, '/displayEntry',
-                      arguments: [documentSnapshot]);
+                    DateTime dateAndTimeCreated = DateTime(
+                        dateCreated.year,
+                        dateCreated.month,
+                        dateCreated.day,
+                        time.hour,
+                        time.minute);
+                    setState((){
+                      isLoading = true;}
+                      );
+                    await editEntry(
+                        arguments[0].id,
+                        titleController.text,
+                        contentController.text,
+                        moodMap[selectedMoods[0]],
+                        selectedImages,
+                        previousImages,
+                        deletedImages,
+                        dateAndTimeCreated);
+                    setState((){
+                      isLoading = false;}
+                      );
+                    DocumentSnapshot updatedDocumentSnapshot =
+                        await previousSnapshot.reference.get();
+                    Navigator.popAndPushNamed(context, '/displayEntry',
+                        arguments: [updatedDocumentSnapshot]);
+                  } else {
+                    if(selectedImages.length + previousImages.length > 10){
+                      showSnackBar(context, "You can't add more than 10 images !");
+                      return;
+                    }
+
+                    DateTime dateAndTimeCreated = DateTime(
+                        dateCreated.year,
+                        dateCreated.month,
+                        dateCreated.day,
+                        time.hour,
+                        time.minute);
+                    setState((){
+                      isLoading = true;}
+                      );
+                    DocumentReference docRef = await createEntry(
+                        titleController.text,
+                        contentController.text,
+                        moodMap[selectedMoods[0]],
+                        selectedImages,
+                        dateAndTimeCreated);
+                    DocumentSnapshot documentSnapshot = await docRef.get();
+                    setState((){
+                      isLoading = false;}
+                      );
+                    Navigator.popAndPushNamed(context, '/displayEntry',
+                        arguments: [documentSnapshot]);
+                  }
                 }
-              }
-            },
+              },
+            );
+            }
           ),
+          
           actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: handleMenuClick,

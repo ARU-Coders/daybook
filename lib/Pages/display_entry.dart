@@ -82,8 +82,6 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                 : imageUrls[index],
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) => Container(
-                              width: 5,
-                              height: 5,
                               child: Center(
                                 child: Container(
                                   height: 20,
@@ -217,6 +215,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal:20.0),
                                   child: Text(
                                     documentSnapshot['title'],
+                                    textAlign: TextAlign.center,
                                     style: GoogleFonts.getFont('Merriweather',
                                         color: Colors.grey[900],
                                         fontSize: 25,
@@ -276,7 +275,10 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                       height: 25.0,
                     ),
                     imageUrls.length != 0
-                        ? _imagesGrid()
+                        ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal:8.0),
+                          child: _imagesGrid(),
+                        )
                         : SizedBox(
                             height: 1,
                           ),
