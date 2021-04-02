@@ -55,7 +55,8 @@ class _HabitsScreenState extends State<HabitsScreen> {
                         child: Center(
                           child: Text(
                             "No habits created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont('Lato',
+                            style: GoogleFonts.getFont(
+                              'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -79,70 +80,34 @@ class _HabitsScreenState extends State<HabitsScreen> {
                                 : null);
                         return GestureDetector(
                           child: CheckboxListTile(
-                            title: Text(
-                              ds['title'],
-                              style: GoogleFonts.getFont('Merriweather',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              title: Text(
+                                ds['title'],
+                                style: GoogleFonts.getFont(
+                                  'Merriweather',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 6.0),
-                              child: Text("$timeString"),
-                            ),
-                            value: List<String>.from(ds['daysCompleted'])
-                                .contains(today.toString()),
-                            controlAffinity: ListTileControlAffinity.leading,
-                            onChanged: (newValue) {
-                              print("Habit: $newValue");
-                              onCheckHabit(ds['habitId'],
-                                  List<String>.from(ds['daysCompleted']));
-                            },
-                            secondary: IconButton(
-                              icon: Icon(Icons.delete),
-                              color: Colors.black87,
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (context) => AlertDialog(
-                                    title: Text("Detele Habit ?"),
-                                    content: Text(
-                                        "This will delete the Habit permanently."),
-                                    actions: <Widget>[
-                                      Row(
-                                        children: [
-                                          FlatButton(
-                                            onPressed: () {
-                                              deleteHabit(ds);
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(
-                                              "Delete",
-                                              style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text(
-                                              "Cancel",
-                                              style: TextStyle(
-                                                  color: Colors.green,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 6.0),
+                                child: Text("$timeString"),
+                              ),
+                              value: List<String>.from(ds['daysCompleted'])
+                                  .contains(today.toString()),
+                              controlAffinity: ListTileControlAffinity.leading,
+                              onChanged: (newValue) {
+                                print("Habit: $newValue");
+                                onCheckHabit(ds['habitId'],
+                                    List<String>.from(ds['daysCompleted']));
                               },
-                            ),
-                          ),
+                              secondary: IconButton(
+                                icon: Icon(Icons.arrow_forward),
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, '/habitStatistics',
+                                      arguments: [ds]);
+                                },
+                              )),
                         );
                       });
                 }),

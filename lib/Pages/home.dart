@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GlobalKey _bottomNavigationKey = GlobalKey();
   final _url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
-  
+
   final _tabs = [
     JourneysScreen(),
     HabitsScreen(),
@@ -32,10 +32,11 @@ class _HomePageState extends State<HomePage> {
   final _title = ["My Journeys", "My Habits", "Entries", "My Tasks", "Stats"];
   int _currentTab = 2;
   final List<String> menuItems = <String>['Profile', 'Settings', 'Logout'];
-  
-  void _launchURL() async =>
-    await canLaunch(_url) ? await launch(_url) : print('Could not launch $_url');
-  
+
+  void _launchURL() async => await canLaunch(_url)
+      ? await launch(_url)
+      : print('Could not launch $_url');
+
   void handleMenuClick(String value) async {
     switch (value) {
       case 'Profile':
@@ -65,7 +66,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -78,12 +78,12 @@ class _HomePageState extends State<HomePage> {
             splashColor: Colors.white70,
             onDoubleTap: _launchURL,
             child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Image.asset(
-              'assets/images/logo.png',
-              height: 10,
-              width: 10,
-            ),
+              padding: const EdgeInsets.all(10.0),
+              child: Image.asset(
+                'assets/images/logo.png',
+                height: 10,
+                width: 10,
+              ),
             ),
           ),
           backgroundColor: Color(0xDAFFD1DC),

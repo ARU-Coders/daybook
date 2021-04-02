@@ -92,6 +92,29 @@ Future<DocumentReference> onCheckHabit(
   return query;
 }
 
+Future<DocumentReference> markAsDone(
+    String habitId, List<dynamic> daysCompleted, DateTime date) async {
+  DocumentReference userDoc = await getUserDocRef();
+
+  DateTime dateToAdd = DateTime(date.year, date.month, date.day);
+
+  int idx = daysCompleted.indexOf(dateToAdd.toString());
+
+  if (idx == -1) {
+    daysCompleted.add(dateToAdd.toString());
+  } else {
+    daysCompleted.removeAt(idx);
+  }
+
+  final _ = await userDoc
+      .collection('habits')
+      .doc(habitId)
+      .update({'daysCompleted': daysCompleted});
+
+  DocumentReference query = userDoc.collection('habits').doc(habitId);
+  return query;
+}
+
 void deleteHabit(DocumentSnapshot documentSnapshot) async {
   final notification = Notif.Notification();
   notification.cancelNotification(documentSnapshot['notifId']);
@@ -100,4 +123,3 @@ void deleteHabit(DocumentSnapshot documentSnapshot) async {
     myTransaction.delete(documentSnapshot.reference);
   });
 }
-
