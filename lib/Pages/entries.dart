@@ -38,20 +38,29 @@ class _EntriesScreenState extends State<EntriesScreen> {
                                 Container(child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/No-Entry.png',
+                            height: 250.0,
+                            // width: 200.0,
+                          ),
+                          Text(
                             "No entries created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont('Lato',
+                            style: GoogleFonts.getFont(
+                              'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                        ));
+                        ],
+                      ),
+                    );
                   }
                   return new ListView.builder(
                       padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
@@ -111,10 +120,10 @@ class EntryCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.pushNamed(context, '/displayEntry',
-                        arguments: [documentSnapshot]);
+              arguments: [documentSnapshot]);
           print("Tapped on an entry");
         },
-        onLongPress: (){
+        onLongPress: () {
           buildDeleteDialog(context, documentSnapshot);
         },
         splashColor: Colors.white54,
@@ -141,8 +150,8 @@ class EntryCard extends StatelessWidget {
                             Text(
                               documentSnapshot['title'],
                               style: GoogleFonts.getFont('Merriweather',
-                              fontSize: 17, 
-                              fontWeight: FontWeight.bold),
+                                  fontSize: 17, 
+                                  fontWeight: FontWeight.bold),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
@@ -152,9 +161,9 @@ class EntryCard extends StatelessWidget {
                               child: Text(
                                 documentSnapshot['content'],
                                 style: GoogleFonts.getFont('Nunito',
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,    
-                                color: Colors.black.withOpacity(0.6)),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black.withOpacity(0.6)),
                                 overflow: TextOverflow.fade,
                                 maxLines: 3,
                               ),
@@ -169,9 +178,9 @@ class EntryCard extends StatelessWidget {
                           child: (documentSnapshot['images'].length == 0 ||
                                   documentSnapshot['images'][0] == "")
                               ? Image.asset(
-                                  'assets/images/entry-placeholder.jpg',
-                                  height: 75.0,
-                                  width: 75.0,
+                                  'assets/images/Diary-pana.png',
+                                  height: 80.0,
+                                  width: 80.0,
                                 )
                               : CachedNetworkImage(
                                   imageUrl: documentSnapshot['images'][0],

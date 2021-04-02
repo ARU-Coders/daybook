@@ -31,20 +31,29 @@ class _TasksScreenState extends State<TasksScreen> {
                     return LoadingPage();
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/No-Tasks.png',
+                            height: 250.0,
+                            // width: 200.0,
+                          ),
+                          Text(
                             "No tasks created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont('Lato',
+                            style: GoogleFonts.getFont(
+                              'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                        ));
+                        ],
+                      ),
+                    );
                   }
                   return ListView.builder(
                     padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
@@ -82,10 +91,10 @@ class _TasksScreenState extends State<TasksScreen> {
                                     DateFormat.yMMMMd()
                                         .format(DateTime.parse(ds['dueDate'])),
                                     style: GoogleFonts.getFont('Oxygen',
-                                      fontSize: 13,
-                                      decoration: ds['isChecked']
-                                          ? TextDecoration.lineThrough
-                                          : null),
+                                        fontSize: 13,
+                                        decoration: ds['isChecked']
+                                            ? TextDecoration.lineThrough
+                                            : null),
                                   ),
                                 ),
                                 value: ds['isChecked'],
@@ -305,7 +314,8 @@ class _MyDialogState extends State<MyDialog> {
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Text(
                               "${DateFormat.yMMMMd().format(pickedDate)}  ${time.format(context)}",
-                              style: GoogleFonts.getFont('Oxygen',
+                              style: GoogleFonts.getFont(
+                                'Oxygen',
                                 color: Colors.black87,
                               ),
                             ),
