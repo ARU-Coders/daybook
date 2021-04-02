@@ -18,6 +18,15 @@ Stream<QuerySnapshot> getHabits() {
   return query;
 }
 
+Stream<DocumentSnapshot> getSingleHabitStream(String habitId) {
+  String email = AuthService.getUserEmail();
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
+  Stream<DocumentSnapshot> query =
+      userDoc.collection('habits').doc(habitId).snapshots();
+  return query;
+}
+
 Future<DocumentReference> createHabit(
     String title, TimeOfDay reminder, String frequency,
     {bool setReminder = true, String day}) async {

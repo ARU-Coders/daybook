@@ -49,11 +49,17 @@ class _HabitsScreenState extends State<HabitsScreen> {
                                 Container(child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/No-Habits.png',
+                            height: 250.0,
+                            // width: 200.0,
+                          ),
+                          Text(
                             "No habits created !! \n Click on + to get started",
                             style: GoogleFonts.getFont(
                               'Lato',
@@ -63,7 +69,9 @@ class _HabitsScreenState extends State<HabitsScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                        ));
+                        ],
+                      ),
+                    );
                   }
                   return new ListView.builder(
                       padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
