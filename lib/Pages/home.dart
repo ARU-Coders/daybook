@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     switch (value) {
       case 'Profile':
         {
+          Navigator.popAndPushNamed(context, '/profile');
           print("Selected : $value");
           break;
         }

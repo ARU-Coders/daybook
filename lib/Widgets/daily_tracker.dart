@@ -60,7 +60,7 @@ class _DailyTrackerState extends State<DailyTracker> {
                 onUnavailableDaySelected: () =>
                     print("Unavailable Day selected"),
                 availableGestures: AvailableGestures.all,
-                initialCalendarFormat: CalendarFormat.month,
+                initialCalendarFormat: CalendarFormat.twoWeeks,
                 initialSelectedDay: DateTime.now(),
                 calendarStyle: CalendarStyle(
                     canEventMarkersOverflow: true,
@@ -122,16 +122,29 @@ class _DailyTrackerState extends State<DailyTracker> {
                 child: Column(children: [
                   _controller.selectedDay != null
                       ? Text(
-                          DateFormat.yMMMMd().format(_controller.selectedDay),style: GoogleFonts.getFont('Oxygen', fontWeight: FontWeight.w600, fontSize: 15))
-                      : Text(DateFormat.yMMMMd().format(DateTime.now()),style: GoogleFonts.getFont('Oxygen', fontWeight: FontWeight.w600, fontSize: 15)),
+                          DateFormat.yMMMMd().format(_controller.selectedDay),
+                          style: GoogleFonts.getFont('Oxygen',
+                              fontWeight: FontWeight.w600, fontSize: 15))
+                      : Text(DateFormat.yMMMMd().format(DateTime.now()),
+                          style: GoogleFonts.getFont('Oxygen',
+                              fontWeight: FontWeight.w600, fontSize: 15)),
                   _controller.selectedDay != null
-                      ? _controller.selectedDay.isAfter(DateTime.now())
+                      ? _controller.selectedDay.isAfter(DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              23,
+                              23,
+                              59))
                           ? Builder(builder: (BuildContext context) {
                               return IconButton(
                                 onPressed: () {
                                   final snackBar = SnackBar(
                                     content: Text(
-                                        "Can't check habit for a future date !",style: GoogleFonts.getFont('Nunito',)),
+                                        "Can't check habit for a future date !",
+                                        style: GoogleFonts.getFont(
+                                          'Nunito',
+                                        )),
                                     duration: Duration(seconds: 2),
                                   );
                                   Scaffold.of(context).showSnackBar(snackBar);
@@ -164,7 +177,15 @@ class _DailyTrackerState extends State<DailyTracker> {
                             });
                           },
                         ),
-                  getCheckedValue() ? Text("Done",style: GoogleFonts.getFont('Nunito',)) : Text("Not Done",style: GoogleFonts.getFont('Nunito',)),
+                  getCheckedValue()
+                      ? Text("Done",
+                          style: GoogleFonts.getFont(
+                            'Nunito',
+                          ))
+                      : Text("Not Done",
+                          style: GoogleFonts.getFont(
+                            'Nunito',
+                          )),
                 ])),
           ],
         ),

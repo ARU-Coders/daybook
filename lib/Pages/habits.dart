@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/habitService.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'habit_stats.dart';
+
 class HabitsScreen extends StatefulWidget {
   @override
   _HabitsScreenState createState() => _HabitsScreenState();
@@ -105,15 +107,22 @@ class _HabitsScreenState extends State<HabitsScreen> {
                               controlAffinity: ListTileControlAffinity.leading,
                               onChanged: (newValue) {
                                 print("Habit: $newValue");
-                                onCheckHabit(ds['habitId'],
-                                    List<String>.from(ds['daysCompleted']));
+                                markAsDone(
+                                    ds['habitId'],
+                                    List<String>.from(ds['daysCompleted']),
+                                    DateTime.now());
                               },
                               secondary: IconButton(
                                 icon: Icon(Icons.arrow_forward),
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/habitStatistics',
-                                      arguments: [ds]);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            HabitStatisticsPage(
+                                              ds: ds,
+                                            )),
+                                  );
                                 },
                               )),
                         );
