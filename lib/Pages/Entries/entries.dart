@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/entryService.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -123,7 +124,8 @@ class EntryCard extends StatelessWidget {
               arguments: [documentSnapshot]);
           print("Tapped on an entry");
         },
-        onLongPress: () {
+        onLongPress: () async{
+          await HapticFeedback.vibrate();
           buildDeleteDialog(context, documentSnapshot);
         },
         splashColor: Colors.white54,
@@ -137,7 +139,8 @@ class EntryCard extends StatelessWidget {
                     Navigator.pushNamed(context, '/displayEntry',
                         arguments: [documentSnapshot]);
                   },
-                  onLongPress: () {
+                  onLongPress: () async{
+                    await HapticFeedback.vibrate();
                     buildDeleteDialog(context, documentSnapshot);
                   },
                   child: Row(
@@ -203,7 +206,8 @@ class EntryCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async{
+                            await HapticFeedback.vibrate();
                             buildDeleteDialog(context, documentSnapshot);
                           },
                           child: Icon(

@@ -135,6 +135,7 @@ Future<void> editEntry(
     'mood': mood,
     'images': imagesURLs,
   });
+  // ignore: unnecessary_statements
   deletedImages.length > 0 ? deleteImages(deletedImages) : null;
 }
 

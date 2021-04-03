@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'entries.dart';
-import 'journeys.dart';
-import 'tasks.dart';
-import 'habits.dart';
+import 'Entries/entries.dart';
+import 'Habits/habits.dart';
+import 'Journeys/journeys.dart';
+import 'Tasks/tasks.dart';
 import 'stats.dart';
 import 'package:daybook/Services/db_services.dart';
 import 'package:daybook/provider/google_sign_in.dart';
@@ -41,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     switch (value) {
       case 'Profile':
         {
-          Navigator.popAndPushNamed(context, '/profile');
+          Navigator.pushNamed(context, '/profile');
           print("Selected : $value");
           break;
         }
@@ -78,6 +79,9 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(40),
             splashColor: Colors.white70,
             onDoubleTap: _launchURL,
+            onLongPress: () async {
+             await HapticFeedback.vibrate(); 
+            },
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Image.asset(

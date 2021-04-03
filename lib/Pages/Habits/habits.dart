@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/habitService.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'habit_stats.dart';
@@ -105,7 +106,8 @@ class _HabitsScreenState extends State<HabitsScreen> {
                               value: List<String>.from(ds['daysCompleted'])
                                   .contains(today.toString()),
                               controlAffinity: ListTileControlAffinity.leading,
-                              onChanged: (newValue) {
+                              onChanged: (newValue) async{
+                                await HapticFeedback.vibrate();
                                 print("Habit: $newValue");
                                 markAsDone(
                                     ds['habitId'],

@@ -46,7 +46,7 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isEditing ?"Edit Journey":"Create Journey",
+          isEditing ? "Edit Journey" : "Create Journey",
           style: GoogleFonts.getFont('Lato'),
         ),
         leading: Builder(
@@ -172,7 +172,7 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                         date = await showDatePicker(
                             context: context,
                             initialDate: date,
-                            firstDate: DateTime(1900),
+                            firstDate: DateTime(1950),
                             lastDate: DateTime(2100));
                         if (date != null) {
                           setState(() {
@@ -236,7 +236,7 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
                         date = await showDatePicker(
                             context: context,
                             initialDate: date,
-                            firstDate: DateTime(1900),
+                            firstDate: DateTime(1950),
                             lastDate: DateTime(2100));
                         if (date != null) {
                           setState(() {

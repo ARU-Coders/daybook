@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -155,7 +156,8 @@ class _DailyTrackerState extends State<DailyTracker> {
                             })
                           : Checkbox(
                               value: getCheckedValue(),
-                              onChanged: (value) {
+                              onChanged: (value) async{
+                                await HapticFeedback.vibrate();
                                 markAsDone(
                                     widget.ds['habitId'],
                                     widget.ds['daysCompleted'],

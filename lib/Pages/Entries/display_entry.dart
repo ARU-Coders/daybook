@@ -3,6 +3,7 @@ import 'package:daybook/Services/entryService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
@@ -149,7 +150,8 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                   height: appbarHeight,
                                   child: Row(children: [
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async{
+                                        await HapticFeedback.vibrate();
                                         showDialog(
                                           context: context,
                                           barrierDismissible: false,

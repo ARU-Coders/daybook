@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../Widgets/google_signup_button_widget.dart';
+import 'package:daybook/Widgets/google_signup_button_widget.dart';
 import 'signup_details.dart';
 // import 'package:daybook/provider/google_sign_in.dart';
 // import 'package:provider/provider.dart';

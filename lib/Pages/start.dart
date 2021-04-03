@@ -4,7 +4,7 @@ import 'package:daybook/provider/google_sign_in.dart';
 import 'package:daybook/provider/email_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:daybook/Pages/home.dart';
-import 'login.dart';
+import 'Authentication/login.dart';
 
 class StartPage extends StatelessWidget {
   @override

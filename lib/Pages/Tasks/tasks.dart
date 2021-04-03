@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:daybook/Services/taskService.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -98,13 +99,15 @@ class _TasksScreenState extends State<TasksScreen> {
                                   ),
                                 ),
                                 value: ds['isChecked'],
-                                onChanged: (newValue) {
+                                onChanged: (newValue) async{
+                                  await HapticFeedback.vibrate();
                                   onCheckTask(ds['taskId'], !ds['isChecked']);
                                 },
                                 secondary: IconButton(
                                   icon: Icon(Icons.delete),
                                   color: Colors.black87,
-                                  onPressed: () {
+                                  onPressed: () async{
+                                    await HapticFeedback.vibrate();
                                     showDialog(
                                       context: context,
                                       barrierDismissible: false,
@@ -376,7 +379,7 @@ class _MyDialogState extends State<MyDialog> {
   _pickDate() async {
     DateTime date = await showDatePicker(
       context: context,
-      firstDate: DateTime(DateTime.now().year - 5),
+      firstDate: DateTime.now(),
       lastDate: DateTime(DateTime.now().year + 5),
       initialDate: pickedDate,
     );

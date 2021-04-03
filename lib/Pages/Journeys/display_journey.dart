@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/journeyService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -57,7 +58,8 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                               height: appbarHeight,
                               child: Row(children: [
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async{
+                                    await HapticFeedback.vibrate();
                                     showDialog(
                                       context: context,
                                       barrierDismissible: false,

@@ -1,4 +1,4 @@
-import 'package:daybook/Pages/signup_details.dart';
+import 'package:daybook/Pages/Authentication/signup_details.dart';
 import 'package:daybook/Pages/start.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Widgets/google_login_button_widget.dart';

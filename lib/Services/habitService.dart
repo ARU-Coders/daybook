@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'db_services.dart';
 import 'notification_service.dart' as Notif;
-import 'package:daybook/Models/habitSeries.dart';
 
 Future<DocumentSnapshot> getHabit(String habitId) async {
   DocumentReference userDoc = await getUserDocRef();
@@ -78,30 +77,6 @@ Future<DocumentReference> createHabit(
   return query;
 }
 
-// Future<DocumentReference> onCheckHabit(
-//     String habitId, List<dynamic> daysCompleted) async {
-//   DocumentReference userDoc = await getUserDocRef();
-
-//   DateTime today =
-//       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
-//   int idx = daysCompleted.indexOf(today.toString());
-
-//   if (idx == -1) {
-//     daysCompleted.add(today.toString());
-//   } else {
-//     daysCompleted.removeAt(idx);
-//   }
-
-//   final _ = await userDoc
-//       .collection('habits')
-//       .doc(habitId)
-//       .update({'daysCompleted': daysCompleted});
-
-//   DocumentReference query = userDoc.collection('habits').doc(habitId);
-//   return query;
-// }
-
 Future<DocumentReference> markAsDone(
     String habitId, List<dynamic> daysCompleted, DateTime date) async {
   DocumentReference userDoc = await getUserDocRef();
@@ -132,61 +107,4 @@ void deleteHabit(DocumentSnapshot documentSnapshot) async {
       .runTransaction((Transaction myTransaction) async {
     myTransaction.delete(documentSnapshot.reference);
   });
-}
-
-Future<void> getHabitYearlyCount(String habitId) async {
-  DocumentReference userDoc = await getUserDocRef();
-  DocumentSnapshot doc = await userDoc.collection('habits').doc(habitId).get();
-  List<String> daysComp = List<String>.from(doc['daysCompleted']);
-  Map<String, int> yearlyCount = {};
-
-  for (String i in daysComp) {
-    DateTime dt = DateTime.parse(i);
-    if (yearlyCount.keys.contains(dt.year.toString())) {
-      yearlyCount[dt.year.toString()]++;
-    } else {
-      yearlyCount[dt.year.toString()] = 1;
-    }
-  }
-  print(yearlyCount);
-  // return doc;
-}
-
-List<HabitSeries> getHabitMonthlyCount(days) {
-  print("getHabitMonthlyCount called !");
-  Map<String, String> monthMap = {
-    '1': 'Jan',
-    '2': 'Feb',
-    '3': 'Mar',
-    '4': 'Apr',
-    '5': 'May',
-    '6': 'Jun',
-    '7': 'July',
-    '8': 'Aug',
-    '9': 'Sept',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec'
-  };
-  // DocumentReference userDoc = await getUserDocRef();
-  // DocumentSnapshot doc = await userDoc.collection('habits').doc(habitId).get();
-  List<String> daysComp = List<String>.from(days);
-  Map<String, int> monthlyCount = {};
-
-  for (String i in daysComp) {
-    DateTime dt = DateTime.parse(i);
-    if (monthlyCount.keys.contains(monthMap[dt.month.toString()])) {
-      monthlyCount[monthMap[dt.month.toString()]]++;
-    } else {
-      monthlyCount[monthMap[dt.month.toString()]] = 1;
-    }
-  }
-  final List<HabitSeries> monthlyData = [];
-  for (var i in monthlyCount.keys) {
-    monthlyData.add(new HabitSeries(habitCount: monthlyCount[i], xval: i));
-  }
-  print("Monthly Data:   " + monthlyData.toString());
-
-  return monthlyData;
-  // return doc;
 }

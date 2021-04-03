@@ -1,6 +1,7 @@
 import 'package:daybook/Services/journeyService.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
@@ -108,7 +109,8 @@ class JourneyCard extends StatelessWidget {
                   Navigator.pushNamed(context, '/displayJourney',
                       arguments: [documentSnapshot]);
                 },
-                onLongPress: () {
+                onLongPress: () async{
+                  await HapticFeedback.vibrate();
                   showDialog(
                     context: context,
                     barrierDismissible: false,

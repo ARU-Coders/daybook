@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daybook/Services/habitStatsService.dart';
 // import 'package:daybook/Models/habitSeries.dart';
 import 'package:daybook/Widgets/daily_tracker.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:daybook/Services/habitService.dart';
 import 'package:daybook/Widgets/habit_chart.dart';
-import 'dart:math';
 
 class HabitStatisticsPage extends StatefulWidget {
   final DocumentSnapshot ds;
@@ -19,6 +19,17 @@ class HabitStatisticsPage extends StatefulWidget {
 }
 
 class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
+  DateTime selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime.now();
+  }
+
+  String dropdownValue = DateTime.now().year.toString();
+  List<String> years = List<String>.generate(
+      DateTime.now().year - 2000 + 1, (index) => (2000 + index).toString());
   Widget statCard(
     emoji,
     value,
@@ -58,50 +69,6 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
         ),
       ),
     );
-  }
-
-  String getCurrentStreak(dates) {
-    final now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
-    if (dates == null || dates.length == 0) return "0";
-    if (DateTime.parse(dates[dates.length - 1]) != today) return "0";
-    int streak = 0;
-    for (int i = dates.length - 1; i >= 0; --i) {
-      if (DateTime.parse(dates[i]) !=
-          today.subtract(Duration(days: dates.length - 1 - i))) {
-        break;
-      }
-      streak++;
-      // today = today.subtract(const Duration(days: 1));
-    }
-    print("Current Streak : " + streak.toString());
-    return streak.toString();
-  }
-
-  String getBestStreak(dates) {
-    if (dates == null || dates.length == 0) return "0";
-    dates = List<String>.from(dates);
-    DateTime j;
-    // final now = DateTime.now();
-    // final today = DateTime(now.year, now.month, now.day);
-    // if (DateTime.parse(dates[dates.length - 1]) != today) return "0";
-    Set s = Set();
-    for (dynamic i in dates) {
-      s.add(DateTime.parse(i));
-    }
-    var ans = 0;
-    for (int i = 0; i < dates.length; i++) {
-      if (s.contains(DateTime.parse(dates[i]))) {
-        j = DateTime.parse(dates[i]);
-      }
-      while (s.contains(j)) {
-        DateTime dt = j;
-        j = DateTime(dt.year, dt.month, dt.day + 1);
-      }
-      ans = max(ans, j.day - DateTime.parse(dates[i]).day);
-    }
-    print(ans);
-    return ans.toString();
   }
 
   @override
@@ -169,12 +136,71 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                               SizedBox(
                                 height: 20.0,
                               ),
-                              Text(
-                                "Habit Chart",
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Yearly Overview",
+                                    ),
+                                    DropdownButton<String>(
+                                      value: dropdownValue,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style: const TextStyle(
+                                          color: Colors.deepPurple),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          dropdownValue = newValue;
+                                        });
+                                      },
+                                      items: years
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+                                    // RaisedButton(
+                                    //     child: Text(DateFormat.yMMMM()
+                                    //             .format(selectedDate) ??
+                                    //         DateFormat.yMMMM()
+                                    //             .format(DateTime.now())),
+                                    //     onPressed: () {
+                                    //       showMonthPicker(
+                                    //         context: context,
+                                    //         firstDate: DateTime(
+                                    //             DateTime.now().year - 1, 5),
+                                    //         lastDate: DateTime(
+                                    //             DateTime.now().year + 1, 9),
+                                    //         initialDate:
+                                    //             selectedDate ?? DateTime.now(),
+                                    //         // locale: Locale("es"),
+                                    //       ).then((date) {
+                                    //         if (date != null) {
+                                    //           setState(() {
+                                    //             selectedDate = date;
+                                    //           });
+                                    //           print(selectedDate.toString());
+                                    //         }
+                                    //       });
+                                    //     }),
+                                  ],
+                                ),
                               ),
                               HabitChart(
                                   daysCompleted:
-                                      snapshot.data['daysCompleted']),
+                                      snapshot.data['daysCompleted'], year: dropdownValue),
                             ],
                           );
                         }),
@@ -245,7 +271,8 @@ class HabitHeader extends StatelessWidget {
                   height: appbarHeight,
                   child: Row(children: [
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async{
+                        await HapticFeedback.vibrate();
                         showDialog(
                           context: context,
                           barrierDismissible: false,

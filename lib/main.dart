@@ -1,16 +1,16 @@
-import 'package:daybook/Pages/create_entry.dart';
-import 'package:daybook/Pages/create_habit.dart';
-import 'package:daybook/Pages/create_journey.dart';
-import 'package:daybook/Pages/display_entry.dart';
-import 'package:daybook/Pages/display_journey.dart';
-import 'package:daybook/Pages/select_entries.dart';
+import 'package:daybook/Pages/Entries/create_entry.dart';
+import 'package:daybook/Pages/Habits/create_habit.dart';
+import 'package:daybook/Pages/Journeys/create_journey.dart';
+import 'package:daybook/Pages/Entries/display_entry.dart';
+import 'package:daybook/Pages/Journeys/display_journey.dart';
+import 'package:daybook/Pages/Journeys/select_entries.dart';
 // import 'package:daybook/Pages/habit_stats.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Pages/profile.dart';
 import 'Pages/start.dart';
-import 'Pages/signup.dart';
-import 'Pages/login.dart';
+import 'Pages/Authentication/signup.dart';
+import 'Pages/Authentication/login.dart';
 import 'Pages/home.dart';
 import 'dart:async';
 
