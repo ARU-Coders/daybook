@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/habitStatsService.dart';
-// import 'package:daybook/Models/habitSeries.dart';
 import 'package:daybook/Widgets/daily_tracker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +26,7 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
     selectedDate = DateTime.now();
   }
 
-  String dropdownValue = DateTime.now().year.toString();
+  String dropdownValue = 'Year';
   List<String> years = List<String>.generate(
       DateTime.now().year - 2000 + 1, (index) => (2000 + index).toString());
   Widget statCard(
@@ -144,7 +143,7 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "Yearly Overview",
+                                      "${dropdownValue}ly Overview",
                                     ),
                                     DropdownButton<String>(
                                       value: dropdownValue,
@@ -162,7 +161,7 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                                           dropdownValue = newValue;
                                         });
                                       },
-                                      items: years
+                                      items: ['Year', 'Month']
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {
                                         return DropdownMenuItem<String>(
@@ -199,8 +198,8 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                                 ),
                               ),
                               HabitChart(
-                                  daysCompleted:
-                                      snapshot.data['daysCompleted'], year: dropdownValue),
+                                  daysCompleted: snapshot.data['daysCompleted'],
+                                  value: dropdownValue),
                             ],
                           );
                         }),
@@ -247,7 +246,6 @@ class HabitHeader extends StatelessWidget {
         width: width,
         decoration: new BoxDecoration(
           color: Colors.pink[200],
-          // boxShadow: [new BoxShadow(blurRadius: 3.0)],
           borderRadius:
               new BorderRadius.vertical(bottom: new Radius.circular(40.0)),
         ),
@@ -271,7 +269,7 @@ class HabitHeader extends StatelessWidget {
                   height: appbarHeight,
                   child: Row(children: [
                     GestureDetector(
-                      onTap: () async{
+                      onTap: () async {
                         await HapticFeedback.vibrate();
                         showDialog(
                           context: context,

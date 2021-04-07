@@ -1,13 +1,20 @@
 import 'package:flutter/foundation.dart';
 
-class HabitSeries {
-  final String xval;
-  final int habitCount;
+class HabitMonthSeries {
+  final String month;
+  final int monthCount;
+
+  HabitMonthSeries({@required this.month, @required this.monthCount});
+}
+
+class HabitYearSeries {
+  final String year;
+  final int yearCount;
   // final charts.Color barColor;
 
-  HabitSeries({
-    @required this.xval,
-    @required this.habitCount,
+  HabitYearSeries({
+    @required this.year,
+    @required this.yearCount,
     // @required this.barColor
   });
 }

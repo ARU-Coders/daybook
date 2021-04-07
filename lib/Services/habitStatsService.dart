@@ -1,5 +1,35 @@
 import 'package:daybook/Models/habitSeries.dart';
 
+Map<String, String> monthMap = {
+  '1': 'Jan',
+  '2': 'Feb',
+  '3': 'Mar',
+  '4': 'Apr',
+  '5': 'May',
+  '6': 'Jun',
+  '7': 'July',
+  '8': 'Aug',
+  '9': 'Sept',
+  '10': 'Oct',
+  '11': 'Nov',
+  '12': 'Dec'
+};
+
+//Map Structure:
+// yearlyCount = {
+//   '2021' : {
+//     'count' : 0,
+//     'months': {
+//        'Jan': {
+//           'count': 0
+//           'weeks': {
+//              'Week1' : 0
+//           }
+//         }
+//      }
+//   }
+// }
+
 String getCurrentStreak(dates) {
   final now = DateTime.now();
   DateTime today = DateTime(now.year, now.month, now.day);
@@ -34,72 +64,52 @@ String getBestStreak(dates) {
   return max.toString();
 }
 
-// Future<void> getHabitYearlyCount(
-//   String habitId,
-// ) async {
-//   DocumentReference userDoc = await getUserDocRef();
-//   DocumentSnapshot doc = await userDoc.collection('habits').doc(habitId).get();
-//   List<String> daysComp = List<String>.from(doc['daysCompleted']);
-//   Map<String, int> yearlyCount = {};
-
-//   for (String i in daysComp) {
-//     DateTime dt = DateTime.parse(i);
-//     if (yearlyCount.keys.contains(dt.year.toString())) {
-//       yearlyCount[dt.year.toString()]++;
-//     } else {
-//       yearlyCount[dt.year.toString()] = 1;
-//     }
-//   }
-//   print(yearlyCount);
-//   // return doc;
-// }
-
-List<HabitSeries> getHabitMonthlyCount(
-    List<dynamic> days, String requiredYear) {
-  Map<String, String> monthMap = {
-    '1': 'Jan',
-    '2': 'Feb',
-    '3': 'Mar',
-    '4': 'Apr',
-    '5': 'May',
-    '6': 'Jun',
-    '7': 'July',
-    '8': 'Aug',
-    '9': 'Sept',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec'
-  };
-
+List<dynamic> getHabitStats(List<dynamic> days) {
   List<String> daysComp = List<String>.from(days);
-  Map<String, int> monthlyCount = {
-    'Jan': 0,
-    'Feb': 0,
-    'Mar': 0,
-    'Apr': 0,
-    'May': 0,
-    'Jun': 0,
-    'July': 0,
-    'Aug': 0,
-    'Sept': 0,
-    'Oct': 0,
-    'Nov': 0,
-    'Dec': 0
-  };
+  Map yearlyCount = {};
 
   for (String i in daysComp) {
     DateTime dt = DateTime.parse(i);
-    if (dt.year.toString() == requiredYear) {
-      if (monthlyCount.keys.contains(monthMap[dt.month.toString()])) {
-        monthlyCount[monthMap[dt.month.toString()]]++;
-      } else {
-        monthlyCount[monthMap[dt.month.toString()]] = 1;
-      }
+    if (yearlyCount.keys.contains(dt.year.toString())) {
+      yearlyCount[dt.year.toString()]['count'] += 1;
+      yearlyCount[dt.year.toString()]['months'][monthMap[dt.month.toString()]]
+          ['count'] += 1;
+    } else {
+      yearlyCount[dt.year.toString()] = {
+        'count': 1,
+        'months': {
+          'Jan': {'count': 0, 'weeks': {}},
+          'Feb': {'count': 0, 'weeks': {}},
+          'Mar': {'count': 0, 'weeks': {}},
+          'Apr': {'count': 0, 'weeks': {}},
+          'May': {'count': 0, 'weeks': {}},
+          'Jun': {'count': 0, 'weeks': {}},
+          'July': {'count': 0, 'weeks': {}},
+          'Aug': {'count': 0, 'weeks': {}},
+          'Sept': {'count': 0, 'weeks': {}},
+          'Oct': {'count': 0, 'weeks': {}},
+          'Nov': {'count': 0, 'weeks': {}},
+          'Dec': {'count': 0, 'weeks': {}}
+        }
+      };
+      yearlyCount[dt.year.toString()]['months'][monthMap[dt.month.toString()]]
+          ['count'] += 1;
     }
   }
-  final List<HabitSeries> monthlyData = [];
-  for (var i in monthlyCount.keys) {
-    monthlyData.add(new HabitSeries(habitCount: monthlyCount[i], xval: i));
+
+  final List<HabitYearSeries> yearlyData = [];
+  for (var i in yearlyCount.keys) {
+    yearlyData
+        .add(new HabitYearSeries(yearCount: yearlyCount[i]['count'], year: i));
   }
-  return monthlyData;
+
+  final List<HabitMonthSeries> monthlyData = [];
+  for (var i in yearlyCount.keys) {
+    for (var j in yearlyCount[i]['months'].keys) {
+      monthlyData.add(new HabitMonthSeries(
+          monthCount: yearlyCount[i]['months'][j]['count'],
+          month: j + ' ' + i));
+    }
+  }
+  return [yearlyData, monthlyData];
 }
