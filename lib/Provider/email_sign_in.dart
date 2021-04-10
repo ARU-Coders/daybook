@@ -42,7 +42,8 @@ class EmailSignInProvider extends ChangeNotifier {
         'gender': gender,
         'dateJoined': DateTime.now().toString(),
         'photo':
-            "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg"
+            "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg",
+        'type': 'email'
       });
       print(query);
       // setUserEmail(email);

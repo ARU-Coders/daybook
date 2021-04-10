@@ -124,7 +124,7 @@ class EntryCard extends StatelessWidget {
               arguments: [documentSnapshot]);
           print("Tapped on an entry");
         },
-        onLongPress: () async{
+        onLongPress: () async {
           await HapticFeedback.vibrate();
           buildDeleteDialog(context, documentSnapshot);
         },
@@ -139,7 +139,7 @@ class EntryCard extends StatelessWidget {
                     Navigator.pushNamed(context, '/displayEntry',
                         arguments: [documentSnapshot]);
                   },
-                  onLongPress: () async{
+                  onLongPress: () async {
                     await HapticFeedback.vibrate();
                     buildDeleteDialog(context, documentSnapshot);
                   },
@@ -153,8 +153,7 @@ class EntryCard extends StatelessWidget {
                             Text(
                               documentSnapshot['title'],
                               style: GoogleFonts.getFont('Merriweather',
-                                  fontSize: 17, 
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 17, fontWeight: FontWeight.bold),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
@@ -206,7 +205,7 @@ class EntryCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         GestureDetector(
-                          onTap: () async{
+                          onTap: () async {
                             await HapticFeedback.vibrate();
                             buildDeleteDialog(context, documentSnapshot);
                           },

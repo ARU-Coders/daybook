@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey _bottomNavigationKey = GlobalKey();
-  final _url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  final _url = 'https://trcr.tk/Kf6uY';
 
   final _tabs = [
     JourneysScreen(),
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
             splashColor: Colors.white70,
             onDoubleTap: _launchURL,
             onLongPress: () async {
-             await HapticFeedback.vibrate(); 
+              await HapticFeedback.vibrate();
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),

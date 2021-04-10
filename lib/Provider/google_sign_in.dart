@@ -89,7 +89,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       yyyy = response["birthdays"][1]["date"]["year"].toString();
     }
 
-    String dob = dd + "/" + mm + "/" + yyyy;
+    String dob = yyyy + "-" + mm + "-" + dd;
 
     print("DOB\t$dob\tGENDER\t$gender");
     return [gender, dob];
@@ -158,7 +158,8 @@ class GoogleSignInProvider extends ChangeNotifier {
           'photo': user.photoUrl,
           'gender': gender,
           'birthdate': dob,
-          'dateJoined': DateTime.now().toString()
+          'dateJoined': DateTime.now().toString(),
+          'type': 'google'
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));

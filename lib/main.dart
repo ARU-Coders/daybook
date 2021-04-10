@@ -4,6 +4,7 @@ import 'package:daybook/Pages/Journeys/create_journey.dart';
 import 'package:daybook/Pages/Entries/display_entry.dart';
 import 'package:daybook/Pages/Journeys/display_journey.dart';
 import 'package:daybook/Pages/Journeys/select_entries.dart';
+import 'package:daybook/Pages/edit_profile.dart';
 // import 'package:daybook/Pages/habit_stats.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         '/selectEntries': (BuildContext context) => SelectEntriesScreen(),
         // '/habitStatistics': (BuildContext context) => HabitStatisticsPage(),
         '/profile': (BuildContext context) => ProfileScreen(),
+        '/editProfile': (BuildContext context) => EditProfile(),
       },
     );
     // ,);
