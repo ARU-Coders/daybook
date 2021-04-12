@@ -28,26 +28,30 @@ class EmailSignInProvider extends ChangeNotifier {
     return;
   }
 
-  void register(String name, String email, String password, String gender,
-      String dob) async {
-    final newUser = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    if (newUser != null) {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      Future<DocumentReference> query =
-          firestore.collection('users').doc(email).set({
-        'name': name,
-        'email': email,
-        'birthdate': dob,
-        'gender': gender,
-        'dateJoined': DateTime.now().toString(),
-        'photo':
-            "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg",
-        'type': 'email'
-      });
-      print(query);
-      // setUserEmail(email);
-      final _ = AuthService.updateEmail();
+  Future<String> register(String name, String email, String password,
+      String gender, String dob) async {
+    try {
+      final newUser = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      if (newUser != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        Future<void> query = firestore.collection('users').doc(email).set({
+          'name': name,
+          'email': email,
+          'birthdate': dob,
+          'gender': gender,
+          'dateJoined': DateTime.now().toString(),
+          'photo':
+              "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg",
+          'type': 'email'
+        });
+        final _ = AuthService.updateEmail();
+        return "Success !";
+      }
+      return "Cannot create account !";
+    } catch (e) {
+      print(e);
+      return "Error!";
     }
   }
 

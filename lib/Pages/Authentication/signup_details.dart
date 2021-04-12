@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:daybook/provider/email_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:daybook/Pages/start.dart';
+import 'package:intl/intl.dart';
 
 class SignupDetails extends StatefulWidget {
   @override
@@ -22,14 +23,34 @@ class _SignupDetailsState extends State<SignupDetails> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController birthdayController = TextEditingController();
+  TextEditingController birthdayController;
   String dropdownValue = 'Male';
+  String birthdate = "Not Set";
+  void initState() {
+    super.initState();
+    birthdayController = new TextEditingController(text: 'Not Set');
+  }
 
   final _formKey = GlobalKey<FormState>();
   bool isValidEmail(email) {
     return RegExp(
             r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
         .hasMatch(email);
+  }
+
+  _pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      firstDate: DateTime(1950),
+      lastDate: DateTime(DateTime.now().year + 5),
+      initialDate: DateTime.now(),
+    );
+    if (date != null) {
+      setState(() {
+        birthdate = date.toString();
+        birthdayController.text = DateFormat.yMMMMd().format(date);
+      });
+    }
   }
 
   @override
@@ -88,7 +109,8 @@ class _SignupDetailsState extends State<SignupDetails> {
                                 const EdgeInsets.only(left: 20.0, right: 20.0),
                             child: TextFormField(
                               controller: nameController,
-                              decoration: textFormFieldDecoration("Name"),
+                              decoration: textFormFieldDecoration(
+                                  "Name", Icons.person_outline),
                               autofocus: false,
                               style: new TextStyle(color: Colors.blueGrey),
                               validator: (value) {
@@ -107,7 +129,8 @@ class _SignupDetailsState extends State<SignupDetails> {
                                 const EdgeInsets.only(left: 20.0, right: 20.0),
                             child: TextFormField(
                               controller: emailController,
-                              decoration: textFormFieldDecoration("Email"),
+                              decoration: textFormFieldDecoration(
+                                  "Email", Icons.email_outlined),
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'Email ID cannot be empty !';
@@ -125,10 +148,20 @@ class _SignupDetailsState extends State<SignupDetails> {
                           Padding(
                             padding:
                                 const EdgeInsets.only(left: 20.0, right: 20.0),
+                            // child: GestureDetector(
+                            //   onTap: _pickDate,
                             child: TextFormField(
-                              controller: birthdayController,
-                              decoration: textFormFieldDecoration("BirthDate"),
+                              onTap: _pickDate,
+                              readOnly: true,
+                              // controller: birthdateController:,
+                              controller: (birthdayController),
+                              decoration: textFormFieldDecoration(
+                                  "BirthDate", Icons.calendar_today_outlined),
                               validator: (value) {
+                                if (DateTime.parse(birthdate)
+                                    .isAfter(DateTime.now())) {
+                                  return 'Birthdate cannot be a future date !';
+                                }
                                 if (value.isEmpty) {
                                   return 'Date of Birth cannot be empty !';
                                 }
@@ -136,6 +169,7 @@ class _SignupDetailsState extends State<SignupDetails> {
                               },
                             ),
                           ),
+                          // ),
                           SizedBox(
                             height: 25.0,
                           ),
@@ -144,11 +178,12 @@ class _SignupDetailsState extends State<SignupDetails> {
                             padding:
                                 const EdgeInsets.only(left: 20.0, right: 20.0),
                             child: DropdownButtonFormField(
-                              decoration: textFormFieldDecoration("Gender"),
+                              decoration: textFormFieldDecoration(
+                                  "Gender", Icons.arrow_downward),
                               value: dropdownValue,
-                              icon: Icon(Icons.arrow_downward),
-                              iconSize: 24,
-                              elevation: 16,
+                              // icon: Icon(Icons.arrow_downward),
+                              // iconSize: 24,
+                              // elevation: 16,
                               style: TextStyle(color: Colors.deepPurple),
                               onChanged: (String newValue) {
                                 setState(() {
@@ -233,21 +268,28 @@ class _SignupDetailsState extends State<SignupDetails> {
                                 //   FontAwesomeIcons.signInAlt,
                                 //   color: Colors.red
                                 // ),
-                                onPressed: () {
+                                onPressed: () async {
                                   if (_formKey.currentState.validate()) {
                                     if (passwordController.text ==
                                         confirmPasswordController.text) {
-                                      provider.register(
+                                      String result = await provider.register(
                                           nameController.text,
                                           emailController.text,
                                           passwordController.text,
                                           dropdownValue,
-                                          birthdayController.text);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => StartPage()),
-                                      );
+                                          birthdate);
+                                      if (result == "Success") {
+                                        // print(birthdayController.text);
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StartPage()),
+                                        );
+                                      } else {
+                                        print(result);
+                                      }
                                     }
                                   }
                                 }),
@@ -304,9 +346,10 @@ class _SignupDetailsState extends State<SignupDetails> {
     );
   }
 
-  InputDecoration textFormFieldDecoration(lbl) {
+  InputDecoration textFormFieldDecoration(String lbl, IconData icon) {
     return new InputDecoration(
         labelText: lbl,
+        suffixIcon: Icon(icon),
         fillColor: Colors.white,
         border: new OutlineInputBorder(
             borderRadius: new BorderRadius.circular(15.0),

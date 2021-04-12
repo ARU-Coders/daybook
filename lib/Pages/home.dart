@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:daybook/Provider/email_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +10,7 @@ import 'Journeys/journeys.dart';
 import 'Tasks/tasks.dart';
 import 'stats.dart';
 import 'package:daybook/Services/db_services.dart';
+import 'package:daybook/Services/auth_service.dart';
 import 'package:daybook/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,133 +40,153 @@ class _HomePageState extends State<HomePage> {
       ? await launch(_url)
       : print('Could not launch $_url');
 
-  void handleMenuClick(String value) async {
-    switch (value) {
-      case 'Profile':
-        {
-          Navigator.pushNamed(context, '/profile');
-          print("Selected : $value");
-          break;
-        }
-      case 'Settings':
-        {
-          print("Selected : $value");
-          break;
-        }
-      case 'Logout':
-        {
-          print("Selected : $value");
-          final provider =
-              Provider.of<GoogleSignInProvider>(context, listen: false);
-          provider.logout();
-          Navigator.popAndPushNamed(
-            context,
-            '/start',
-          );
-          break;
-        }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            _title[_currentTab],
-            style: GoogleFonts.getFont('Lato'),
-          ),
-          leading: InkWell(
-            borderRadius: BorderRadius.circular(40),
-            splashColor: Colors.white70,
-            onDoubleTap: _launchURL,
-            onLongPress: () async {
-              await HapticFeedback.vibrate();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Image.asset(
-                'assets/images/logo.png',
-                height: 10,
-                width: 10,
-              ),
-            ),
-          ),
-          backgroundColor: Color(0xDAFFD1DC),
-          actions: [
-            PopupMenuButton<String>(
-              onSelected: handleMenuClick,
-              icon: FutureBuilder(
-                future: getUserProfile(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {}
-                  if (snapshot.hasData) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(40),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: snapshot.data['photo'],
-                      ),
-                    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<GoogleSignInProvider>(create: (context) {
+            return GoogleSignInProvider();
+          }),
+          ChangeNotifierProvider<EmailSignInProvider>(create: (context) {
+            return EmailSignInProvider();
+          }),
+        ],
+        child: Builder(builder: (newContext) {
+          void handleMenuClick(String value) async {
+            switch (value) {
+              case 'Profile':
+                {
+                  Navigator.pushNamed(context, '/profile');
+                  print("Selected : $value");
+                  break;
+                }
+              case 'Settings':
+                {
+                  print("Selected : $value");
+                  break;
+                }
+              case 'Logout':
+                {
+                  print("Selected : $value");
+                  String type = await AuthService.getUserType();
+                  // Builder(builder: (BuildContext context) {
+                  if (type == "google") {
+                    Provider.of<GoogleSignInProvider>(newContext, listen: false)
+                        .logout();
+                  } else {
+                    Provider.of<EmailSignInProvider>(newContext, listen: false)
+                        .logout();
                   }
-                  return Center(
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      child: CircularProgressIndicator(),
+                  // return SizedBpx();
+                  Navigator.popAndPushNamed(
+                    context,
+                    '/start',
+                  );
+                  // });
+
+                  break;
+                }
+            }
+          }
+
+          return SafeArea(
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  _title[_currentTab],
+                  style: GoogleFonts.getFont('Lato'),
+                ),
+                leading: InkWell(
+                  borderRadius: BorderRadius.circular(40),
+                  splashColor: Colors.white70,
+                  onDoubleTap: _launchURL,
+                  onLongPress: () async {
+                    await HapticFeedback.vibrate();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 10,
+                      width: 10,
                     ),
-                  );
-                },
+                  ),
+                ),
+                backgroundColor: Color(0xDAFFD1DC),
+                actions: [
+                  PopupMenuButton<String>(
+                    onSelected: handleMenuClick,
+                    icon: FutureBuilder(
+                      future: getUserProfile(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {}
+                        if (snapshot.hasData) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(40),
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: snapshot.data['photo'],
+                            ),
+                          );
+                        }
+                        return Center(
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      },
+                    ),
+                    itemBuilder: (BuildContext context) {
+                      return menuItems.map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(choice),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ],
               ),
-              itemBuilder: (BuildContext context) {
-                return menuItems.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
+              body: Container(
+                child: _tabs[_currentTab],
+              ),
+              bottomNavigationBar: CurvedNavigationBar(
+                index: _currentTab,
+                key: _bottomNavigationKey,
+                color: Color(0xDAFFD1DC),
+                backgroundColor: Color(0xffd68598),
+                buttonBackgroundColor: Color(0xffd68598),
+                animationCurve: Curves.linearToEaseOut,
+                animationDuration: Duration(milliseconds: 200),
+                items: <Widget>[
+                  // Journeys, Habits, Entry Feed, Tasks, Stats
+                  FaIcon(FontAwesomeIcons.plane,
+                      size: 20,
+                      color: _currentTab == 0 ? Colors.white : Colors.black87),
+                  FaIcon(FontAwesomeIcons.infinity,
+                      size: 20,
+                      color: _currentTab == 1 ? Colors.white : Colors.black87),
+                  FaIcon(FontAwesomeIcons.pencilAlt,
+                      size: 20,
+                      color: _currentTab == 2 ? Colors.white : Colors.black87),
+                  FaIcon(FontAwesomeIcons.tasks,
+                      size: 20,
+                      color: _currentTab == 3 ? Colors.white : Colors.black87),
+                  FaIcon(FontAwesomeIcons.chartLine,
+                      size: 20,
+                      color: _currentTab == 4 ? Colors.white : Colors.black87),
+                ],
+                onTap: (index) {
+                  setState(() {
+                    _currentTab = index;
+                  });
+                },
+                height: 50,
+              ),
             ),
-          ],
-        ),
-        body: Container(
-          child: _tabs[_currentTab],
-        ),
-        bottomNavigationBar: CurvedNavigationBar(
-          index: _currentTab,
-          key: _bottomNavigationKey,
-          color: Color(0xDAFFD1DC),
-          backgroundColor: Color(0xffd68598),
-          buttonBackgroundColor: Color(0xffd68598),
-          animationCurve: Curves.linearToEaseOut,
-          animationDuration: Duration(milliseconds: 200),
-          items: <Widget>[
-            // Journeys, Habits, Entry Feed, Tasks, Stats
-            FaIcon(FontAwesomeIcons.plane,
-                size: 20,
-                color: _currentTab == 0 ? Colors.white : Colors.black87),
-            FaIcon(FontAwesomeIcons.infinity,
-                size: 20,
-                color: _currentTab == 1 ? Colors.white : Colors.black87),
-            FaIcon(FontAwesomeIcons.pencilAlt,
-                size: 20,
-                color: _currentTab == 2 ? Colors.white : Colors.black87),
-            FaIcon(FontAwesomeIcons.tasks,
-                size: 20,
-                color: _currentTab == 3 ? Colors.white : Colors.black87),
-            FaIcon(FontAwesomeIcons.chartLine,
-                size: 20,
-                color: _currentTab == 4 ? Colors.white : Colors.black87),
-          ],
-          onTap: (index) {
-            setState(() {
-              _currentTab = index;
-            });
-          },
-          height: 50,
-        ),
-      ),
-    );
+          );
+        }));
   }
 }
