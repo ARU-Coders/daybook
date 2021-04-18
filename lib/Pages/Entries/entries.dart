@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:math' as math;
 
-
 class EntriesScreen extends StatefulWidget {
   @override
   _EntriesScreenState createState() => _EntriesScreenState();
@@ -126,7 +125,7 @@ class _EntriesScreenState extends State<EntriesScreen> with TickerProviderStateM
                 backgroundColor: Color(0xffd68598),
                 child: new Icon(icons[index], color: Colors.white),
                 onPressed: () {
-                  index == 1 ? Navigator.pushNamed(context, '/createEntry', arguments: []) : Navigator.pushNamed(context, '/createOCREntry');
+                  index == 1 ? Navigator.pushNamed(context, '/createEntry', arguments: []) : Navigator.pushNamed(context, '/captureEntry');
                   _controller.reverse();
                 },
               ),
