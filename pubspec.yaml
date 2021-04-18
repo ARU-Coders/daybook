@@ -28,6 +28,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   firebase_auth: ^0.20.0+1
   google_sign_in: ^4.5.9
+  pie_chart: 
 
   fluttertoast: 
   path_provider:
@@ -67,6 +68,8 @@ dependencies:
   animated_text_kit:
   camera: ^0.6.0
   firebase_ml_vision: ^0.9.10
+  flutter_swiper: ^1.1.6
+
 
 dev_dependencies:
   flutter_test:

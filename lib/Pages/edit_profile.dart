@@ -1,10 +1,10 @@
 import 'package:daybook/Services/user_services.dart';
 import 'package:flutter/material.dart';
-import 'package:daybook/Services/entryService.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+// import 'package:daybook/Services/entryService.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'dart:io';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:intl/intl.dart';
 
 class EditProfile extends StatefulWidget {
   @override

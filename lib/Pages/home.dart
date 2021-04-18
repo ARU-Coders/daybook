@@ -8,7 +8,7 @@ import 'Entries/entries.dart';
 import 'Habits/habits.dart';
 import 'Journeys/journeys.dart';
 import 'Tasks/tasks.dart';
-import 'stats.dart';
+import 'Stats/stats.dart';
 import 'package:daybook/Services/db_services.dart';
 import 'package:daybook/Services/auth_service.dart';
 import 'package:daybook/provider/google_sign_in.dart';

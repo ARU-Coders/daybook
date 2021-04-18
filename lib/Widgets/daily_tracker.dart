@@ -156,7 +156,7 @@ class _DailyTrackerState extends State<DailyTracker> {
                             })
                           : Checkbox(
                               value: getCheckedValue(),
-                              onChanged: (value) async{
+                              onChanged: (value) async {
                                 await HapticFeedback.vibrate();
                                 markAsDone(
                                     widget.ds['habitId'],
@@ -164,6 +164,7 @@ class _DailyTrackerState extends State<DailyTracker> {
                                     _controller.selectedDay);
                                 setState(() {
                                   _count++;
+                                  print(_count);
                                 });
                               },
                             )
