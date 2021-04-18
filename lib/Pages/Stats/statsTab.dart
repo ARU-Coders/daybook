@@ -8,29 +8,27 @@ import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class StatsTab extends StatefulWidget {
-  String tab;
+  final String tab;
   StatsTab({this.tab});
 
   @override
   _StatsTabState createState() => _StatsTabState();
 }
 
-class _StatsTabState extends State<StatsTab> {
+class _StatsTabState extends State<StatsTab>
+    with AutomaticKeepAliveClientMixin {
   Stream<QuerySnapshot> query;
+  DateTime yearDate = DateTime.now();
+  DateTime monthDate = DateTime.now();
   DateTime date;
   String tab;
   List<int> yearsToShow;
   List<DateTime> monthsToShow;
-  int _yearIndex = 24;
-  int _monthIndex = 299;
+  int _yearIndex;
+  int _monthIndex;
   int yearToAdd = DateTime.now().year - 24;
-  Map<String, double> dataMap = {
-    "Terrible": 5,
-    "Bad": 3,
-    "Neutral": 2,
-    "Good": 2,
-    "Wonderful": 4
-  };
+  Map<String, int> timelineCounts = null;
+  Map<String, double> dataMap = null;
 
   List<Color> colorList = [
     Color(0xffa3a8b8),
@@ -43,12 +41,35 @@ class _StatsTabState extends State<StatsTab> {
   @override
   void initState() {
     super.initState();
-    date = DateTime.now();
     tab = widget.tab;
-    query = tab == "Year" ? getPhotosOfYear(date) : getPhotosOfMonth(date);
+    query =
+        tab == "Year" ? getPhotosOfYear(yearDate) : getPhotosOfMonth(monthDate);
     monthsToShow = getMonths();
     yearsToShow =
         new List<int>.from(new List<int>.generate(25, (i) => i + yearToAdd));
+    date = tab == 'Year' ? yearDate : monthDate;
+    if (dataMap == null) {
+      print("dataMap is null");
+      getMoodCount(tab, date).then((Map s) => setState(() {
+            print("datamap wala s");
+            print(s);
+            dataMap = s;
+          }));
+      print(dataMap);
+    }
+    if (timelineCounts == null) {
+      print("timelineCounts is null");
+      getTimelineCounts(tab, date).then((Map s) => setState(() {
+            print("timelineCounts wala s");
+            print(s);
+            timelineCounts = s;
+          }));
+      print(timelineCounts);
+    }
+
+    // dataMap = await getMoodCount(tab, date);
+    _yearIndex = yearsToShow.length - 1;
+    _monthIndex = monthsToShow.length - 1;
   }
 
   @override
@@ -56,10 +77,12 @@ class _StatsTabState extends State<StatsTab> {
     return Column(children: [
       tab == 'Year' ? showYearpicker() : showMonthpicker(),
       SizedBox(height: 30),
-      showphotosCard(date.year.toString(), query),
+      showphotosCard(query),
       SizedBox(
         height: 20,
       ),
+      showTimelineCard(),
+      SizedBox(height: 20),
       PieChart(
         dataMap: dataMap,
         animationDuration: Duration(milliseconds: 800),
@@ -112,14 +135,16 @@ class _StatsTabState extends State<StatsTab> {
           itemCount: yearsToShow.length,
           // loop: false,
           itemBuilder: (BuildContext context, int index) {
-            return Center(child: Text(date.year.toString()));
+            return Center(child: Text(yearDate.year.toString()));
           },
-          index: yearsToShow.indexOf(date.year),
+          index: yearsToShow.indexOf(yearDate.year),
           control: new SwiperControl(),
           onIndexChanged: (index) {
+            // Map<String, int> temp = await getTimelineCounts(tab, date);
             setState(() {
               _yearIndex = index;
-              date = DateTime(yearsToShow[_yearIndex]);
+              yearDate = DateTime(yearsToShow[_yearIndex]);
+              // timelineCounts = temp;
             });
           },
         ));
@@ -131,20 +156,23 @@ class _StatsTabState extends State<StatsTab> {
         child: new Swiper(
           itemCount: monthsToShow.length,
           itemBuilder: (BuildContext context, int index) {
-            return Center(child: Text(DateFormat.yMMM().format(date)));
+            return Center(child: Text(DateFormat.yMMM().format(monthDate)));
           },
-          index: monthsToShow.indexOf(DateTime(date.year, date.month)),
+          index:
+              monthsToShow.indexOf(DateTime(monthDate.year, monthDate.month)),
           control: new SwiperControl(),
           onIndexChanged: (index) {
+            // Map<String, int> temp = await getTimelineCounts(tab, date);
             setState(() {
               _monthIndex = index;
-              date = monthsToShow[_monthIndex];
+              monthDate = monthsToShow[_monthIndex];
+              // timelineCounts = temp;
             });
           },
         ));
   }
 
-  Card showphotosCard(String year, Stream<QuerySnapshot> query) {
+  Card showphotosCard(Stream<QuerySnapshot> query) {
     return Card(
         elevation: 5,
         shape: RoundedRectangleBorder(
@@ -158,13 +186,15 @@ class _StatsTabState extends State<StatsTab> {
             children: [
               Text('Photos'),
               tab == 'Year'
-                  ? Text(date.year.toString())
-                  : Text(DateFormat.yMMM().format(date)),
+                  ? Text(yearDate.year.toString())
+                  : Text(DateFormat.yMMM().format(monthDate)),
               GestureDetector(
                 child: Text('Show All Images'),
                 onTap: () async {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return ShowAllImages(date: date, query: query);
+                    return ShowAllImages(
+                        date: tab == 'Year' ? yearDate : monthDate,
+                        query: query);
                   }));
                 },
               )
@@ -174,4 +204,42 @@ class _StatsTabState extends State<StatsTab> {
           width: MediaQuery.of(context).size.width - 8.0,
         ));
   }
+
+  Card showTimelineCard() {
+    return Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+        color: Colors.white,
+        clipBehavior: Clip.antiAlias,
+        child: Container(
+          child: Column(
+            children: [
+              Text('Timeline'),
+              tab == 'Year'
+                  ? Text(yearDate.year.toString())
+                  : Text(DateFormat.yMMM().format(monthDate)),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text('Entries'),
+                // Text(timelineCounts['entries'].toString())
+              ]),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text('Journeys'),
+                // Text(timelineCounts['journeys'].toString())
+              ]),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Text('Habits'),
+                // Text(timelineCounts['habits'].toString())
+              ]),
+            ],
+          ),
+          height: 100,
+          width: MediaQuery.of(context).size.width - 8.0,
+        ));
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

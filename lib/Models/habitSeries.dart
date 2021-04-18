@@ -10,11 +10,9 @@ class HabitMonthSeries {
 class HabitYearSeries {
   final String year;
   final int yearCount;
-  // final charts.Color barColor;
 
   HabitYearSeries({
     @required this.year,
     @required this.yearCount,
-    // @required this.barColor
   });
 }
