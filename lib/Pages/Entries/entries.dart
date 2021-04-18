@@ -5,13 +5,32 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:math' as math;
 
 class EntriesScreen extends StatefulWidget {
   @override
   _EntriesScreenState createState() => _EntriesScreenState();
 }
 
-class _EntriesScreenState extends State<EntriesScreen> {
+class _EntriesScreenState extends State<EntriesScreen> with TickerProviderStateMixin {
+  AnimationController _controller;
+  static const List<IconData> icons = const [ Icons.center_focus_strong_sharp, Icons.text_snippet_outlined];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 550),
+    );
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _controller.dispose();
+  }
   final Map<String, Color> colorMoodMap = {
     "Terrible": Color(0xffa3a8b8), //darkgrey
     "Bad": Color(0xffcbcbcb), //grey
@@ -24,7 +43,6 @@ class _EntriesScreenState extends State<EntriesScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        // color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
@@ -77,24 +95,71 @@ class _EntriesScreenState extends State<EntriesScreen> {
             Positioned(
               bottom: 15,
               right: 15,
-              child: FloatingActionButton(
-                backgroundColor: Color(0xffd68598),
-                child: Icon(
-                  Icons.add,
-                  size: 40,
-                ),
-                onPressed: () => {
-                  Navigator.pushNamed(context, '/createEntry', arguments: [])
-                  // print('Button pressed!');
-                },
-              ),
+              child: speedDialFAB(),
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget speedDialFAB(){
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: new List.generate(icons.length, (int index) {
+          Widget child = new Container(
+            height: 70.0,
+            width: 56.0,
+            alignment: FractionalOffset.topCenter,
+            child: new ScaleTransition(
+              scale: new CurvedAnimation(
+                parent: _controller,
+                curve: new Interval(
+                  0.0,
+                  1.0 - index / icons.length / 2.0,
+                  curve: Curves.easeOut
+                ),
+              ),
+              child: new FloatingActionButton(
+                heroTag: null,
+                backgroundColor: Color(0xffd68598),
+                child: new Icon(icons[index], color: Colors.white),
+                onPressed: () {
+                  index == 1 ? Navigator.pushNamed(context, '/createEntry', arguments: []) : Navigator.pushNamed(context, '/captureEntry');
+                  _controller.reverse();
+                },
+              ),
+            ),
+          );
+          return child;
+        }).toList()..add(
+          new FloatingActionButton(
+            heroTag: null,
+            backgroundColor: Color(0xffd68598),
+            child: new AnimatedBuilder(
+              animation: _controller,
+              builder: (BuildContext context, Widget child) {
+                return new Transform(
+                  transform: new Matrix4.rotationZ(_controller.value * 0.75 * math.pi),
+                  alignment: FractionalOffset.center,
+                  child: new Icon(Icons.add, size: 35,),
+                );
+              },
+            ),
+            onPressed: () {
+              if (_controller.isDismissed) {
+                _controller.forward();
+              } else {
+                _controller.reverse();
+              }
+            },
+          ),
+        ),
+      );
+  }
+
 }
+
 
 class EntryCard extends StatelessWidget {
   const EntryCard({

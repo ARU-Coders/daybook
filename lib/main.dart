@@ -8,6 +8,8 @@ import 'package:daybook/Pages/edit_profile.dart';
 // import 'package:daybook/Pages/habit_stats.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Pages/Entries/pick_image_screen.dart';
+import 'Pages/Entries/ocr_entry.dart';
 import 'Pages/profile.dart';
 import 'Pages/start.dart';
 import 'Pages/Authentication/signup.dart';
@@ -55,6 +57,8 @@ class MyApp extends StatelessWidget {
         '/login': (BuildContext context) => LoginPage(),
         '/home': (BuildContext context) => HomePage(),
         '/createEntry': (BuildContext context) => CreateEntryScreen(),
+        '/createOCREntry': (BuildContext context) => CreateOCREntryScreen(),
+        '/captureEntry': (BuildContext context) => PickImageScreen(),
         '/createJourney': (BuildContext context) => CreateJourneyScreen(),
         '/createHabit': (BuildContext context) => CreateHabitScreen(),
         '/displayEntry': (BuildContext context) => DisplayEntryScreen(),
