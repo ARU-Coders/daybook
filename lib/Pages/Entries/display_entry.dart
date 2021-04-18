@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
+// import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +13,7 @@ import 'package:share/share.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:daybook/Pages/pdf_preview.dart';
+// import 'package:daybook/Pages/pdf_preview.dart';
 import 'package:open_file/open_file.dart';
 
 class DisplayEntryScreen extends StatefulWidget {
@@ -267,7 +267,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                               //     await newfile.readAsBytes();
                                               // await Share.shareFiles(
                                               //     ["${newfile.path}"]);
-                                              final result =
+                                              final _ =
                                                   await OpenFile.open(
                                                       newfile.path);
                                             },

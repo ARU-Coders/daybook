@@ -35,7 +35,7 @@ class EmailSignInProvider extends ChangeNotifier {
           email: email, password: password);
       if (newUser != null) {
         FirebaseFirestore firestore = FirebaseFirestore.instance;
-        Future<void> query = firestore.collection('users').doc(email).set({
+        Future<void> _ = firestore.collection('users').doc(email).set({
           'name': name,
           'email': email,
           'birthdate': dob,
@@ -45,7 +45,7 @@ class EmailSignInProvider extends ChangeNotifier {
               "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg",
           'type': 'email'
         });
-        final _ = AuthService.updateEmail();
+        final __ = AuthService.updateEmail();
         return "Success !";
       }
       return "Cannot create account !";

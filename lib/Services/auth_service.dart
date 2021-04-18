@@ -12,7 +12,7 @@ class AuthService {
   }
 
   static Future<String> getUserType() async {
-    String email = getUserEmail();
+    // String email = getUserEmail();
     DocumentReference userDoc = await getUserDocRef();
     DocumentSnapshot ds = await userDoc.get(); //query
     String type = ds['type'].toString();

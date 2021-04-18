@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daybook/Services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+// import 'package:animated_text_kit/animated_text_kit.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
