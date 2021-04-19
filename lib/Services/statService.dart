@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_service.dart';
 
-Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async {
+Map<String, int> getTimelineCounts(String tab, DateTime date) {
   String beforeDate, afterDate;
   int year = date.year;
   int month = date.month;
@@ -19,31 +19,37 @@ Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async {
             month == 12 ? 1 : month + 1, 1, 0, 0, 0)
         .toString();
   }
+  print("Waiting for the end to come....");
+  int entryCount = 0;
 
-  final int entryCount = await userDoc
+  userDoc
       .collection('entries')
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate)
-      .orderBy('dateCreated')
       .snapshots()
-      .length;
+      .forEach((element) {
+    entryCount++;
+  });
 
-  final int journeyCount = await userDoc
+  int journeyCount = 0;
+  userDoc
       .collection('journeys')
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate)
-      .orderBy('dateCreated')
       .snapshots()
-      .length;
+      .forEach((element) {
+    journeyCount += 1;
+  });
 
-  final int habitCount = await userDoc
+  int habitCount = 0;
+  userDoc
       .collection('habits')
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate)
-      .where('mood', isEqualTo: 'Terrible')
-      .orderBy('dateCreated')
       .snapshots()
-      .length;
+      .forEach((element) {
+    habitCount += 1;
+  });
 
   Map<String, int> timelineMap = {
     'entries': entryCount,
@@ -56,7 +62,7 @@ Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async {
   return timelineMap;
 }
 
-Future<Map<String, double>> getMoodCount(String tab, DateTime date) async {
+Map<String, double> getMoodCount(String tab, DateTime date) {
   print("Getmoodcount mai jaa raha hai kya?");
   String beforeDate, afterDate;
   int year = date.year;
@@ -76,56 +82,26 @@ Future<Map<String, double>> getMoodCount(String tab, DateTime date) async {
         .toString();
   }
 
-  final int terribleCount = await userDoc
-      .collection('entries')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .where('mood', isEqualTo: 'Terrible')
-      .orderBy('dateCreated')
-      .snapshots()
-      .length;
-  print("TC:$terribleCount");
-  final int badCount = await userDoc
-      .collection('entries')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .where('mood', isEqualTo: 'Bad')
-      .orderBy('dateCreated')
-      .snapshots()
-      .length;
-
-  final int neutralCount = await userDoc
-      .collection('entries')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .where('mood', isEqualTo: 'Neutral')
-      .orderBy('dateCreated')
-      .snapshots()
-      .length;
-  final int goodCount = await userDoc
-      .collection('entries')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .where('mood', isEqualTo: 'Good')
-      .orderBy('dateCreated')
-      .snapshots()
-      .length;
-  final int wonderfulCount = await userDoc
-      .collection('entries')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .where('mood', isEqualTo: 'Wonderful')
-      .orderBy('dateCreated')
-      .snapshots()
-      .length;
-
   Map<String, double> moodCountMap = {
-    "Terrible": terribleCount.toDouble(),
-    "Bad": badCount.toDouble(),
-    "Neutral": neutralCount.toDouble(),
-    "Good": goodCount.toDouble(),
-    "Wonderful": wonderfulCount.toDouble()
+    "Terrible": 0,
+    "Bad": 0,
+    "Neutral": 0,
+    "Good": 0,
+    "Wonderful": 0
   };
+
+  userDoc
+      .collection('entries')
+      .where('dateCreated', isGreaterThan: afterDate)
+      .where('dateCreated', isLessThan: beforeDate)
+      .snapshots()
+      .forEach((element) {
+    print(element.docs.length.toString());
+    moodCountMap[element.docs[0]['mood'].toString()] += 1;
+    // habitCount += 1;
+    print("Count++ ");
+  });
+  // print("TC:$terribleCount");
   print(moodCountMap);
   return moodCountMap;
 }
@@ -204,3 +180,4 @@ Stream<QuerySnapshot> getPhotosOfMonth(DateTime date) {
 //   print(imageURLs);
 // });
 // return imageURLs;
+// urn imageURLs;
