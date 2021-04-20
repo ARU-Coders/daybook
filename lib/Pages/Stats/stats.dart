@@ -20,46 +20,45 @@ class _StatsScreenState extends State<StatsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Container(
-      margin: EdgeInsets.fromLTRB(20, 10, 20, 0),
+    return Container(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             height: 38.0,
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: TabBar(
-              tabs: [
-                Tab(
-                  text: 'Year',
+            margin: EdgeInsets.fromLTRB(0, 16.0, 0, 5),
+            child: Center(
+              child: TabBar(
+                tabs: [
+                  Tab(
+                    text: 'Year',
+                  ),
+                  Tab(
+                    text: 'Month',
+                  ),
+                ],
+                controller: _tabController,
+                isScrollable: true,
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelPadding: EdgeInsets.symmetric(horizontal: 25.0),
+                indicatorPadding: EdgeInsets.symmetric(horizontal: 10.0),
+                indicator: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-                Tab(
-                  text: 'Month',
+                unselectedLabelStyle: GoogleFonts.poppins(
+                  color: Colors.black87,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
                 ),
-              ],
-              controller: _tabController,
-              isScrollable: true,
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelPadding: EdgeInsets.symmetric(horizontal: 25.0),
-              indicatorPadding: EdgeInsets.symmetric(horizontal: 10.0),
-              indicator: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              unselectedLabelStyle: GoogleFonts.poppins(
-                color: Colors.black87,
-                fontSize: 15.0,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
-              ),
-              unselectedLabelColor: Theme.of(context).iconTheme.color,
-              labelColor: Colors.white,
-              labelStyle: GoogleFonts.poppins(
-                color: Colors.black87,
-                fontSize: 15.0,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.3,
+                unselectedLabelColor: Theme.of(context).iconTheme.color,
+                labelColor: Colors.white,
+                labelStyle: GoogleFonts.poppins(
+                  color: Colors.black87,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
               ),
             ),
           ),
@@ -72,11 +71,8 @@ class _StatsScreenState extends State<StatsScreen>
               );
             }),
           ),
-          SizedBox(
-            height: 20,
-          ),
         ],
       ),
-    ));
+    );
   }
 }

@@ -1,13 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_service.dart';
 
-Map<String, int> getTimelineCounts(String tab, DateTime date) {
+Query timelineQueryGenerator(String collection, String beforeDate, String afterDate){
+DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(AuthService.getUserEmail());
+  return userDoc
+      .collection(collection)
+      .where('dateCreated', isGreaterThan: afterDate)
+      .where('dateCreated', isLessThan: beforeDate);
+}
+
+Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async{
   String beforeDate, afterDate;
   int year = date.year;
   int month = date.month;
-  String email = AuthService.getUserEmail();
-  DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(email);
+
   if (tab == 'Year') {
     afterDate = DateTime(year - 1, 12, 31, 23, 23, 59).toString();
     beforeDate = DateTime(year + 1, 1, 1, 0, 0, 0).toString();
@@ -19,37 +26,18 @@ Map<String, int> getTimelineCounts(String tab, DateTime date) {
             month == 12 ? 1 : month + 1, 1, 0, 0, 0)
         .toString();
   }
-  print("Waiting for the end to come....");
-  int entryCount = 0;
 
-  userDoc
-      .collection('entries')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .snapshots()
-      .forEach((element) {
-    entryCount++;
-  });
+  final entryQuery = timelineQueryGenerator('entries', beforeDate,afterDate);
+  QuerySnapshot entries = await entryQuery.get();
+  int entryCount = entries.docs.length;
 
-  int journeyCount = 0;
-  userDoc
-      .collection('journeys')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .snapshots()
-      .forEach((element) {
-    journeyCount += 1;
-  });
+  final journeyQuery = timelineQueryGenerator('journeys', beforeDate,afterDate);
+  QuerySnapshot journeys = await journeyQuery.get();
+  int journeyCount = journeys.docs.length;
 
-  int habitCount = 0;
-  userDoc
-      .collection('habits')
-      .where('dateCreated', isGreaterThan: afterDate)
-      .where('dateCreated', isLessThan: beforeDate)
-      .snapshots()
-      .forEach((element) {
-    habitCount += 1;
-  });
+    final habitQuery = timelineQueryGenerator('habits', beforeDate,afterDate);
+  QuerySnapshot habits = await habitQuery.get();
+  int habitCount = habits.docs.length;
 
   Map<String, int> timelineMap = {
     'entries': entryCount,
@@ -62,14 +50,14 @@ Map<String, int> getTimelineCounts(String tab, DateTime date) {
   return timelineMap;
 }
 
-Map<String, double> getMoodCount(String tab, DateTime date) {
-  print("Getmoodcount mai jaa raha hai kya?");
+Future<Map<String, double>> getMoodCount(String tab, DateTime date) async{
   String beforeDate, afterDate;
   int year = date.year;
   int month = date.month;
   String email = AuthService.getUserEmail();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
+  
   if (tab == 'Year') {
     afterDate = DateTime(year - 1, 12, 31, 23, 23, 59).toString();
     beforeDate = DateTime(year + 1, 1, 1, 0, 0, 0).toString();
@@ -90,18 +78,23 @@ Map<String, double> getMoodCount(String tab, DateTime date) {
     "Wonderful": 0
   };
 
-  userDoc
+  QuerySnapshot querySnapshot = await userDoc
       .collection('entries')
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate)
-      .snapshots()
-      .forEach((element) {
-    print(element.docs.length.toString());
-    moodCountMap[element.docs[0]['mood'].toString()] += 1;
-    // habitCount += 1;
-    print("Count++ ");
-  });
-  // print("TC:$terribleCount");
+      .get();
+
+    Map<String, dynamic> queryDocumentSnapshotData;
+
+  await querySnapshot.docs.forEach((element) {
+        queryDocumentSnapshotData = element.data();
+        print(element.data.toString());
+        print(queryDocumentSnapshotData['mood'].toString());
+        moodCountMap[queryDocumentSnapshotData['mood'].toString()] += 1;
+        print("Count++ ");
+        print(queryDocumentSnapshotData['mood'].toString());
+      });
+  
   print(moodCountMap);
   return moodCountMap;
 }
@@ -169,15 +162,3 @@ Stream<QuerySnapshot> getPhotosOfMonth(DateTime date) {
       .snapshots();
   return query;
 }
-
-// Reference ref = FirebaseStorage.instance.ref().child(email);
-// List<String> imageURLs = [];
-// ref.listAll().then((result) async {
-//   for (var i in result.items) {
-//     String url = await i.getDownloadURL();
-//     imageURLs.add(url);
-//   }
-//   print(imageURLs);
-// });
-// return imageURLs;
-// urn imageURLs;
