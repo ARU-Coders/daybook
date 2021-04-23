@@ -22,7 +22,6 @@ class _JourneysScreenState extends State<JourneysScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
@@ -38,7 +37,8 @@ class _JourneysScreenState extends State<JourneysScreen> {
                         child: Center(
                           child: Text(
                             "No journeys created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont('Lato',
+                            style: GoogleFonts.getFont(
+                              'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
@@ -109,7 +109,7 @@ class JourneyCard extends StatelessWidget {
                   Navigator.pushNamed(context, '/displayJourney',
                       arguments: [documentSnapshot]);
                 },
-                onLongPress: () async{
+                onLongPress: () async {
                   await HapticFeedback.vibrate();
                   showDialog(
                     context: context,
@@ -126,13 +126,21 @@ class JourneyCard extends StatelessWidget {
                                 deleteJourney(documentSnapshot);
                                 Navigator.pop(context);
                               },
-                              child: Text("Delete", style: TextStyle(color: Colors.red,fontSize: 15),),
+                              child: Text(
+                                "Delete",
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 15),
+                              ),
                             ),
                             FlatButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Cancel", style: TextStyle(color: Colors.green,fontSize: 15),),
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    color: Colors.green, fontSize: 15),
+                              ),
                             ),
                           ],
                         ),
@@ -151,8 +159,7 @@ class JourneyCard extends StatelessWidget {
                           Text(
                             documentSnapshot['title'],
                             style: GoogleFonts.getFont('Merriweather',
-                                fontSize: 17, 
-                                fontWeight: FontWeight.w600),
+                                fontSize: 17, fontWeight: FontWeight.w600),
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                           ),
@@ -162,9 +169,9 @@ class JourneyCard extends StatelessWidget {
                             child: Text(
                               documentSnapshot['description'],
                               style: GoogleFonts.getFont('Nunito',
-                              fontSize: 15,
-                              fontWeight:FontWeight.w600,
-                              color: Colors.black.withOpacity(0.6)),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black.withOpacity(0.6)),
                               overflow: TextOverflow.fade,
                               maxLines: 3,
                             ),

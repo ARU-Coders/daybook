@@ -22,7 +22,6 @@ class _TasksScreenState extends State<TasksScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
         child: Stack(
           children: [
             StreamBuilder(
@@ -99,14 +98,14 @@ class _TasksScreenState extends State<TasksScreen> {
                                   ),
                                 ),
                                 value: ds['isChecked'],
-                                onChanged: (newValue) async{
+                                onChanged: (newValue) async {
                                   await HapticFeedback.vibrate();
                                   onCheckTask(ds['taskId'], !ds['isChecked']);
                                 },
                                 secondary: IconButton(
                                   icon: Icon(Icons.delete),
                                   color: Colors.black87,
-                                  onPressed: () async{
+                                  onPressed: () async {
                                     await HapticFeedback.vibrate();
                                     showDialog(
                                       context: context,

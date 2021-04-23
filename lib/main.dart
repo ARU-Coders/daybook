@@ -5,9 +5,11 @@ import 'package:daybook/Pages/Entries/display_entry.dart';
 import 'package:daybook/Pages/Journeys/display_journey.dart';
 import 'package:daybook/Pages/Journeys/select_entries.dart';
 import 'package:daybook/Pages/edit_profile.dart';
+import 'package:daybook/Provider/theme_change.dart';
 // import 'package:daybook/Pages/habit_stats.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'Pages/Entries/pick_image_screen.dart';
 import 'Pages/Entries/ocr_entry.dart';
 import 'Pages/profile.dart';
@@ -25,31 +27,26 @@ Future main() async {
 }
 
 class MyApp extends StatelessWidget {
-  static final String title = 'Daybook';
-
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeChanger(lightTheme)),
+      ],
+      child: MaterialAppWithTheme(),
+    );
+  }
+}
+
+class MaterialAppWithTheme extends StatelessWidget {
+  static final String title = 'Daybook';
+  @override
+  Widget build(BuildContext context) {
+    final theme = Provider.of<ThemeChanger>(context);
     return MaterialApp(
+      theme: theme.getTheme,
       debugShowCheckedModeBanner: false,
       title: title,
-      theme: ThemeData(
-          primarySwatch: MaterialColor(0xff8ebbf2, {
-            50: Color.fromRGBO(4, 131, 184, .1),
-            100: Color.fromRGBO(4, 131, 184, .2),
-            200: Color.fromRGBO(4, 131, 184, .3),
-            300: Color.fromRGBO(4, 131, 184, .4),
-            400: Color.fromRGBO(4, 131, 184, .5),
-            500: Color.fromRGBO(4, 131, 184, .6),
-            600: Color.fromRGBO(4, 131, 184, .7),
-            700: Color.fromRGBO(4, 131, 184, .8),
-            800: Color.fromRGBO(4, 131, 184, .9),
-            900: Color.fromRGBO(4, 131, 184, 1),
-          }),
-          backgroundColor: Color(0xffFFD1DC) // pink
-          // Color(0xffd9dde9) --> grey
-          // Color(0xff8ebbf2)--> blue
-
-          ),
       home: StartPage(),
       routes: <String, WidgetBuilder>{
         '/start': (BuildContext context) => StartPage(),
@@ -69,6 +66,5 @@ class MyApp extends StatelessWidget {
         '/editProfile': (BuildContext context) => EditProfile(),
       },
     );
-    // ,);
   }
 }

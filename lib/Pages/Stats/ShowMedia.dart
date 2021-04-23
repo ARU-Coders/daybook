@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
-import 'package:daybook/Services/statService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,9 +8,9 @@ import 'package:intl/intl.dart';
 
 class ShowAllImages extends StatelessWidget {
   @required
-  Stream<QuerySnapshot> query;
+  final Stream<QuerySnapshot> query;
   @required
-  DateTime date;
+  final DateTime date;
   ShowAllImages({this.query, this.date});
 
   @override

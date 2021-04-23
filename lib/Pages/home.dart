@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:daybook/Provider/email_sign_in.dart';
+import 'package:daybook/Provider/theme_change.dart';
+import 'package:daybook/Widgets/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,6 +44,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var _themeProvider = Provider.of<ThemeChanger>(context);
+    bool status = _themeProvider.getTheme == lightTheme;
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<GoogleSignInProvider>(create: (context) {
@@ -50,6 +54,7 @@ class _HomePageState extends State<HomePage> {
           ChangeNotifierProvider<EmailSignInProvider>(create: (context) {
             return EmailSignInProvider();
           }),
+          ChangeNotifierProvider(create: (_) => ThemeChanger(lightTheme)),
         ],
         child: Builder(builder: (newContext) {
           void handleMenuClick(String value) async {
@@ -114,6 +119,27 @@ class _HomePageState extends State<HomePage> {
                 ),
                 backgroundColor: Color(0xDAFFD1DC),
                 actions: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: CustomSwitch(
+                      activeColor: Colors.grey[100],
+                      activeText: 'Light',
+                      activeTextColor: Colors.black,
+                      inactiveText: 'Dark',
+                      inactiveColor: Colors.grey[800],
+                      inactiveTextColor: Colors.white,
+                      value: status,
+                      onChanged: (value) {
+                        _themeProvider.setTheme(
+                            _themeProvider.getTheme == lightTheme
+                                ? darkTheme
+                                : lightTheme);
+                        setState(() {
+                          status = value;
+                        });
+                      },
+                    ),
+                  ),
                   PopupMenuButton<String>(
                     onSelected: handleMenuClick,
                     icon: FutureBuilder(
