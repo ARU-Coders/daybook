@@ -69,7 +69,7 @@ dependencies:
   camera: ^0.6.0
   firebase_ml_vision: ^0.9.10
   flutter_swiper: ^1.1.6
-
+  textfield_tags: ^1.1.0
 
 dev_dependencies:
   flutter_test:

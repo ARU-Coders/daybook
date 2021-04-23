@@ -8,6 +8,7 @@ import 'package:group_button/group_button.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
 class CreateEntryScreen extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
 
   List<String> deletedImages = [];
   List<String> previousImages = [];
+  List<String> tags = [];
+  List<String> previousTags = [];
 
   final Map<String, String> moodMap = {
     "😭": "Terrible",
@@ -96,14 +99,44 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
       if (t != null) {
         dateCreated = date;
         time = t;
-        print(date);
-        print(t);
         setState(() {
           dateCreated = date;
           time = t;
         });
       }
     }
+  }
+
+  Container tagBuilder() {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      child: TextFieldTags(
+        initialTags: isEditing ? previousTags : [],
+        textFieldStyler: TextFieldStyler(
+          hintText: 'Got tags?',
+          isDense: false,
+          textFieldBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25))),
+        ),
+        tagsStyler: TagsStyler(
+          tagTextStyle: TextStyle(fontWeight: FontWeight.normal),
+          tagDecoration: BoxDecoration(
+            color: Colors.blue[300],
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          tagCancelIcon:
+              Icon(Icons.cancel, size: 18.0, color: Colors.blue[900]),
+          tagPadding: const EdgeInsets.all(6.0),
+          tagMargin: const EdgeInsets.symmetric(horizontal: 4.0),
+        ),
+        onTag: (tag) {
+          tags.add(tag);
+        },
+        onDelete: (tag) {
+          tags.remove(tag);
+        },
+      ),
+    );
   }
 
   Future<List<String>> _selectImages() async {
@@ -132,9 +165,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     switch (value) {
       case 'Add Images':
         {
-          print("Selected : $value");
           selectedImages = await _selectImages();
-          print("hello" + selectedImages.toString());
           break;
         }
       case 'Add to Journey':
@@ -168,6 +199,8 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     if (arguments.length != 0 && !isEditing) {
+      tags = List<String>.from(arguments[0]['tags']);
+      previousTags = List<String>.from(arguments[0]['tags']);
       titleController.text = arguments[0]['title'];
       contentController.text = arguments[0]['content'];
       documentId = arguments[0].id;
@@ -224,14 +257,15 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                             isLoading = true;
                           });
                           await editEntry(
-                              arguments[0].id,
-                              titleController.text,
-                              contentController.text,
-                              moodMap[selectedMoods[0]],
-                              selectedImages,
-                              previousImages,
-                              deletedImages,
-                              dateAndTimeCreated);
+                              entryId: arguments[0].id,
+                              title: titleController.text,
+                              content: contentController.text,
+                              mood: moodMap[selectedMoods[0]],
+                              selectedImages: selectedImages,
+                              previousImagesURLs: previousImages,
+                              deletedImages: deletedImages,
+                              dateCreated: dateAndTimeCreated,
+                              tags: tags);
                           setState(() {
                             isLoading = false;
                           });
@@ -257,11 +291,12 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                             isLoading = true;
                           });
                           DocumentReference docRef = await createEntry(
-                              titleController.text,
-                              contentController.text,
-                              moodMap[selectedMoods[0]],
-                              selectedImages,
-                              dateAndTimeCreated);
+                              title: titleController.text,
+                              content: contentController.text,
+                              mood: moodMap[selectedMoods[0]],
+                              images: selectedImages,
+                              dateCreated: dateAndTimeCreated,
+                              tags: tags);
                           DocumentSnapshot documentSnapshot =
                               await docRef.get();
                           setState(() {
@@ -384,6 +419,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                               SizedBox(
                                 height: 25.0,
                               ),
+                              tagBuilder(),
                               (selectedImages.length != 0 ||
                                       previousImages.length != 0)
                                   ? _imagesGrid()
@@ -431,7 +467,6 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
               children: <Widget>[
                 GestureDetector(
                   onLongPress: () {
-                    print("Long Press Registered !!!");
                     setState(() {
                       if (isFirebaseImage) {
                         deletedImages.add(previousImages[idx]);

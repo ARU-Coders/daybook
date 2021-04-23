@@ -23,10 +23,14 @@ Future<void> deleteImages(List<String> deleteImages) async {
   });
 }
 
-Future<DocumentReference> createEntry(String title, String content, String mood,
-    List<String> images, DateTime dateCreated) async {
+Future<DocumentReference> createEntry(
+    {String title,
+    String content,
+    String mood,
+    List<String> images,
+    DateTime dateCreated,
+    List<String> tags = const []}) async {
   String email = AuthService.getUserEmail();
-
   DocumentReference userDoc = await getUserDocRef();
 
   DocumentReference randomDoc = userDoc.collection('entries').doc();
@@ -40,7 +44,8 @@ Future<DocumentReference> createEntry(String title, String content, String mood,
 
     await Future.wait(
         images.map((String _image) async {
-          String imageRef = id + '/' + _image.split('/').last;
+          String imageRef =
+              id + '/' + _image.split('/').last + DateTime.now().toString();
           Reference ref = FirebaseStorage.instance.ref(imageRef);
           UploadTask uploadTask = ref.putFile(File(_image));
 
@@ -65,7 +70,8 @@ Future<DocumentReference> createEntry(String title, String content, String mood,
     'dateLastModified': now.toString(),
     'mood': mood,
     'images': imagesURLs,
-    'docId': docId
+    'docId': docId,
+    'tags': tags
   });
   DocumentReference query = userDoc.collection('entries').doc(docId);
   return query;
@@ -90,14 +96,15 @@ Future<DocumentSnapshot> getEntry(String entryId) async {
 }
 
 Future<void> editEntry(
-    String entryId,
+    {String entryId,
     String title,
     String content,
     String mood,
     List<String> selectedImages,
     List<String> previousImagesURLs,
     List<String> deletedImages,
-    DateTime dateCreated) async {
+    DateTime dateCreated,
+    List<String> tags}) async {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc = await getUserDocRef();
   List<String> selectedImagesURLs = [];
@@ -106,7 +113,8 @@ Future<void> editEntry(
 
     await Future.wait(
         selectedImages.map((String _image) async {
-          String imageRef = id + '/' + _image.split('/').last;
+          String imageRef =
+              id + '/' + _image.split('/').last + DateTime.now().toString();
           Reference ref = FirebaseStorage.instance.ref(imageRef);
           UploadTask uploadTask = ref.putFile(File(_image));
 
@@ -125,7 +133,6 @@ Future<void> editEntry(
   List<String> imagesURLs = selectedImagesURLs + previousImagesURLs;
 
   DateTime now = new DateTime.now();
-  print("Editing: dc = ${dateCreated.toString()}");
 
   Future<void> _ = userDoc.collection('entries').doc(entryId).update({
     'title': title,
@@ -134,6 +141,7 @@ Future<void> editEntry(
     'dateLastModified': now.toString(),
     'mood': mood,
     'images': imagesURLs,
+    'tags': tags
   });
   // ignore: unnecessary_statements
   deletedImages.length > 0 ? deleteImages(deletedImages) : null;

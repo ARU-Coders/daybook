@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
-// import 'package:pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -27,14 +26,9 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
     final fontData = await rootBundle.load('assets/fonts/OpenSans-Regular.ttf');
     final ttf = pw.Font.ttf(fontData);
 
-    // final imagePaths = doc['imageURLs']
-    // final image = pw.MemoryImage(
-    //   File(imagePath).readAsBytesSync(),
-    // );
-    //
-
     pdf.addPage(
       pw.MultiPage(
+        maxPages: 100,
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) => [
           pw.Center(
@@ -84,15 +78,13 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    // double height = MediaQuery.of(context).size.height;
-    // var padding = MediaQuery.of(context).padding;
     var appbarHeight = AppBar().preferredSize.height;
-    // double newheight = height - padding.top - padding.bottom - appbarHeight;
 
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     DocumentSnapshot documentSnapshot = arguments[0];
     List<dynamic> imageUrls = documentSnapshot["images"];
+    List<String> tags = List<String>.from(documentSnapshot["tags"]);
     print("checking :" + documentSnapshot['title']);
     print("checking :" + documentSnapshot.toString());
 
@@ -124,6 +116,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                     },
                     child: Container(
                         height: 110,
+                        width: 110,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -132,6 +125,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                             imageUrl: imageUrls[index] == ""
                                 ? 'https://picsum.photos/250?image=9'
                                 : imageUrls[index],
+                            fit: BoxFit.cover,
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) => Container(
                               child: Center(
@@ -147,10 +141,41 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                             ),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
-                            fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         )),
+                  ),
+                ],
+              );
+            }),
+          ),
+        ),
+      );
+    }
+
+    Widget _tagsGrid() {
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Wrap(
+            spacing: 3,
+            runSpacing: 1,
+            children: List.generate(tags.length, (index) {
+              return Column(
+                children: <Widget>[
+                  Chip(
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    labelPadding:
+                        EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                    label: Text(
+                      "${tags[index]}",
+                      style: GoogleFonts.getFont(
+                        'Oxygen',
+                        color: Colors.black87,
+                      ),
+                    ),
+                    // avatar: Icon(Icons.alarm),
+                    backgroundColor: Color(0xffffe9b3),
                   ),
                 ],
               );
@@ -255,21 +280,8 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                           action: SnackBarAction(
                                             label: 'Open PDF',
                                             onPressed: () async {
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (BuildContext
-                                              //                 context) =>
-                                              //             PdfPreviewScreen(
-                                              //                 path: newfile
-                                              //                     .path)));
-                                              // var sharePdf =
-                                              //     await newfile.readAsBytes();
-                                              // await Share.shareFiles(
-                                              //     ["${newfile.path}"]);
-                                              final _ =
-                                                  await OpenFile.open(
-                                                      newfile.path);
+                                              final _ = await OpenFile.open(
+                                                  newfile.path);
                                             },
                                           ),
                                         );
@@ -384,6 +396,17 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: _imagesGrid(),
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+              SizedBox(
+                height: 25.0,
+              ),
+              tags.length != 0
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: _tagsGrid(),
                     )
                   : SizedBox(
                       height: 1,

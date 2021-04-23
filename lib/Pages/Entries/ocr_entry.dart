@@ -1,4 +1,3 @@
-// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
@@ -9,6 +8,7 @@ import 'package:group_button/group_button.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
 class CreateOCREntryScreen extends StatefulWidget {
   final String title, content, capturedEntryPath;
@@ -34,6 +34,8 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
 
   final List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
   List<String> selectedMoods = ["🙂"];
+  List<String> tags = ["OCR"];
+
   bool isLoading = false;
   TextEditingController titleController;
   TextEditingController contentController;
@@ -105,8 +107,6 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
       if (t != null) {
         dateCreated = date;
         time = t;
-        print(date);
-        print(t);
         setState(() {
           dateCreated = date;
           time = t;
@@ -141,9 +141,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
     switch (value) {
       case 'Add Images':
         {
-          print("Selected : $value");
           selectedImages = await _selectImages();
-          print("hello" + selectedImages.toString());
           break;
         }
       case 'Add to Journey':
@@ -212,11 +210,12 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                           isLoading = true;
                         });
                         DocumentReference docRef = await createEntry(
-                            titleController.text,
-                            contentController.text,
-                            moodMap[selectedMoods[0]],
-                            selectedImages,
-                            dateAndTimeCreated);
+                            title: titleController.text,
+                            content: contentController.text,
+                            mood: moodMap[selectedMoods[0]],
+                            images: selectedImages,
+                            dateCreated: dateAndTimeCreated,
+                            tags: tags);
                         DocumentSnapshot documentSnapshot = await docRef.get();
                         setState(() {
                           isLoading = false;
@@ -334,6 +333,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                                   },
                                 ),
                               ),
+                              tagBuilder(),
                               SizedBox(
                                 height: 25.0,
                               ),
@@ -353,6 +353,38 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Container tagBuilder() {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      child: TextFieldTags(
+        initialTags: <String>['ocr'],
+        textFieldStyler: TextFieldStyler(
+          hintText: 'Got tags?',
+          isDense: false,
+          textFieldBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25))),
+        ),
+        tagsStyler: TagsStyler(
+          tagTextStyle: TextStyle(fontWeight: FontWeight.normal),
+          tagDecoration: BoxDecoration(
+            color: Colors.blue[300],
+            borderRadius: BorderRadius.circular(0.0),
+          ),
+          tagCancelIcon:
+              Icon(Icons.cancel, size: 18.0, color: Colors.blue[900]),
+          tagPadding: const EdgeInsets.all(6.0),
+          tagMargin: const EdgeInsets.symmetric(horizontal: 4.0),
+        ),
+        onTag: (tag) {
+          tags.add(tag);
+        },
+        onDelete: (tag) {
+          tags.remove(tag);
+        },
       ),
     );
   }
@@ -384,7 +416,6 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
               children: <Widget>[
                 GestureDetector(
                   onLongPress: () {
-                    print("Long Press Registered !!!");
                     setState(() {
                       if (isFirebaseImage) {
                         deletedImages.add(previousImages[idx]);

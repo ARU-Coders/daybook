@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Color(0xDAFFD1DC),
                 actions: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 3),
                     child: CustomSwitch(
                       activeColor: Colors.grey[100],
                       activeText: 'Light',
