@@ -83,14 +83,17 @@ Future<DocumentReference> createEntry(
   return query;
 }
 
-Stream<QuerySnapshot> getEntries() {
+Stream<QuerySnapshot> getEntries(
+    {bool descending = true, String searchVal = ''}) {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
 
   Stream<QuerySnapshot> query = userDoc
       .collection('entries')
-      .orderBy('dateCreated', descending: true)
+      // .where('title', isGreaterThanOrEqualTo: searchVal)
+      // .orderBy('title', descending: descending)
+      .orderBy('dateCreated', descending: descending)
       .snapshots();
   return query;
 }

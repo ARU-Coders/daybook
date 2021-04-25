@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:math' as math;
+// import '../customSearch.dart';
 
 class EntriesScreen extends StatefulWidget {
   @override
@@ -15,10 +16,13 @@ class EntriesScreen extends StatefulWidget {
 class _EntriesScreenState extends State<EntriesScreen>
     with TickerProviderStateMixin {
   AnimationController _controller;
+  bool descending = true;
   static const List<IconData> icons = const [
     Icons.center_focus_strong_sharp,
     Icons.text_snippet_outlined
   ];
+
+  String searchVal = '';
 
   @override
   void initState() {
@@ -60,7 +64,8 @@ class _EntriesScreenState extends State<EntriesScreen>
         child: Stack(
           children: [
             StreamBuilder(
-                stream: getEntries(),
+                stream:
+                    getEntries(descending: descending, searchVal: searchVal),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Container(
@@ -95,20 +100,75 @@ class _EntriesScreenState extends State<EntriesScreen>
                       ),
                     );
                   }
-                  return new ListView.builder(
+                  return Padding(
                       padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
-                      itemCount: snapshot.data.docs.length,
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot ds = snapshot.data.docs[index];
-                        return index == 0
-                            ? entryCardWithDate(colorMoodMap, index, ds)
-                            : checkIfSameDates(snapshot.data.docs, index)
-                                ? EntryCard(
-                                    colorCodes: colorMoodMap,
-                                    index: index,
-                                    documentSnapshot: ds)
-                                : entryCardWithDate(colorMoodMap, index, ds);
-                      });
+                      child: Column(
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                //Search Field
+                                // Expanded(
+                                //   child: Container(
+                                //     height: 35,
+                                //     child: TextField(
+                                //       onChanged: (val) {
+                                //         setState(() {
+                                //           searchVal = val;
+                                //         });
+                                //         // initiateSearch(val);
+                                //       },
+                                //       decoration: InputDecoration(
+                                //           prefixIcon: IconButton(
+                                //             onPressed: () {
+                                //               print("Search!");
+                                //             },
+                                //             color: Colors.black,
+                                //             icon: Icon(Icons.search),
+                                //           ),
+                                //           contentPadding:
+                                //               EdgeInsets.only(left: 25.0),
+                                //           hintText: 'Search by title',
+                                //           border: OutlineInputBorder(
+                                //               borderRadius:
+                                //                   BorderRadius.circular(10.0))),
+                                //     ),
+                                //   ),
+                                // ),
+                                // SizedBox(width: searchVal == "" ? 95 : 10),
+                                Text("Date"),
+                                SizedBox(width: 5),
+                                GestureDetector(
+                                  onTap: () => setState(() {
+                                    descending = !descending;
+                                  }),
+                                  child: Icon(descending
+                                      ? Icons.arrow_downward_outlined
+                                      : Icons.arrow_upward_outlined),
+                                )
+                              ]),
+                          Expanded(
+                            child: ListView.builder(
+                                // padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
+                                itemCount: snapshot.data.docs.length,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot ds =
+                                      snapshot.data.docs[index];
+                                  return index == 0
+                                      ? entryCardWithDate(
+                                          colorMoodMap, index, ds)
+                                      : checkIfSameDates(
+                                              snapshot.data.docs, index)
+                                          ? EntryCard(
+                                              colorCodes: colorMoodMap,
+                                              index: index,
+                                              documentSnapshot: ds)
+                                          : entryCardWithDate(
+                                              colorMoodMap, index, ds);
+                                }),
+                          ),
+                        ],
+                      ));
                 }),
             Positioned(
               bottom: 15,
@@ -187,13 +247,25 @@ class _EntriesScreenState extends State<EntriesScreen>
   Widget entryCardWithDate(colorMoodMap, index, ds) {
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Text(
-            DateFormat.yMMMMd().format(DateTime.parse(ds['dateCreated'])),
-            style: GoogleFonts.getFont('Oxygen',
-                fontSize: 13, color: Colors.black.withOpacity(0.6)),
-          ),
+        Row(
+          children: [
+            Expanded(
+                child: Divider(
+              thickness: 2,
+            )),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+              child: Text(
+                DateFormat.yMMMMd().format(DateTime.parse(ds['dateCreated'])),
+                style: GoogleFonts.getFont('Oxygen',
+                    fontSize: 13, color: Colors.black.withOpacity(0.6)),
+              ),
+            ),
+            Expanded(
+                child: Divider(
+              thickness: 2,
+            )),
+          ],
         ),
         EntryCard(colorCodes: colorMoodMap, index: index, documentSnapshot: ds),
       ],
@@ -335,7 +407,7 @@ class EntryCard extends StatelessWidget {
                   width: 20,
                 ),
                 Text(
-                  DateFormat.yMMMMd()
+                  DateFormat.jm()
                       .format(DateTime.parse(documentSnapshot['dateCreated'])),
                   style: GoogleFonts.getFont('Oxygen',
                       fontSize: 13, color: Colors.black.withOpacity(0.6)),
