@@ -63,7 +63,9 @@ dependencies:
   flutter_full_pdf_viewer: ^1.0.6
   pdf_viewer_plugin: ^1.0.0+2
   open_file: ^3.0.3
-  geolocator:
+  geocoding: ^1.0.5
+  geolocator: ^6.1.11
+  location: ^3.2.1
   permission_handler: ^5.0.1+1
   animated_text_kit:
   camera: ^0.6.0

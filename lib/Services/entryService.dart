@@ -23,13 +23,15 @@ Future<void> deleteImages(List<String> deleteImages) async {
   });
 }
 
-Future<DocumentReference> createEntry(
-    {String title,
-    String content,
-    String mood,
-    List<String> images,
-    DateTime dateCreated,
-    List<String> tags = const []}) async {
+Future<DocumentReference> createEntry({
+  String title,
+  String content,
+  String mood,
+  List<String> images,
+  DateTime dateCreated,
+  List<String> tags = const [],
+  // String location,
+}) async {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc = await getUserDocRef();
 

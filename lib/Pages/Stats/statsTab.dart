@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/Stats/ShowMedia.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
+
+import '../EnlargedImage.dart';
 
 class StatsTab extends StatefulWidget {
   final String tab;
@@ -56,22 +59,24 @@ class _StatsTabState extends State<StatsTab>
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView (
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal:14),
-              child: Column(
-                children: [
-                  tab == 'Year' ? showYearpicker() : showMonthpicker(),
-                  SizedBox(height: 20),
-                  showphotosCard(query),
-                  SizedBox(height: 15,),
-                  showTimelineCard(),
-                  SizedBox(height: 15),
-                  showDonutChart(),
-                ],
-              ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: Column(
+          children: [
+            tab == 'Year' ? showYearpicker() : showMonthpicker(),
+            SizedBox(height: 20),
+            showphotosCard(query),
+            SizedBox(
+              height: 15,
             ),
-          );
+            showTimelineCard(),
+            SizedBox(height: 15),
+            showDonutChart(),
+          ],
+        ),
+      ),
+    );
   }
 
   Text getCardTitle(String txt) {
@@ -103,75 +108,79 @@ class _StatsTabState extends State<StatsTab>
     );
   }
 
-  Card cardWrapper({Widget child}){
+  Card cardWrapper({Widget child}) {
     return Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-            color: Colors.white,
-            clipBehavior: Clip.antiAlias,
-            child:child
-          );
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
+        color: Colors.white,
+        clipBehavior: Clip.antiAlias,
+        child: child);
   }
-  
+
   Container showYearpicker() {
     return Container(
-            height: 50,
-            child: new Swiper(
-              itemCount: yearsToShow.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: getCardTitle(yearDate.year.toString()));
-              },
-              index: yearsToShow.indexOf(yearDate.year),
-              control: new SwiperControl(),
-              onIndexChanged: (index) {
-                setState(() {
-                  _yearIndex = index;
-                  yearDate = DateTime(yearsToShow[_yearIndex]);
-                });
-              },
-            ),
-          );
+      height: 50,
+      child: new Swiper(
+        itemCount: yearsToShow.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Center(child: getCardTitle(yearDate.year.toString()));
+        },
+        index: yearsToShow.indexOf(yearDate.year),
+        control: new SwiperControl(),
+        onIndexChanged: (index) {
+          setState(() {
+            _yearIndex = index;
+            yearDate = DateTime(yearsToShow[_yearIndex]);
+          });
+        },
+      ),
+    );
   }
 
   Container showMonthpicker() {
     return Container(
-            height: 50,
-            child: Swiper(
-              itemCount: monthsToShow.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Center(child: getCardTitle(DateFormat.yMMM().format(monthDate)));
-              },
-              index:
-                  monthsToShow.indexOf(DateTime(monthDate.year, monthDate.month)),
-              control: new SwiperControl(),
-              onIndexChanged: (index) {
-                setState(() {
-                  _monthIndex = index;
-                  monthDate = monthsToShow[_monthIndex];
-                });
-              },
-            ),
-          );
+      height: 50,
+      child: Swiper(
+        itemCount: monthsToShow.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Center(
+              child: getCardTitle(DateFormat.yMMM().format(monthDate)));
+        },
+        index: monthsToShow.indexOf(DateTime(monthDate.year, monthDate.month)),
+        control: new SwiperControl(),
+        onIndexChanged: (index) {
+          setState(() {
+            _monthIndex = index;
+            monthDate = monthsToShow[_monthIndex];
+          });
+        },
+      ),
+    );
   }
 
   showDonutChart() {
-    return  FutureBuilder(
-            future: getMoodCount(tab, tab=="Year"?yearDate:monthDate),
-            builder: (context, snapshot){
-            if(snapshot.hasData){
+    return FutureBuilder(
+        future: getMoodCount(tab, tab == "Year" ? yearDate : monthDate),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             dataMap = snapshot.data;
             return cardWrapper(
               child: Column(
                 children: [
-                  SizedBox(height:10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   getCardTitle('Mood'),
-                  SizedBox(height:5,),
+                  SizedBox(
+                    height: 5,
+                  ),
                   Divider(),
-                  SizedBox(height:10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   PieChart(
                     dataMap: dataMap,
                     animationDuration: Duration(milliseconds: 800),
@@ -204,92 +213,171 @@ class _StatsTabState extends State<StatsTab>
                       decimalPlaces: 0,
                     ),
                   ),
-                  SizedBox(height:15,),
+                  SizedBox(
+                    height: 15,
+                  ),
                 ],
               ),
             );
           }
           return showLoadingCard();
-          }
-        );
+        });
+  }
+
+  Widget imageGrid(imageURLs) {
+    return Container(
+      height: 80,
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: 1, crossAxisCount: 1, crossAxisSpacing: 5),
+        scrollDirection: Axis.horizontal,
+        itemCount: imageURLs.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return EnlargedImage(imageURLs[index], true);
+                  }));
+                },
+                child: Container(
+                  height: 70,
+                  width: 70,
+                  margin: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ClipRRect(
+                    child: CachedNetworkImage(
+                      imageUrl: imageURLs[index],
+                      // height: 160,
+                      // width: 250,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Card showphotosCard(Stream<QuerySnapshot> query) {
     return cardWrapper(
-          child: Container(
-            child: Column(
-            children: [
-              SizedBox(height:10,),
-              getCardTitle('Photos'),
-              SizedBox(height:5,),
-              Divider(),
-              SizedBox(height:5,),
-              tab == 'Year'
-                  ? getCardValueText(yearDate.year.toString())
-                  : getCardValueText(DateFormat.yMMM().format(monthDate)),
-              GestureDetector(
-                child: Text('Show All Images'),
-                onTap: () async {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            getCardTitle('Photos'),
+            SizedBox(
+              height: 5,
+            ),
+            Divider(),
+            SizedBox(
+              height: 5,
+            ),
+            //display recent photos here !
+            imageGrid([
+              'https://picsum.photos/200',
+              'https://picsum.photos/200/300',
+              'https://picsum.photos/300/200'
+            ]),
+            SizedBox(
+              height: 5,
+            ),
+            tab == 'Year'
+                ? getCardValueText(yearDate.year.toString())
+                : getCardValueText(DateFormat.yMMM().format(monthDate)),
+            GestureDetector(
+              child: Text('Show All Images'),
+              onTap: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) {
                     return ShowAllImages(
                         date: tab == 'Year' ? yearDate : monthDate,
                         query: query);
-                      }),
-                    );
-                  },
-                ),
-                SizedBox(height: 10,),
-              ],
+                  }),
+                );
+              },
             ),
-            width: MediaQuery.of(context).size.width - 8.0,
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+        width: MediaQuery.of(context).size.width - 8.0,
       ),
     );
   }
 
   showTimelineCard() {
     return FutureBuilder(
-          future: getTimelineCounts(tab, tab=="Year"?yearDate:monthDate),
-          builder:(_, snapshot) {
-          if (snapshot.hasData)
-          {
+        future: getTimelineCounts(tab, tab == "Year" ? yearDate : monthDate),
+        builder: (_, snapshot) {
+          if (snapshot.hasData) {
             timelineCounts = snapshot.data;
             return cardWrapper(
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal:22.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height:10,),
-                        getCardTitle('Timeline'),
-                        SizedBox(height:5,),
-                        Divider(),
-                        SizedBox(height:5,),
-                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          getCardValueText('Entries'),
-                          getCardValueText(timelineCounts['entries'].toString())
-                        ]),
-                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          getCardValueText('Journeys'),
-                          getCardValueText(timelineCounts['journeys'].toString())
-                        ]),
-                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          getCardValueText('Habits'),
-                          getCardValueText(timelineCounts['habits'].toString())
-                        ]),
-                        SizedBox(height: 15,),
-                      ],
-                    ),
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      getCardTitle('Timeline'),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Divider(),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            getCardValueText('Entries'),
+                            getCardValueText(
+                                timelineCounts['entries'].toString())
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            getCardValueText('Journeys'),
+                            getCardValueText(
+                                timelineCounts['journeys'].toString())
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            getCardValueText('Habits'),
+                            getCardValueText(
+                                timelineCounts['habits'].toString())
+                          ]),
+                      SizedBox(
+                        height: 15,
+                      ),
+                    ],
                   ),
+                ),
                 width: MediaQuery.of(context).size.width - 8.0,
               ),
             );
           }
           return showLoadingCard();
-          }
-    );
+        });
   }
 
-  showLoadingCard(){
+  showLoadingCard() {
     return cardWrapper(
       child: Container(
         height: 170,
@@ -299,6 +387,7 @@ class _StatsTabState extends State<StatsTab>
       ),
     );
   }
+
   @override
   bool get wantKeepAlive => true;
 }

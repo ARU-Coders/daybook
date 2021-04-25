@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:group_button/group_button.dart';
@@ -9,6 +10,10 @@ import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart' as loc;
 
 class CreateOCREntryScreen extends StatefulWidget {
   final String title, content, capturedEntryPath;
@@ -43,6 +48,9 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
   DocumentSnapshot previousSnapshot;
   DateTime dateCreated = DateTime.now();
   TimeOfDay time = TimeOfDay.fromDateTime(DateTime.now());
+  Position _currentPosition;
+  String _currentAddress;
+  loc.Location location = loc.Location();
 
   @override
   void initState() {
@@ -52,8 +60,14 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
     selectedImages.add(widget.capturedEntryPath);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   final List<String> menuItems = <String>[
     'Add Images',
+    'Add Location',
     'Add to Journey',
     'Discard'
   ];
@@ -91,6 +105,12 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
             )) ??
             false
         : true;
+  }
+
+  Future _checkGps() async {
+    if (!await location.serviceEnabled()) {
+      location.requestService();
+    }
   }
 
   _pickDate() async {
@@ -137,6 +157,62 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
     return selectedImages;
   }
 
+  getCurrentLocation() async {
+    print("Arre hello");
+    bool isLocEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isLocEnabled) {
+      // LocationPermission requestedPermission =
+      // await Geolocator.requestPermission();
+      // if (requestedPermission == LocationPermission.denied ||
+      //     requestedPermission == LocationPermission.deniedForever) return;
+      bool pageOpened = await Geolocator.openLocationSettings();
+      return;
+    }
+    print("isLocEnabled $isLocEnabled");
+    try {
+      Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+        // forceAndroidLocationManager: true
+      ).then((Position position) {
+        print("Got the position....");
+        print(position);
+        setState(() {
+          _currentPosition = position;
+          getAddressFromLatLng();
+        });
+      });
+    } catch (e) {
+      print("ERROROROROROROROROROROROROR : ");
+      print(e);
+    }
+  }
+
+  getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _currentAddress =
+            "${place.locality}, ${place.postalCode}, ${place.country}";
+        print(_currentAddress);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void showSnackBar(BuildContext buildContext, String message,
+      {int duration = 3}) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: duration),
+    );
+    Scaffold.of(buildContext).showSnackBar(snackBar);
+  }
+
   void handleMenuClick(String value) async {
     switch (value) {
       case 'Add Images':
@@ -147,6 +223,31 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
       case 'Add to Journey':
         {
           print("Selected : $value");
+
+          break;
+        }
+      case 'Add Location':
+        {
+          print("Selected : $value");
+          LocationPermission permissionStatus =
+              await Geolocator.checkPermission();
+          print(permissionStatus.toString());
+          if (permissionStatus == LocationPermission.whileInUse ||
+              permissionStatus == LocationPermission.always) {
+            // await _checkGps();
+            await getCurrentLocation();
+            print("Got the location");
+            if (_currentPosition != null)
+              print(
+                  "LAT: ${_currentPosition.latitude}, LNG: ${_currentPosition.longitude}");
+          } else {
+            bool isGranted = await Permission.location.request().isGranted;
+            String message =
+                isGranted ? "Permission Granted !" : "Permission denied !";
+            Builder(builder: (BuildContext context) {
+              showSnackBar(context, message);
+            });
+          }
           break;
         }
       case 'Discard':
@@ -158,15 +259,6 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
           break;
         }
     }
-  }
-
-  void showSnackBar(BuildContext buildContext, String message,
-      {int duration = 3}) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: duration),
-    );
-    Scaffold.of(buildContext).showSnackBar(snackBar);
   }
 
   final _formKey = GlobalKey<FormState>();
