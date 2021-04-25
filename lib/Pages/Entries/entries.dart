@@ -44,6 +44,15 @@ class _EntriesScreenState extends State<EntriesScreen>
     "Wonderful": Color(0xffadd2ff) //blue
   };
 
+  bool checkIfSameDates(docs, index) {
+    final currDate = DateTime.parse(docs[index]["dateCreated"].toString());
+    final prevDate = DateTime.parse(docs[index - 1]["dateCreated"].toString());
+
+    return currDate.year == prevDate.year &&
+        currDate.month == prevDate.month &&
+        currDate.day == prevDate.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -91,10 +100,14 @@ class _EntriesScreenState extends State<EntriesScreen>
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
-                        return EntryCard(
-                            colorCodes: colorMoodMap,
-                            index: index,
-                            documentSnapshot: ds);
+                        return index == 0
+                            ? entryCardWithDate(colorMoodMap, index, ds)
+                            : checkIfSameDates(snapshot.data.docs, index)
+                                ? EntryCard(
+                                    colorCodes: colorMoodMap,
+                                    index: index,
+                                    documentSnapshot: ds)
+                                : entryCardWithDate(colorMoodMap, index, ds);
                       });
                 }),
             Positioned(
@@ -168,6 +181,22 @@ class _EntriesScreenState extends State<EntriesScreen>
             },
           ),
         ),
+    );
+  }
+
+  Widget entryCardWithDate(colorMoodMap, index, ds) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            DateFormat.yMMMMd().format(DateTime.parse(ds['dateCreated'])),
+            style: GoogleFonts.getFont('Oxygen',
+                fontSize: 13, color: Colors.black.withOpacity(0.6)),
+          ),
+        ),
+        EntryCard(colorCodes: colorMoodMap, index: index, documentSnapshot: ds),
+      ],
     );
   }
 }

@@ -23,15 +23,17 @@ Future<void> deleteImages(List<String> deleteImages) async {
   });
 }
 
-Future<DocumentReference> createEntry({
-  String title,
-  String content,
-  String mood,
-  List<String> images,
-  DateTime dateCreated,
-  List<String> tags = const [],
-  // String location,
-}) async {
+Future<DocumentReference> createEntry(
+    {String title,
+    String content,
+    String mood,
+    List<String> images,
+    DateTime dateCreated,
+    List<String> tags = const [],
+    GeoPoint position,
+    String address
+    // String location,
+    }) async {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc = await getUserDocRef();
 
@@ -73,7 +75,9 @@ Future<DocumentReference> createEntry({
     'mood': mood,
     'images': imagesURLs,
     'docId': docId,
-    'tags': tags
+    'tags': tags,
+    'address': address,
+    'position': position
   });
   DocumentReference query = userDoc.collection('entries').doc(docId);
   return query;
@@ -106,7 +110,9 @@ Future<void> editEntry(
     List<String> previousImagesURLs,
     List<String> deletedImages,
     DateTime dateCreated,
-    List<String> tags}) async {
+    List<String> tags,
+    GeoPoint position,
+    String address}) async {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc = await getUserDocRef();
   List<String> selectedImagesURLs = [];
@@ -143,7 +149,9 @@ Future<void> editEntry(
     'dateLastModified': now.toString(),
     'mood': mood,
     'images': imagesURLs,
-    'tags': tags
+    'tags': tags,
+    'address': address,
+    'position': position
   });
   // ignore: unnecessary_statements
   deletedImages.length > 0 ? deleteImages(deletedImages) : null;

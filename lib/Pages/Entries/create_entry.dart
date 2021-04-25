@@ -9,6 +9,10 @@ import 'package:daybook/Pages/EnlargedImage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:textfield_tags/textfield_tags.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart' as loc;
 
 class CreateEntryScreen extends StatefulWidget {
   @override
@@ -42,11 +46,66 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
   DateTime dateCreated = DateTime.now();
   TimeOfDay time = TimeOfDay.fromDateTime(DateTime.now());
 
+  Position _currentPosition;
+  String currentAddress = '';
+  loc.Location location = loc.Location();
+  GeoPoint position = GeoPoint(0, 0);
+
   final List<String> menuItems = <String>[
     'Add Images',
+    'Add Location',
     'Add to Journey',
     'Discard'
   ];
+
+  Future _checkGps() async {
+    if (!await location.serviceEnabled()) {
+      location.requestService();
+    }
+  }
+
+  getCurrentLocation() async {
+    print("Arre hello");
+    bool isLocEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isLocEnabled) {
+      bool pageOpened = await Geolocator.openLocationSettings();
+      return;
+    }
+    print("isLocEnabled $isLocEnabled");
+    try {
+      Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+        // forceAndroidLocationManager: true
+      ).then((Position position) {
+        print("Got the position....");
+        print(position);
+        setState(() {
+          _currentPosition = position;
+          getAddressFromLatLng();
+        });
+      });
+    } catch (e) {
+      print("ERROR : ");
+      print(e);
+    }
+  }
+
+  getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        currentAddress =
+            "${place.locality}, ${place.postalCode}, ${place.country}";
+        print(currentAddress);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future<bool> _onWillPop() async {
     //Display the popup if user has entered any text or add images, when back button is pressed.
@@ -168,6 +227,30 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
           selectedImages = await _selectImages();
           break;
         }
+      case 'Add Location':
+        {
+          print("Selected : $value");
+          LocationPermission permissionStatus =
+              await Geolocator.checkPermission();
+          print(permissionStatus.toString());
+          if (permissionStatus == LocationPermission.whileInUse ||
+              permissionStatus == LocationPermission.always) {
+            // await _checkGps();
+            await getCurrentLocation();
+            print("Got the location");
+            if (_currentPosition != null)
+              print(
+                  "LAT: ${_currentPosition.latitude}, LNG: ${_currentPosition.longitude}");
+          } else {
+            bool isGranted = await Permission.location.request().isGranted;
+            String message =
+                isGranted ? "Permission Granted !" : "Permission denied !";
+            Builder(builder: (BuildContext context) {
+              showSnackBar(context, message);
+            });
+          }
+          break;
+        }
       case 'Add to Journey':
         {
           print("Selected : $value");
@@ -216,6 +299,10 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
         }
         idx = idx + 1;
       }
+      _currentPosition = Position(
+          latitude: arguments[0]['position'].latitude,
+          longitude: arguments[0]['position'].longitude);
+      currentAddress = arguments[0]['address'];
     }
 
     return WillPopScope(
@@ -256,6 +343,11 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                           setState(() {
                             isLoading = true;
                           });
+                          if (_currentPosition != null) {
+                            position = GeoPoint(_currentPosition.latitude,
+                                _currentPosition.longitude);
+                          }
+                          print('Address' + currentAddress.toString());
                           await editEntry(
                               entryId: arguments[0].id,
                               title: titleController.text,
@@ -265,7 +357,9 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                               previousImagesURLs: previousImages,
                               deletedImages: deletedImages,
                               dateCreated: dateAndTimeCreated,
-                              tags: tags);
+                              tags: tags,
+                              position: position,
+                              address: currentAddress);
                           setState(() {
                             isLoading = false;
                           });
@@ -290,13 +384,20 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                           setState(() {
                             isLoading = true;
                           });
+                          if (_currentPosition != null) {
+                            position = GeoPoint(_currentPosition.latitude,
+                                _currentPosition.longitude);
+                          }
+                          print('Address' + currentAddress.toString());
                           DocumentReference docRef = await createEntry(
                               title: titleController.text,
                               content: contentController.text,
                               mood: moodMap[selectedMoods[0]],
                               images: selectedImages,
                               dateCreated: dateAndTimeCreated,
-                              tags: tags);
+                              tags: tags,
+                              position: position,
+                              address: currentAddress);
                           DocumentSnapshot documentSnapshot =
                               await docRef.get();
                           setState(() {
@@ -340,6 +441,54 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                             child: Column(children: [
                               _moodBar(),
+                              // GestureDetector(
+                              //   child: Text(currentAddress),
+                              //   onLongPress: () {
+                              //     setState(() {
+                              //       currentAddress = '';
+                              //       _currentPosition =
+                              //           Position(latitude: 0, longitude: 0);
+                              //       position = GeoPoint(0, 0);
+                              //     });
+                              //   },
+                              // ),
+                              currentAddress != ""
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          child: Chip(
+                                            label: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              child: Text(
+                                                currentAddress,
+                                                style: GoogleFonts.getFont(
+                                                  'Oxygen',
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                            avatar: Icon(
+                                                Icons.location_on_outlined),
+                                            backgroundColor: Color(0xffffe9b3),
+                                          ),
+                                          onLongPress: () {
+                                            setState(() {
+                                              currentAddress = '';
+                                              _currentPosition = Position(
+                                                  latitude: 0, longitude: 0);
+                                              position = GeoPoint(0, 0);
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox(),
                               SizedBox(height: 15),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

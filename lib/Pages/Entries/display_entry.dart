@@ -356,6 +356,25 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                       SizedBox(
                         height: 10,
                       ),
+                      documentSnapshot['address'] != ""
+                          ? Chip(
+                              label: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: Text(
+                                  documentSnapshot['address'],
+                                  style: GoogleFonts.getFont(
+                                    'Oxygen',
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                              avatar: Icon(Icons.location_on_outlined),
+                              backgroundColor: Color(0xffffe9b3),
+                            )
+                          : SizedBox(),
+                      // Text(
+                      //     documentSnapshot['address'] ?? "Loaction Nnot added"),
                       Chip(
                         label: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -368,6 +387,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                           ),
                         ),
                         backgroundColor: Color(0xffffe9b3),
+                        avatar: Icon(Icons.calendar_today_outlined),
                       ),
                     ],
                   ),

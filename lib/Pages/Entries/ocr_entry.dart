@@ -49,8 +49,9 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
   DateTime dateCreated = DateTime.now();
   TimeOfDay time = TimeOfDay.fromDateTime(DateTime.now());
   Position _currentPosition;
-  String _currentAddress;
+  String currentAddress = '';
   loc.Location location = loc.Location();
+  GeoPoint position = GeoPoint(0, 0);
 
   @override
   void initState() {
@@ -195,9 +196,9 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
       Placemark place = placemarks[0];
 
       setState(() {
-        _currentAddress =
+        currentAddress =
             "${place.locality}, ${place.postalCode}, ${place.country}";
-        print(_currentAddress);
+        print(currentAddress);
       });
     } catch (e) {
       print(e);
@@ -301,13 +302,20 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                         setState(() {
                           isLoading = true;
                         });
+                        if (_currentPosition != null) {
+                          position = GeoPoint(_currentPosition.latitude,
+                              _currentPosition.longitude);
+                        }
+                        print('Address' + currentAddress.toString());
                         DocumentReference docRef = await createEntry(
                             title: titleController.text,
                             content: contentController.text,
                             mood: moodMap[selectedMoods[0]],
                             images: selectedImages,
                             dateCreated: dateAndTimeCreated,
-                            tags: tags);
+                            tags: tags,
+                            position: position,
+                            address: currentAddress);
                         DocumentSnapshot documentSnapshot = await docRef.get();
                         setState(() {
                           isLoading = false;
@@ -349,6 +357,43 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
                             child: Column(children: [
                               _moodBar(),
+                              currentAddress != ""
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          child: Chip(
+                                            label: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              child: Text(
+                                                currentAddress,
+                                                style: GoogleFonts.getFont(
+                                                  'Oxygen',
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                            ),
+                                            avatar: Icon(
+                                                Icons.location_on_outlined),
+                                            backgroundColor: Color(0xffffe9b3),
+                                          ),
+                                          onLongPress: () {
+                                            setState(() {
+                                              currentAddress = '';
+                                              _currentPosition = Position(
+                                                  latitude: 0, longitude: 0);
+                                              position = GeoPoint(0, 0);
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox(),
                               SizedBox(height: 15),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
