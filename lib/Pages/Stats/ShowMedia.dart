@@ -13,13 +13,24 @@ class ShowAllImages extends StatelessWidget {
   final DateTime date;
   ShowAllImages({this.query, this.date});
 
+  bool checkIfSameDates(docs, index) {
+    final currDate = DateTime.parse(docs[index]["dateCreated"].toString());
+    final prevDate = DateTime.parse(docs[index - 1]["dateCreated"].toString());
+
+    return currDate.year == prevDate.year &&
+        currDate.month == prevDate.month &&
+        currDate.day == prevDate.day;
+  }
+
+  List<String> imagesToshow = [];
+  String dateToShow = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           actions: [],
           title: Text('Photos'),
-          leading: Text(date.year.toString()),
         ),
         body: SafeArea(
           child: Container(
@@ -60,32 +71,36 @@ class ShowAllImages extends StatelessWidget {
                   }
                   return new ListView.builder(
                       scrollDirection: Axis.vertical,
-                      padding: EdgeInsets.symmetric(horizontal: 17),
-                      itemCount: snapshot.data.docs.length,
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      itemCount: snapshot.data.docs.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == snapshot.data.docs.length) {
+                          return _imageGrid(context, imagesToshow, dateToShow);
+                        }
                         DocumentSnapshot ds = snapshot.data.docs[index];
-                        return ds['images'].length > 0
-                            ? Column(
-                                children: [
-                                  Row(
-                                    // crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        ds['title'],
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(DateFormat.yMMMMd().format(
-                                          DateTime.parse(ds['dateCreated'])))
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 25,
-                                  ),
-                                  imageGrid(ds['images'])
-                                ],
-                              )
+                        bool flag = false;
+                        List<String> imagesToPass = [];
+                        String dateToPass = '';
+                        if (index == 0) {
+                          imagesToshow =
+                              imagesToshow + List<String>.from(ds['images']);
+                          dateToShow = DateFormat.yMMMMd()
+                              .format(DateTime.parse(ds['dateCreated']));
+                        } else {
+                          if (checkIfSameDates(snapshot.data.docs, index)) {
+                            imagesToshow =
+                                imagesToshow + List<String>.from(ds['images']);
+                          } else {
+                            flag = true;
+                            imagesToPass = imagesToshow;
+                            dateToPass = dateToShow;
+                            imagesToshow = List<String>.from(ds['images']);
+                            dateToShow = DateFormat.yMMMMd()
+                                .format(DateTime.parse(ds['dateCreated']));
+                          }
+                        }
+                        return imagesToPass.length > 0
+                            ? _imageGrid(context, imagesToPass, dateToPass)
                             : SizedBox();
                       });
                 }),
@@ -94,46 +109,70 @@ class ShowAllImages extends StatelessWidget {
   }
 }
 
-Widget imageGrid(imageURLs) {
-  return Container(
-    height: 150,
-    child: GridView.builder(
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 1, crossAxisCount: 1, crossAxisSpacing: 5),
-      scrollDirection: Axis.horizontal,
-      itemCount: imageURLs.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return EnlargedImage(imageURLs[index], true);
-                }));
-              },
-              child: Container(
-                height: 130,
-                width: 130,
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ClipRRect(
-                  child: CachedNetworkImage(
-                    imageUrl: imageURLs[index],
-                    // height: 160,
-                    // width: 250,
-                    fit: BoxFit.cover,
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
-                  borderRadius: BorderRadius.circular(10),
+Widget _imageGrid(BuildContext context, List<String> imageURLs, String date) {
+  return Column(
+    children: [
+      SizedBox(
+        height: 10,
+      ),
+      Row(
+        children: [
+          Expanded(
+              child: Divider(
+            thickness: 2,
+          )),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Text(
+              date,
+              style: GoogleFonts.getFont('Oxygen',
+                  fontSize: 15, color: Colors.black.withOpacity(0.8)),
+            ),
+          ),
+          Expanded(
+              child: Divider(
+            thickness: 2,
+          )),
+        ],
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      Container(
+          child: Wrap(
+        spacing: 6.0,
+        runSpacing: 7.0,
+        alignment: WrapAlignment.start,
+        children: List.generate(imageURLs.length, (index) {
+          return
+              // Column(
+              // children: [
+              GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return EnlargedImage(imageURLs[index], true);
+              }));
+            },
+            child: Container(
+              height: 110,
+              width: 110,
+              decoration: BoxDecoration(
+                border: Border.all(width: 0.5),
+                // borderRadius: BorderRadius.circular(10),
+              ),
+              child: ClipRRect(
+                child: CachedNetworkImage(
+                  imageUrl: imageURLs[index],
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
             ),
-          ],
-        );
-      },
-    ),
+          );
+          // ,            // ],
+          // );
+        }),
+      )),
+    ],
   );
 }

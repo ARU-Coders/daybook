@@ -569,6 +569,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                   },
                   child: Container(
                       height: 130,
+                      width: 130,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                       ),

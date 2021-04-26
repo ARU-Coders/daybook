@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'auth_service.dart';
 
-Query timelineQueryGenerator(String collection, String beforeDate, String afterDate){
-DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('users').doc(AuthService.getUserEmail());
+Query timelineQueryGenerator(
+    String collection, String beforeDate, String afterDate) {
+  DocumentReference userDoc = FirebaseFirestore.instance
+      .collection('users')
+      .doc(AuthService.getUserEmail());
   return userDoc
       .collection(collection)
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate);
 }
 
-Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async{
+Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async {
   String beforeDate, afterDate;
   int year = date.year;
   int month = date.month;
@@ -27,15 +29,16 @@ Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async{
         .toString();
   }
 
-  final entryQuery = timelineQueryGenerator('entries', beforeDate,afterDate);
+  final entryQuery = timelineQueryGenerator('entries', beforeDate, afterDate);
   QuerySnapshot entries = await entryQuery.get();
   int entryCount = entries.docs.length;
 
-  final journeyQuery = timelineQueryGenerator('journeys', beforeDate,afterDate);
+  final journeyQuery =
+      timelineQueryGenerator('journeys', beforeDate, afterDate);
   QuerySnapshot journeys = await journeyQuery.get();
   int journeyCount = journeys.docs.length;
 
-    final habitQuery = timelineQueryGenerator('habits', beforeDate,afterDate);
+  final habitQuery = timelineQueryGenerator('habits', beforeDate, afterDate);
   QuerySnapshot habits = await habitQuery.get();
   int habitCount = habits.docs.length;
 
@@ -50,14 +53,14 @@ Future<Map<String, int>> getTimelineCounts(String tab, DateTime date) async{
   return timelineMap;
 }
 
-Future<Map<String, double>> getMoodCount(String tab, DateTime date) async{
+Future<Map<String, double>> getMoodCount(String tab, DateTime date) async {
   String beforeDate, afterDate;
   int year = date.year;
   int month = date.month;
   String email = AuthService.getUserEmail();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
-  
+
   if (tab == 'Year') {
     afterDate = DateTime(year - 1, 12, 31, 23, 23, 59).toString();
     beforeDate = DateTime(year + 1, 1, 1, 0, 0, 0).toString();
@@ -84,17 +87,17 @@ Future<Map<String, double>> getMoodCount(String tab, DateTime date) async{
       .where('dateCreated', isLessThan: beforeDate)
       .get();
 
-    Map<String, dynamic> queryDocumentSnapshotData;
+  Map<String, dynamic> queryDocumentSnapshotData;
 
   await querySnapshot.docs.forEach((element) {
-        queryDocumentSnapshotData = element.data();
-        print(element.data.toString());
-        print(queryDocumentSnapshotData['mood'].toString());
-        moodCountMap[queryDocumentSnapshotData['mood'].toString()] += 1;
-        print("Count++ ");
-        print(queryDocumentSnapshotData['mood'].toString());
-      });
-  
+    queryDocumentSnapshotData = element.data();
+    print(element.data.toString());
+    print(queryDocumentSnapshotData['mood'].toString());
+    moodCountMap[queryDocumentSnapshotData['mood'].toString()] += 1;
+    print("Count++ ");
+    print(queryDocumentSnapshotData['mood'].toString());
+  });
+
   print(moodCountMap);
   return moodCountMap;
 }
@@ -131,7 +134,7 @@ Stream<QuerySnapshot> getPhotosOfYear(DateTime date) {
       .collection('entries')
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate)
-      .orderBy('dateCreated')
+      .orderBy('dateCreated', descending: true)
       .snapshots();
   return query;
 }
@@ -158,7 +161,7 @@ Stream<QuerySnapshot> getPhotosOfMonth(DateTime date) {
       .collection('entries')
       .where('dateCreated', isGreaterThan: afterDate)
       .where('dateCreated', isLessThan: beforeDate)
-      .orderBy('dateCreated')
+      .orderBy('dateCreated', descending: true)
       .snapshots();
   return query;
 }

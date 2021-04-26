@@ -321,6 +321,7 @@ class EntryCard extends StatelessWidget {
                     buildDeleteDialog(context, documentSnapshot);
                   },
                   child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         width: 200,
@@ -363,10 +364,9 @@ class EntryCard extends StatelessWidget {
                                 )
                               : CachedNetworkImage(
                                   imageUrl: documentSnapshot['images'][0],
-
                                   errorWidget: (context, url, error) =>
                                       Icon(Icons.error),
-                                  // fit: BoxFit.cover,
+                                  fit: BoxFit.cover,
                                   height: 75.0,
                                   width: 75.0,
                                 ),

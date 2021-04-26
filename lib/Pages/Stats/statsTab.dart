@@ -134,6 +134,9 @@ class _StatsTabState extends State<StatsTab>
           setState(() {
             _yearIndex = index;
             yearDate = DateTime(yearsToShow[_yearIndex]);
+            query = tab == "Year"
+                ? getPhotosOfYear(yearDate)
+                : getPhotosOfMonth(monthDate);
           });
         },
       ),
@@ -155,6 +158,9 @@ class _StatsTabState extends State<StatsTab>
           setState(() {
             _monthIndex = index;
             monthDate = monthsToShow[_monthIndex];
+            query = tab == "Year"
+                ? getPhotosOfYear(yearDate)
+                : getPhotosOfMonth(monthDate);
           });
         },
       ),

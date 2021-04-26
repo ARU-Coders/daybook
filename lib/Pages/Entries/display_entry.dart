@@ -424,12 +424,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: _imagesGrid(),
                         )
-                      : SizedBox(
-                          height: 1,
-                        ),
-                  SizedBox(
-                    height: 25.0,
-                  ),
+                      : SizedBox(),
                   tags.length != 0
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 18.0),
