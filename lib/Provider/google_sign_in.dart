@@ -84,9 +84,15 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
 
     if (response.containsKey("birthdays")) {
-      dd = response["birthdays"][1]["date"]["day"].toString();
-      mm = response["birthdays"][1]["date"]["month"].toString();
-      yyyy = response["birthdays"][1]["date"]["year"].toString();
+      dd = response["birthdays"][0]["date"].containsKey("day")
+          ? response["birthdays"][0]["date"]["day"].toString()
+          : '01';
+      mm = response["birthdays"][0]["date"].containsKey("month")
+          ? response["birthdays"][0]["date"]["month"].toString()
+          : '01';
+      yyyy = response["birthdays"][0]["date"].containsKey("year")
+          ? response["birthdays"][0]["date"]["year"].toString()
+          : '2000';
     }
 
     String dob = yyyy + "-" + mm + "-" + dd;

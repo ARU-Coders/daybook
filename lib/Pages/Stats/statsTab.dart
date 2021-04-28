@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daybook/Pages/Stats/ShowFiles.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/Stats/ShowMedia.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:flutter_file_manager/flutter_file_manager.dart';
 
 import '../EnlargedImage.dart';
 
@@ -21,6 +23,8 @@ class StatsTab extends StatefulWidget {
 
 class _StatsTabState extends State<StatsTab>
     with AutomaticKeepAliveClientMixin {
+  var files;
+
   Stream<QuerySnapshot> query;
   DateTime yearDate = DateTime.now();
   DateTime monthDate = DateTime.now();
@@ -44,6 +48,7 @@ class _StatsTabState extends State<StatsTab>
 
   @override
   void initState() {
+    getFiles();
     super.initState();
     tab = widget.tab;
     query =
@@ -57,6 +62,14 @@ class _StatsTabState extends State<StatsTab>
     _monthIndex = monthsToShow.length - 1;
   }
 
+  void getFiles() async {
+    files = await FileManager.listFiles(
+        "/storage/emulated/0/Android/data/com.mip.daybook/files",
+        extensions: ["pdf"],
+        sortedBy: FileManagerSorting.Date);
+    setState(() {}); //update the UI
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -67,9 +80,9 @@ class _StatsTabState extends State<StatsTab>
             tab == 'Year' ? showYearpicker() : showMonthpicker(),
             SizedBox(height: 20),
             showphotosCard(query),
-            SizedBox(
-              height: 15,
-            ),
+            SizedBox(height: 15),
+            showPdfCard(),
+            SizedBox(height: 15),
             showTimelineCard(),
             SizedBox(height: 15),
             showDonutChart(),
@@ -167,7 +180,7 @@ class _StatsTabState extends State<StatsTab>
     );
   }
 
-  showDonutChart() {
+  FutureBuilder showDonutChart() {
     return FutureBuilder(
         future: getMoodCount(tab, tab == "Year" ? yearDate : monthDate),
         builder: (context, snapshot) {
@@ -230,7 +243,7 @@ class _StatsTabState extends State<StatsTab>
         });
   }
 
-  Widget imageGrid(imageURLs) {
+  Container imageGrid(imageURLs) {
     return Container(
       height: 80,
       child: GridView.builder(
@@ -297,11 +310,11 @@ class _StatsTabState extends State<StatsTab>
               'https://picsum.photos/300/200'
             ]),
             SizedBox(
-              height: 5,
+              height: 10,
             ),
-            tab == 'Year'
-                ? getCardValueText(yearDate.year.toString())
-                : getCardValueText(DateFormat.yMMM().format(monthDate)),
+            // tab == 'Year'
+            //     ? getCardValueText(yearDate.year.toString())
+            //     : getCardValueText(DateFormat.yMMM().format(monthDate)),
             GestureDetector(
               child: Text('Show All Images'),
               onTap: () async {
@@ -325,7 +338,46 @@ class _StatsTabState extends State<StatsTab>
     );
   }
 
-  showTimelineCard() {
+  Card showPdfCard() {
+    return cardWrapper(
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            getCardTitle('PDF Files'),
+            SizedBox(
+              height: 5,
+            ),
+            Divider(),
+            SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              child: Text('Show All Files'),
+              onTap: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) {
+                    return ShowFiles(
+                      files: files,
+                    );
+                  }),
+                );
+              },
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+        width: MediaQuery.of(context).size.width - 8.0,
+      ),
+    );
+  }
+
+  FutureBuilder showTimelineCard() {
     return FutureBuilder(
         future: getTimelineCounts(tab, tab == "Year" ? yearDate : monthDate),
         builder: (_, snapshot) {

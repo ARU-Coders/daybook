@@ -78,7 +78,6 @@ class ShowAllImages extends StatelessWidget {
                           return _imageGrid(context, imagesToshow, dateToShow);
                         }
                         DocumentSnapshot ds = snapshot.data.docs[index];
-                        bool flag = false;
                         List<String> imagesToPass = [];
                         String dateToPass = '';
                         if (index == 0) {
@@ -91,7 +90,6 @@ class ShowAllImages extends StatelessWidget {
                             imagesToshow =
                                 imagesToshow + List<String>.from(ds['images']);
                           } else {
-                            flag = true;
                             imagesToPass = imagesToshow;
                             dateToPass = dateToShow;
                             imagesToshow = List<String>.from(ds['images']);
