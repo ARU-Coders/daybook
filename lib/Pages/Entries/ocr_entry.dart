@@ -428,7 +428,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                                     horizontal: 15.0),
                                 child: TextFormField(
                                   style: TextStyle(
-                                      color: Colors.black87,
+                                      // color: Colors.black87,
                                       fontSize: 18,
                                       fontWeight: FontWeight.w500,
                                       fontFamily: "Times New Roman"),
@@ -453,7 +453,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                                     horizontal: 15.0),
                                 child: TextFormField(
                                   style: TextStyle(
-                                      color: Colors.black87,
+                                      // color: Colors.black87,
                                       fontSize: 18,
                                       fontFamily: "Times New Roman"),
                                   controller: contentController,

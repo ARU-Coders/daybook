@@ -50,7 +50,7 @@ class _DailyTrackerState extends State<DailyTracker> {
               padding: EdgeInsets.symmetric(vertical: 10),
               width: width,
               decoration: new BoxDecoration(
-                color: Colors.grey[200],
+                color: Theme.of(context).cardColor,
                 borderRadius: new BorderRadius.vertical(
                   top: new Radius.circular(20.0),
                   bottom: new Radius.circular(20.0),
@@ -114,7 +114,7 @@ class _DailyTrackerState extends State<DailyTracker> {
                 padding: EdgeInsets.symmetric(vertical: 10),
                 width: width,
                 decoration: new BoxDecoration(
-                  color: Colors.grey[200],
+                  color: Theme.of(context).cardColor,
                   borderRadius: new BorderRadius.vertical(
                     top: new Radius.circular(20.0),
                     bottom: new Radius.circular(20.0),

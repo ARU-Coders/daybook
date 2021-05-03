@@ -68,7 +68,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                               'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              // color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),

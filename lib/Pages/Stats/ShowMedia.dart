@@ -124,7 +124,9 @@ Widget _imageGrid(BuildContext context, List<String> imageURLs, String date) {
             child: Text(
               date,
               style: GoogleFonts.getFont('Oxygen',
-                  fontSize: 15, color: Colors.black.withOpacity(0.8)),
+                  fontSize: 15, 
+                  // color: Colors.black.withOpacity(0.8),
+                  ),
             ),
           ),
           Expanded(

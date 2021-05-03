@@ -73,9 +73,11 @@ class _HabitChartState extends State<HabitChart> {
                     // ),
                     barRendererDecorator: new charts.BarLabelDecorator<String>(
                         insideLabelStyleSpec: new charts.TextStyleSpec(
-                            fontFamily: "Times New Roman",
-                            fontSize: 10,
-                            lineHeight: 5),
+                          fontFamily: "Times New Roman",
+                          fontSize: 10,
+                          lineHeight: 5,
+                          // color: Colors.black,
+                        ),
                         labelPosition: charts.BarLabelPosition.outside),
                     domainAxis: new charts.OrdinalAxisSpec(),
                   ),

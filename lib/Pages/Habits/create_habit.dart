@@ -90,16 +90,16 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       child: DropdownButton<String>(
-                        focusColor: Colors.white,
+                        // focusColor: Colors.white,
                         value: _chosenValue,
                         elevation: 5,
                         underline: Container(
                           height: 1,
-                          color: Colors.black87,
+                          // color: Colors.black87,
                         ),
                         isExpanded: true,
                         style: TextStyle(color: Colors.white),
-                        iconEnabledColor: Colors.black,
+                        // iconEnabledColor: Colors.black,
                         items: <String>[
                           'Daily',
                           'Weekly',
@@ -109,14 +109,14 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                             value: value,
                             child: Text(
                               value,
-                              style: TextStyle(color: Colors.black),
+                              // style: TextStyle(color: Colors.black),
                             ),
                           );
                         }).toList(),
                         hint: Text(
                           "Please choose any one",
                           style: TextStyle(
-                              color: Colors.black,
+                              // color: Colors.black,
                               fontSize: 14,
                               fontWeight: FontWeight.w500),
                         ),
@@ -154,7 +154,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
             ),
           ),
         ),
-        avatar: Icon(Icons.alarm),
+        avatar: Icon(Icons.alarm, color: Colors.black),
         backgroundColor: Color(0xffffe9b3),
       ),
       onTap: _pickTime,
@@ -166,16 +166,16 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
       Container(
         width: MediaQuery.of(context).size.width,
         child: DropdownButton<String>(
-          focusColor: Colors.white,
+          // focusColor: Colors.white,
           value: _chosenDay,
           elevation: 5,
           underline: Container(
             height: 1,
-            color: Colors.black87,
+            color: Theme.of(context).dividerColor,
           ),
           isExpanded: true,
-          style: TextStyle(color: Colors.white),
-          iconEnabledColor: Colors.black,
+          // style: TextStyle(color: Colors.white),
+          // iconEnabledColor: Colors.black,
           items: <String>[
             'Sunday',
             'Monday',
@@ -189,14 +189,16 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
               value: value,
               child: Text(
                 value,
-                style: TextStyle(color: Colors.black),
+                // style: TextStyle(color: Colors.black),
               ),
             );
           }).toList(),
           hint: Text(
             "Please choose any one",
             style: TextStyle(
-                color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+                // color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.w500),
           ),
           onChanged: (String value) {
             setState(() {
@@ -216,7 +218,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
               ),
             ),
           ),
-          avatar: Icon(Icons.alarm),
+          avatar: Icon(Icons.alarm, color: Colors.black),
           backgroundColor: Color(0xffffe9b3),
         ),
         onTap: _pickTime,

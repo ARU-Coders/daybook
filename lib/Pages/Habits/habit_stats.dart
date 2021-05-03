@@ -150,8 +150,8 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                                       icon: const Icon(Icons.arrow_downward),
                                       iconSize: 24,
                                       elevation: 16,
-                                      style: const TextStyle(
-                                          color: Colors.deepPurple),
+                                      // style: const TextStyle(
+                                      //     color: Colors.deepPurple),
                                       underline: Container(
                                         height: 2,
                                         color: Colors.deepPurpleAccent,
@@ -166,7 +166,9 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                                               (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
-                                          child: Text(value),
+                                          child: Text(
+                                            value,
+                                          ),
                                         );
                                       }).toList(),
                                     ),

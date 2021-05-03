@@ -79,7 +79,8 @@ class ShowFiles extends StatelessWidget {
               child: Text(
                 DateFormat.yMMMMd().format(file.lastModifiedSync()),
                 style: GoogleFonts.getFont('Oxygen',
-                    fontSize: 13, color: Colors.black.withOpacity(0.6)),
+                    // fontSize: 13, color: Colors.black.withOpacity(0.6),
+                    ),
               ),
             ),
             Expanded(

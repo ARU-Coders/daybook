@@ -41,7 +41,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                               'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              // color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -66,6 +66,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                 child: Icon(
                   Icons.add,
                   size: 40,
+                  color: Colors.black,
                 ),
                 onPressed: () => {
                   Navigator.pushNamed(context, '/createJourney', arguments: [])
@@ -158,8 +159,12 @@ class JourneyCard extends StatelessWidget {
                         children: [
                           Text(
                             documentSnapshot['title'],
-                            style: GoogleFonts.getFont('Merriweather',
-                                fontSize: 17, fontWeight: FontWeight.w600),
+                            style: GoogleFonts.getFont(
+                              'Merriweather',
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                             overflow: TextOverflow.fade,
                             maxLines: 1,
                           ),
@@ -206,6 +211,7 @@ class JourneyCard extends StatelessWidget {
                         child: Icon(
                           Icons.edit,
                           size: 20,
+                          color: Colors.black,
                         ),
                         onTap: () {
                           Navigator.pushNamed(context, '/createJourney',

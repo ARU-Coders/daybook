@@ -257,8 +257,11 @@ class _EntriesScreenState extends State<EntriesScreen>
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
               child: Text(
                 DateFormat.yMMMMd().format(DateTime.parse(ds['dateCreated'])),
-                style: GoogleFonts.getFont('Oxygen',
-                    fontSize: 13, color: Colors.black.withOpacity(0.6)),
+                style: GoogleFonts.getFont(
+                  'Oxygen',
+                  fontSize: 13,
+                  // color: Colors.black.withOpacity(0.6),
+                ),
               ),
             ),
             Expanded(
@@ -330,8 +333,12 @@ class EntryCard extends StatelessWidget {
                           children: [
                             Text(
                               documentSnapshot['title'],
-                              style: GoogleFonts.getFont('Merriweather',
-                                  fontSize: 17, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.getFont(
+                                'Merriweather',
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
@@ -389,12 +396,14 @@ class EntryCard extends StatelessWidget {
                           child: Icon(
                             Icons.delete,
                             size: 20,
+                            color: Colors.black,
                           ),
                         ),
                         GestureDetector(
                           child: Icon(
                             Icons.edit,
                             size: 20,
+                            color: Colors.black,
                           ),
                           onTap: () {
                             Navigator.pushNamed(context, '/createEntry',

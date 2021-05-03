@@ -92,14 +92,14 @@ class _StatsTabState extends State<StatsTab>
     );
   }
 
-  Text getCardTitle(String txt) {
+  Text getCardTitle(String txt  ) {
     return Text(
       txt,
       style: GoogleFonts.getFont(
         'Lato',
         fontSize: 24,
         fontWeight: FontWeight.bold,
-        color: Colors.black54,
+        // color: Colors.black54,
         decorationColor: Colors.blue,
         decorationThickness: 3,
         letterSpacing: 2.0,
@@ -112,7 +112,7 @@ class _StatsTabState extends State<StatsTab>
       txt,
       style: GoogleFonts.getFont(
         'Nunito',
-        fontSize: 18,
+        fontSize: 18, 
         fontWeight: FontWeight.w600,
         decorationColor: Colors.blue,
         decorationThickness: 3,
@@ -128,7 +128,7 @@ class _StatsTabState extends State<StatsTab>
           borderRadius: BorderRadius.circular(15.0),
         ),
         margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
-        color: Colors.white,
+        // color: Colors.white,
         clipBehavior: Clip.antiAlias,
         child: child);
   }

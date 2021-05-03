@@ -421,7 +421,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                       softWrap: true,
                       style: GoogleFonts.getFont(
                         'Nunito',
-                        color: Colors.black87,
+                        // color: Colors.black87,
                         fontSize: 17,
                         letterSpacing: 0.2,
                       ),

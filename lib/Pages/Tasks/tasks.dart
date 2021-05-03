@@ -47,7 +47,7 @@ class _TasksScreenState extends State<TasksScreen> {
                               'Lato',
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                              // color: Colors.black87,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -285,7 +285,7 @@ class _MyDialogState extends State<MyDialog> {
                   title: Text(
                     "Reminder",
                     style: TextStyle(
-                        color: Colors.black87,
+                        // color: Colors.black87,
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                         fontFamily: "Times New Roman"),
@@ -322,7 +322,10 @@ class _MyDialogState extends State<MyDialog> {
                               ),
                             ),
                           ),
-                          avatar: Icon(Icons.alarm),
+                          avatar: Icon(
+                            Icons.alarm,
+                            color: Colors.black,
+                          ),
                           backgroundColor: Color(0xffffe9b3),
                         ),
                         onTap: _pickDate,

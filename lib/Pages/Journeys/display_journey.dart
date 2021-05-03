@@ -58,7 +58,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                               height: appbarHeight,
                               child: Row(children: [
                                 GestureDetector(
-                                  onTap: () async{
+                                  onTap: () async {
                                     await HapticFeedback.vibrate();
                                     showDialog(
                                       context: context,
@@ -132,10 +132,12 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                           children: [
                             Text(
                               documentSnapshot['title'],
-                              style: GoogleFonts.getFont('Merriweather',
-                                  color: Colors.grey[900],
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w600,),
+                              style: GoogleFonts.getFont(
+                                'Merriweather',
+                                color: Colors.grey[900],
+                                fontSize: 25,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -175,7 +177,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
                               documentSnapshot['description'],
                               softWrap: true,
                               style: TextStyle(
-                                  color: Colors.black87,
+                                  // color: Colors.black87,
                                   fontSize: 15,
                                   letterSpacing: 0.2,
                                   fontFamily: "Times New Roman"),
@@ -300,11 +302,14 @@ class ShortEntryCard extends StatelessWidget {
           title: Text(
             ds['title'],
             style: GoogleFonts.getFont('Merriweather',
-              color: Colors.black, fontWeight: FontWeight.w500),
+                color: Colors.black, fontWeight: FontWeight.w500),
           ),
-          subtitle: Text(ds['mood'], 
-          style: GoogleFonts.getFont('Lora',
-          color: Colors.black,),
+          subtitle: Text(
+            ds['mood'],
+            style: GoogleFonts.getFont(
+              'Lora',
+              color: Colors.black,
+            ),
           ),
           trailing: GestureDetector(
               onTap: () {
