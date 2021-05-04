@@ -33,8 +33,8 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
           style: GoogleFonts.getFont('Lato'),
         ),
         leading: Builder(
+          
           //Using builder here to provide required context to display the Snackbar.
-
           builder: (BuildContext context) {
             return IconButton(
               icon: Icon(Icons.check),
@@ -90,16 +90,14 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       child: DropdownButton<String>(
-                        // focusColor: Colors.white,
+                        dropdownColor: Theme.of(context).cardColor,
                         value: _chosenValue,
                         elevation: 5,
                         underline: Container(
                           height: 1,
-                          // color: Colors.black87,
                         ),
                         isExpanded: true,
                         style: TextStyle(color: Colors.white),
-                        // iconEnabledColor: Colors.black,
                         items: <String>[
                           'Daily',
                           'Weekly',
@@ -109,14 +107,14 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                             value: value,
                             child: Text(
                               value,
-                              // style: TextStyle(color: Colors.black),
+                              style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
                             ),
                           );
                         }).toList(),
                         hint: Text(
                           "Please choose any one",
                           style: TextStyle(
-                              // color: Colors.black,
+                              color: Theme.of(context).textTheme.bodyText1.color,
                               fontSize: 14,
                               fontWeight: FontWeight.w500),
                         ),
@@ -129,9 +127,6 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                     ),
                     if (_chosenValue == 'Daily') _dailyFormFields(),
                     if (_chosenValue == 'Weekly') _weeklyFormFields(),
-                    // if (_chosenValue == 'Monthly') _monthlyFormFields(),
-                    // _chosenValue == 'Weekly' ? Text('Chose Weekly'): null;
-                    // _chosenValue == 'Monthly' ? Text('Chose Monthly'): null;
                   ]),
                 ),
               ),
@@ -166,7 +161,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
       Container(
         width: MediaQuery.of(context).size.width,
         child: DropdownButton<String>(
-          // focusColor: Colors.white,
+          dropdownColor: Theme.of(context).cardColor,
           value: _chosenDay,
           elevation: 5,
           underline: Container(
@@ -174,8 +169,6 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
             color: Theme.of(context).dividerColor,
           ),
           isExpanded: true,
-          // style: TextStyle(color: Colors.white),
-          // iconEnabledColor: Colors.black,
           items: <String>[
             'Sunday',
             'Monday',
@@ -189,7 +182,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
               value: value,
               child: Text(
                 value,
-                // style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
               ),
             );
           }).toList(),
@@ -225,10 +218,6 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
       )
     ]);
   }
-
-  // Widget _monthlyFormFields() {
-  //   return Text('');
-  // }
 
   _pickTime() async {
     TimeOfDay t = await showTimePicker(context: context, initialTime: time);

@@ -334,7 +334,6 @@ class _SignupDetailsState extends State<SignupDetails> {
           icon: Icon(
             // Based on passwordVisible state choose the icon
             _obscurePassText ? Icons.visibility : Icons.visibility_off,
-            color: Theme.of(context).primaryColorDark,
           ),
           onPressed: () {
             if (flag == 0) {

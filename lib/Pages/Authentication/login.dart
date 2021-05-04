@@ -3,6 +3,7 @@ import 'package:daybook/Pages/start.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Widgets/google_login_button_widget.dart';
 import 'package:daybook/provider/email_sign_in.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 
@@ -34,8 +35,6 @@ class _LoginPageState extends State<LoginPage> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // CustomPaint(painter: BackgroundPainter()),
-        // buildSignUp(context),
         Padding(
           padding: const EdgeInsets.fromLTRB(18, 5, 18, 5),
           child: Column(
@@ -45,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
-                    // width: 175,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -58,8 +56,8 @@ class _LoginPageState extends State<LoginPage> {
                           Text(
                             'Welcome To \nDaybook',
                             softWrap: true,
-                            style: TextStyle(
-                              color: Colors.black,
+                            style: GoogleFonts.getFont(
+                              "Lato",
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                             ),
@@ -80,10 +78,11 @@ class _LoginPageState extends State<LoginPage> {
                         controller: emailController,
                         decoration: InputDecoration(
                           labelText: "Email",
-                          fillColor: Colors.white,
                           border: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(15.0),
-                            borderSide: new BorderSide(color: Colors.blueGrey),
+                            borderSide: new BorderSide(
+                              color: Colors.blueGrey,
+                              ),
                           ),
                         ),
                         validator: (value) {
@@ -106,9 +105,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextFormField(
                         controller: passwordController,
                         obscureText: true,
+                        style: TextStyle(color: Colors.black),
                         decoration: InputDecoration(
                           labelText: "Password",
-                          fillColor: Colors.white,
                           border: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(15.0),
                             borderSide: new BorderSide(color: Colors.blueGrey),
@@ -119,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
                                 _obscurePassText
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Theme.of(context).primaryColorDark,
                               ),
                               onPressed: () {
                                 _togglePassText();
@@ -152,11 +150,6 @@ class _LoginPageState extends State<LoginPage> {
                     highlightColor: Color(0xDAFFD1DC),
                     color: Color(0xffFFD1DC),
                     textColor: Colors.black,
-                    // icon: FaIcon(
-                    //   FontAwesomeIcons.signInAlt,
-                    //   color: Colors.black87,
-                    //   size: 18,
-                    // ),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         final provider = Provider.of<EmailSignInProvider>(
@@ -169,8 +162,8 @@ class _LoginPageState extends State<LoginPage> {
                             MaterialPageRoute(
                                 builder: (context) => StartPage()));
                       }
-                    }),
-                // ),
+                    }
+                  ),
               ),
               SizedBox(height: 25),
               Padding(
@@ -191,14 +184,10 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 25),
               GoogleLoginButtonWidget(),
               SizedBox(height: 20),
-              // Text(
-              //   'Don\'t have an account?',
-              //   style: TextStyle(fontSize: 16),
-              // ),
               RichText(
                 text: TextSpan(
                     text: 'Don\'t have an account? ',
-                    style: TextStyle(color: Colors.black, fontSize: 15),
+                    style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodyText1.color),
                     children: <TextSpan>[
                       TextSpan(
                           text: ' Sign up',
@@ -215,21 +204,9 @@ class _LoginPageState extends State<LoginPage> {
                                     builder: (context) => SignupDetails()),
                               );
                             })
-                    ]),
+                    ]
+                  ),
               ),
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => Signup()),
-              //     );
-              //     // Navigator.pushNamed(context, '/signup');
-              //   },
-              //   child: Padding(
-              //     padding: EdgeInsets.all(10.0),
-              //     child: Text("Register Now"),
-              //   ),
-              // ),
               Spacer(),
             ],
           ),

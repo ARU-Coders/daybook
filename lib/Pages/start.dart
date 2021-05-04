@@ -19,7 +19,6 @@ class StartPage extends StatelessWidget {
           ],
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            backgroundColor: Color(0xfff9f9f9),
             body: StreamBuilder(
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
@@ -37,13 +36,14 @@ class StartPage extends StatelessWidget {
                 }
               },
             ),
-          ));
-  // );
+          ),
+        );
+
 
   Widget buildLoading() => Stack(
-        fit: StackFit.expand,
-        children: [
-          Center(child: CircularProgressIndicator()),
-        ],
-      );
-}
+    fit: StackFit.expand,
+    children: [
+      Center(child: CircularProgressIndicator()),
+      ],
+    );
+  }

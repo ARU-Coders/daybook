@@ -13,6 +13,9 @@ Future<void> deleteImages(List<String> deleteImages) async {
         .replaceAll("?", "*")
         .split("*")[1]
         .split("%2F")[1];
+    //Replace %20 with whitespace and %3A with :
+    fileName = fileName.replaceAll("%20", " ").replaceAll("%3A", ":");
+    
     Reference storageReferance = FirebaseStorage.instance.ref();
     storageReferance
         .child(AuthService.getUserEmail())
@@ -48,8 +51,12 @@ Future<DocumentReference> createEntry(
 
     await Future.wait(
         images.map((String _image) async {
+          String imageName = _image.split('/').last.split('.').first;
+          String imageExtention = _image.split('/').last.split('.').last;
+          
+          //Store image with the name format = <filename>_<CurrentDateTime>.<extension>
           String imageRef =
-              id + '/' + _image.split('/').last + DateTime.now().toString();
+              id + '/' + imageName + "_" + DateTime.now().toString() + "." + imageExtention;
           Reference ref = FirebaseStorage.instance.ref(imageRef);
           UploadTask uploadTask = ref.putFile(File(_image));
 
