@@ -6,6 +6,7 @@ import 'package:daybook/Pages/Journeys/display_journey.dart';
 import 'package:daybook/Pages/Journeys/select_entries.dart';
 import 'package:daybook/Pages/edit_profile.dart';
 import 'package:daybook/Provider/theme_change.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +22,17 @@ import 'dart:async';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  await _setupCrashlytics();
   runApp(MyApp());
+}
+
+Future<void> _setupCrashlytics() async {
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  Function originalOnError = FlutterError.onError;
+  FlutterError.onError = (FlutterErrorDetails errorDetails) async {
+    await FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+    originalOnError(errorDetails);
+  };
 }
 
 class MyApp extends StatelessWidget {

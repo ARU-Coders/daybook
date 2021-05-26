@@ -26,54 +26,67 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
-  firebase_auth: ^0.20.0+1
+  
+  #Google and Firebase
+  firebase_core: ^0.5.3
+  firebase_auth: ^0.18.4
   google_sign_in: ^4.5.9
+  cloud_firestore: ^0.14.4
+  firebase_storage: ^5.2.0
+  firebase_ml_vision: ^0.9.10
+  firebase_crashlytics: ^0.2.3
+  firebase_messaging: ^7.0.2
+  
+  #Graphs, charts, calender
   pie_chart: 
+  table_calendar:
+  charts_flutter: ^0.10.0
+  month_picker_dialog:
 
+  #UI Components and Widgets
   fluttertoast: 
-  path_provider:
-  video_player: ^1.0.1
-  file_picker: ^2.1.6
-  cloud_firestore: ^0.16.0
-  firebase_storage: ^7.0.0
-  path:
-  image_picker: ^0.6.7+22
-  curved_navigation_bar: ^0.3.7
   group_button: ^1.0.3
-  intl: ^0.16.1
-  cached_network_image: ^2.5.1
-  sqflite: ^1.3.0
   google_fonts: ^1.1.2
+  flutter_swiper: ^1.1.6
+  textfield_tags: ^1.1.0
+  animated_text_kit:
+  font_awesome_flutter: ^8.10.0
+  curved_navigation_bar: ^0.3.7
+  material_design_icons_flutter: 
+  
+  #PDF
+  pdf:
+  pdf_viewer_plugin: ^1.0.0+2
+  flutter_full_pdf_viewer: ^1.0.6
+
+  #Services
+  share: ^0.6.5+2
+  camera: ^0.6.0
+  sqflite: ^1.3.0
+  url_launcher: ^5.7.10
+  video_player: ^1.0.1
+  cached_network_image: ^2.5.1
+  flutter_local_notifications: ^1.4.4+1
+  
+  #Files and paths
+  path:
+  intl: ^0.16.1
+  open_file: ^3.0.3
+  file_picker: ^2.1.6
+  image_picker: ^0.6.7+22
+  path_provider:
   path_provider_ex:
   flutter_file_manager:
 
   # state management
   provider: ^4.3.2+2
-  flutter_local_notifications: ^1.4.4+1
-  
-  # icon of google
-  font_awesome_flutter: ^8.10.0
-  material_design_icons_flutter: 
-  
-  share: ^0.6.5+2
-  url_launcher: ^5.7.10
-  table_calendar:
-  month_picker_dialog:
-  charts_flutter: ^0.10.0
 
-  pdf:
-  flutter_full_pdf_viewer: ^1.0.6
-  pdf_viewer_plugin: ^1.0.0+2
-  open_file: ^3.0.3
+  #Location and permissions
   geocoding: ^1.0.5
   geolocator: ^6.1.11
   location: ^3.2.1
   permission_handler: ^5.0.1+1
-  animated_text_kit:
-  camera: ^0.6.0
-  firebase_ml_vision: ^0.9.10
-  flutter_swiper: ^1.1.6
-  textfield_tags: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:

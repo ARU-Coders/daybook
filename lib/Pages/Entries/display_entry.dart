@@ -236,7 +236,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Icon(Icons.arrow_back),
+                          child: Icon(Icons.arrow_back, color: Colors.black87,),
                         ),
                       ),
                       Container(
@@ -279,6 +279,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                             child: Icon(
                               Icons.delete_outline,
                               size: 20,
+                              color: Colors.black87,
                             ),
                           ),
                           SizedBox(width: 25),
@@ -287,6 +288,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                 child: Icon(
                                   Icons.download_outlined,
                                   size: 20,
+                                  color: Colors.black87,
                                 ),
                                 onTap: () async {
                                   File newfile =
@@ -315,6 +317,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                             child: Icon(
                               Icons.share_outlined,
                               size: 20,
+                              color: Colors.black87,
                             ),
                             onTap: () {
                               String subject =
@@ -380,7 +383,10 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                                   ),
                                 ),
                               ),
-                              avatar: Icon(Icons.location_on_outlined),
+                              avatar: Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.black87,
+                                ),
                               backgroundColor: Color(0xffffe9b3),
                             )
                           : SizedBox(),
@@ -398,7 +404,10 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                           ),
                         ),
                         backgroundColor: Color(0xffffe9b3),
-                        avatar: Icon(Icons.calendar_today_outlined),
+                        avatar: Icon(
+                          Icons.calendar_today_outlined,
+                          color: Colors.black87,
+                          ),
                       ),
                     ],
                   ),

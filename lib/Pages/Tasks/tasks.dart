@@ -263,7 +263,6 @@ class _MyDialogState extends State<MyDialog> {
           children: [
             TextFormField(
               style: TextStyle(
-                  color: Colors.black87,
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                   fontFamily: "Times New Roman"),
