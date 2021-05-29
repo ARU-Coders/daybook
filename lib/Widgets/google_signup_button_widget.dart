@@ -11,7 +11,7 @@ class GoogleSignupButtonWidget extends StatelessWidget {
       child: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            final provider = Provider.of<GoogleSignInProvider>(context);
+            // final provider = Provider.of<GoogleSignInProvider>(context);
             return Container(
               padding: EdgeInsets.all(4),
               child: RaisedButton.icon(
@@ -27,7 +27,7 @@ class GoogleSignupButtonWidget extends StatelessWidget {
                 // textColor: Colors.black,
                 icon: FaIcon(FontAwesomeIcons.google, color: Colors.black87,size: 18,),
                 onPressed: () {
-                  provider.registerWithGoogle();
+                  // provider.registerWithGoogle();
                 },
               ),
             );

@@ -1,4 +1,5 @@
 import 'package:daybook/Services/auth_service.dart';
+import 'package:daybook/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -23,53 +24,65 @@ class GoogleSignInProvider extends ChangeNotifier {
     "https://www.googleapis.com/auth/user.gender.read"
   ]);
   final googleSignInForLogin = GoogleSignIn();
-  bool _isSigningIn;
 
-  GoogleSignInProvider() {
-    _isSigningIn = false;
-  }
-
-  bool get isSigningIn => _isSigningIn;
+  GoogleSignInProvider();
 
   set isSigningIn(bool isSigningIn) {
-    _isSigningIn = isSigningIn;
     notifyListeners();
   }
 
-  Future login() async {
-    isSigningIn = true;
+  Future<void> login({
+      @required Function successCallback,
+      @required Function errorCallback,
+      @required Function dismissCallback,
+    }) async {
+      try{
+        final user = await googleSignInForLogin.signIn();
 
-    final user = await googleSignInForLogin.signIn();
+        if (user == null){
+          dismissCallback();
+          return;
+        } 
 
-    if (user == null) {
-      isSigningIn = false;
-      return;
-    } else {
-      print(user);
+        print(user);
 
-      final googleAuth = await user.authentication;
+        final googleAuth = await user.authentication;
 
-      // String accTok = googleAuth.accessToken.toString();
-      // await getGenderAndDOB(accTok);
+        // String accTok = googleAuth.accessToken.toString();
+        // await getGenderAndDOB(accTok);
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      final doc = firestore
-          .collection('users')
-          .where('email', isEqualTo: user.email)
-          .get();
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
 
-      if (doc != null) {
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        final _ = AuthService.updateEmail();
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        final doc = firestore
+            .collection('users')
+            .where('email', isEqualTo: user.email)
+            .get();
+
+        if (doc != null) {
+          await FirebaseAuth.instance.signInWithCredential(credential);
+          final _ = AuthService.updateEmail();
+          successCallback();
+        }
+        dismissCallback();
+      }catch(e){
+        print("Error during login with Google.");
+        String errorMessage = "Some error occured! Please check your internet connection.";
+        if(e is FirebaseAuthException){
+          print(e);
+          print(e.code);
+          errorMessage = googleAuthExceptionMessageMap[e.code];
+        }
+        errorCallback(errorMessage);
       }
-      isSigningIn = false;
-    }
   }
 
+  /// Gets [gender] and [Date of birth] from user's Google profile
+  /// 
+  /// Eg: `genderAndDOB = ["Male", "15/08/1947"]`;
   Future<List<String>> getGenderAndDOB(String accessToken) async {
     final headers = await googleSignIn.currentUser.authHeaders;
     String dd = "01", mm = "01", yyyy = "2000", gender = "Not Set";
@@ -101,56 +114,73 @@ class GoogleSignInProvider extends ChangeNotifier {
     return [gender, dob];
   }
 
-  Future<bool> registerWithGoogle() async {
-    //Returns true if the sign up process is completed and all user details are stored in respective collection
-    //Else, returns false
-    isSigningIn = true;
+  ///Returns [true] if the sign up process is completed and all user details are stored in respective collection
+  ///Else, returns [false]
+  Future<bool> registerWithGoogle({
+    @required Function successCallback,
+    @required Function errorCallback,
+    @required Function dismissCallback,
+    }) async {
+    try{
+      final user = await googleSignIn.signIn();
 
-    final user = await googleSignIn.signIn();
-
-    if (user == null) {
-      //No user returned by the googleSignIn method, returning false
-      isSigningIn = false;
-      return false;
-    } else {
-      final googleAuth = await user.authentication;
-
-      String accessToken = googleAuth.accessToken.toString();
-
-      //Gets gender and Date of birth from user's Google profile
-      //Eg: genderAndDOB = ["Male", "15/08/1947"];
-      List<String> genderAndDOB = await getGenderAndDOB(accessToken);
-
-      final gender = genderAndDOB[0];
-      final dob = genderAndDOB[1];
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      //Check if the user details are already stored in the firestore.
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      DocumentSnapshot doc =
-          await firestore.collection('users').doc(user.email).get();
-
-      if (doc == null || !doc.exists) {
-        //No details are returned which indicates that the account was not used for registration previously.
-
-        //Add user
-        await FirebaseAuth.instance.signInWithCredential(credential);
-
-        //Save user details
-        addUserToFirestore(user, gender, dob);
-        final _ = AuthService.updateEmail();
+      if (user == null) {
+        //No user returned by the googleSignIn method, returning false
+        dismissCallback();
+        return false;
       } else {
-        //Todo:
-        //Handle registering with existing email address
-        print(doc["email"].toString());
-        print("User Already Exists !");
+        final googleAuth = await user.authentication;
+        String accessToken = googleAuth.accessToken.toString();
+
+        List<String> genderAndDOB = await getGenderAndDOB(accessToken);
+
+        final gender = genderAndDOB[0];
+        final dob = genderAndDOB[1];
+
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        //Check if the user details are already stored in the firestore.
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        DocumentSnapshot doc =
+            await firestore.collection('users').doc(user.email).get();
+
+        if (doc == null || !doc.exists) {
+          //No details are returned which indicates that the account was not used for registration previously.
+
+          //Add user
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+          //Save user details
+          addUserToFirestore(user, gender, dob);
+          final _ = AuthService.updateEmail();
+          
+          successCallback();
+          return true;
+        } else {
+          String errorMessage = "User Already Exists !";
+          print(doc["email"].toString());
+          print("User Already Exists !");
+          
+          logout();
+
+          errorCallback(errorMessage);
+          return false;
+        }
       }
-      isSigningIn = false;
-    }
+    }catch(e){
+        print("Error during registering with Google.");
+        String errorMessage = "Some error occured! Please check your internet connection.";
+        if(e is FirebaseAuthException){
+          print(e);
+          print(e.code);
+          errorMessage = googleAuthExceptionMessageMap[e.code];
+        }
+        errorCallback(errorMessage);
+        return false;
+      }
   }
 
   void addUserToFirestore(user, gender, dob) async {
@@ -172,8 +202,6 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   void logout() async {
-    //Handle email logout separately
-    // setUserEmail("");
     await googleSignInForLogin.disconnect();
     await _firebaseAuth.signOut();
   }

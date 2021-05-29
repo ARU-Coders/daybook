@@ -1,4 +1,5 @@
 import 'package:daybook/Services/auth_service.dart';
+import 'package:daybook/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +8,7 @@ class EmailSignInProvider extends ChangeNotifier {
   // final googleSignIn = GoogleSignIn();
   bool _isSigningIn;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
+  
   EmailSignInProvider() {
     _isSigningIn = false;
   }
@@ -19,17 +20,38 @@ class EmailSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future login(String email, String password) async {
-    final user = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password);
-    print(user);
-    // setUserEmail(email);
-    final _ = AuthService.updateEmail();
-    return;
+  Future<void> login({
+    @required String email, 
+    @required String password,
+    @required Function successCallback,
+    @required Function errorCallback}
+    ) async {
+      try{
+        final user = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+        final _ = AuthService.updateEmail();
+        successCallback();
+        print(user);
+      }catch(e){
+        print("Error during login with email.");
+        String errorMessage = "Some error occured! Please check your internet connection.";
+        if(e is FirebaseAuthException){
+          errorMessage = authExceptionMessageMap[e.code];
+          print(e);
+          print(e.code);
+        }
+        errorCallback(errorMessage);
+      }
   }
 
-  Future<String> register(String name, String email, String password,
-      String gender, String dob) async {
+  Future<String> register({
+    @required String name, 
+    @required String email, 
+    @required String password,
+    @required String gender, 
+    @required String dob,
+    @required Function successCallback,
+    @required Function errorCallback}
+    ) async {
     try {
       final newUser = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);

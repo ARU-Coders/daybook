@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:daybook/provider/google_sign_in.dart';
-import 'package:provider/provider.dart';
 
 class GoogleLoginButtonWidget extends StatelessWidget {
   @override
@@ -24,9 +22,9 @@ class GoogleLoginButtonWidget extends StatelessWidget {
             size: 18,
           ),
           onPressed: () {
-            final provider =
-                Provider.of<GoogleSignInProvider>(context, listen: false);
-            provider.login();
+            // final provider =
+            //     Provider.of<GoogleSignInProvider>(context, listen: false);
+            // provider.login();
           },
         ),
       );
