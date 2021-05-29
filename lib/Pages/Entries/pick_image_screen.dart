@@ -15,6 +15,8 @@ class PickImageScreen extends StatefulWidget {
 enum Source { GALLERY, CAMERA }
 
 class _PickImageScreenState extends State<PickImageScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   ImagePicker imagePicker;
   PickedFile pickedImage;
   FirebaseVisionImage visionImage;
@@ -111,6 +113,7 @@ class _PickImageScreenState extends State<PickImageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Select an image'),
       ),

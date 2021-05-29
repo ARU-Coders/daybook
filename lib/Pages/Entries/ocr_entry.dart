@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daybook/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:file_picker/file_picker.dart';
@@ -24,20 +25,13 @@ class CreateOCREntryScreen extends StatefulWidget {
 }
 
 class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<String> selectedImages = [];
 
   List<String> deletedImages = [];
   List<String> previousImages = [];
 
-  final Map<String, String> moodMap = {
-    "😭": "Terrible",
-    "😥": "Bad",
-    "🙂": "Neutral",
-    "😃": "Good",
-    "😁": "Wonderful"
-  };
-
-  final List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
   List<String> selectedMoods = ["🙂"];
   List<String> tags = ["OCR"];
 
@@ -268,6 +262,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text(
             "Create OCR Entry",

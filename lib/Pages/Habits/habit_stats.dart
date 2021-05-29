@@ -8,6 +8,7 @@ import 'package:daybook/Services/habitService.dart';
 import 'package:daybook/Widgets/habit_chart.dart';
 
 class HabitStatisticsPage extends StatefulWidget {
+  
   final DocumentSnapshot ds;
   const HabitStatisticsPage({
     Key key,
@@ -18,6 +19,8 @@ class HabitStatisticsPage extends StatefulWidget {
 }
 
 class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  
   DateTime selectedDate;
 
   @override
@@ -73,6 +76,7 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

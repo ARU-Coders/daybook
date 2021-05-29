@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:daybook/Utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:file_picker/file_picker.dart';
@@ -20,6 +21,8 @@ class CreateEntryScreen extends StatefulWidget {
 }
 
 class _CreateEntryScreenState extends State<CreateEntryScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<String> selectedImages = [];
 
   List<String> deletedImages = [];
@@ -57,6 +60,14 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     'Add to Journey',
     'Discard'
   ];
+
+void showSnackBar(BuildContext buildContext, String message, {int duration = 3}) {
+  final snackBar = SnackBar(
+    content: Text(message),
+    duration: Duration(seconds: duration),
+  );
+  Scaffold.of(buildContext).showSnackBar(snackBar);
+}
 
   Future _checkGps() async {
     if (!await location.serviceEnabled()) {
@@ -267,15 +278,6 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     }
   }
 
-  void showSnackBar(BuildContext buildContext, String message,
-      {int duration = 3}) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: duration),
-    );
-    Scaffold.of(buildContext).showSnackBar(snackBar);
-  }
-
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -308,6 +310,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text(
             isEditing ? "Edit Entry" : "Create Entry",

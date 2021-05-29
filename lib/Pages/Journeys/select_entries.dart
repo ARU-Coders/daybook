@@ -10,6 +10,7 @@ class SelectEntriesScreen extends StatefulWidget {
 }
 
 class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<dynamic> selectedEntries = [];
   int flag = 0;
   // final _formKey = GlobalKey<FormState>();
@@ -26,6 +27,7 @@ class _SelectEntriesScreenState extends State<SelectEntriesScreen> {
     // });
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
             title: Text("Add entries to the journey",
             style: GoogleFonts.getFont('Lato'),),

@@ -8,6 +8,8 @@ class CreateHabitScreen extends StatefulWidget {
 }
 
 class _CreateHabitScreenState extends State<CreateHabitScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController titleController = TextEditingController();
@@ -27,6 +29,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
     });
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           "Create Habit",

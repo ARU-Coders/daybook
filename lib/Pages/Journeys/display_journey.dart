@@ -11,6 +11,7 @@ class DisplayJourneyScreen extends StatefulWidget {
 }
 
 class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -24,6 +25,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
     print("checking :" + documentSnapshot['title']);
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
         body: Stack(
           children: [

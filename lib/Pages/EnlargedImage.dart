@@ -4,12 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class EnlargedImage extends StatelessWidget {
   EnlargedImage(this.imagePath, this.isFirebaseImage);
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final String imagePath;
   final bool isFirebaseImage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: InteractiveViewer(
         panEnabled: true, // Set it to false
         boundaryMargin: EdgeInsets.all(100),

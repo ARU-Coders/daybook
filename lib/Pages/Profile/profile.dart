@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:daybook/Services/db_services.dart';
 import 'package:daybook/Services/user_services.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 // import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -11,9 +12,21 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  
+  void showSnackBar(String message, {int duration = 3}) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: duration),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset:false,
+      key: _scaffoldKey,
       body: SafeArea(
         child: FutureBuilder(
             future: getUserProfileStream(),
@@ -85,7 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                           ),
-                                          // textAlign: TextAlign.left,
                                         ),
                                         SizedBox(
                                           height: 20,
@@ -100,18 +112,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(60),
                                                   child: CachedNetworkImage(
-                                                    height: 55,
-                                                    width: 55,
+                                                    height: 70,
+                                                    width: 70,
                                                     fit: BoxFit.cover,
                                                     imageUrl: data['photo'],
                                                   ),
                                                 ),
                                                 SizedBox(
-                                                  width: 20,
+                                                  width: 10,
                                                 ),
                                                 Column(
-                                                    // mainAxisAlignment:
-                                                    //     MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
@@ -143,28 +153,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       //       true,
                                                       //   stopPauseOnTap: true,
                                                       // ),
-                                                      Text(
-                                                        name
-                                                            .split(" ")
-                                                            .map((str) =>
-                                                                str[0]
-                                                                    .toUpperCase() +
-                                                                str.substring(
-                                                                    1))
-                                                            .join(" "),
-                                                        style: TextStyle(
+                                                      Container(
+                                                        width: MediaQuery.of(context).size.width*0.5,
+                                                        child: Text(
+                                                          name
+                                                              .split(" ")
+                                                              .map((str) =>
+                                                                  str[0]
+                                                                      .toUpperCase() +
+                                                                  str.substring(
+                                                                      1))
+                                                              .join(" "),
+                                                          style: GoogleFonts.getFont(
+                                                            "Oxygen",
                                                             fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
+                                                            fontWeight: FontWeight.w600),
+                                                          softWrap: true,
+                                                        ),
                                                       ),
+                                                      SizedBox(height: 10,),
                                                       Text(
                                                         "User since $dateJoined",
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
+                                                        style: GoogleFonts.getFont(
+                                                          "Lato",
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w400),
                                                       ),
                                                     ]),
                                               ]),
@@ -172,9 +185,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             Container(
                                               height: 30,
                                               width: 30,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.white),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0) 
+                                                ),
+                                              ),
                                               child: FloatingActionButton(
                                                 backgroundColor:
-                                                    Color(0x80d68598),
+                                                    Color(0xffd68598),
                                                 child: Icon(
                                                   Icons.edit_outlined,
                                                   size: 15,
@@ -182,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 onPressed: () => {
                                                   Navigator.pushNamed(
                                                       context, '/editProfile',
-                                                      arguments: [data])
+                                                      arguments: [data, showSnackBar])
                                                 },
                                               ),
                                             ),
@@ -238,7 +257,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     Text(
                                       "E-mail",
-                                      style: TextStyle(fontSize: 17),
+                                      style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
                                     SizedBox(height: 10),
@@ -266,7 +285,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     Text(
                                       "Gender",
-                                      style: TextStyle(fontSize: 17),
+                                      style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
                                     SizedBox(height: 10),
@@ -293,8 +312,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       height: 20,
                                     ),
                                     Text(
-                                      "Birth date",
-                                      style: TextStyle(fontSize: 17),
+                                      "Birthdate",
+                                      style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
                                     SizedBox(height: 10),
@@ -356,66 +375,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: CircularProgressIndicator(),
                         ),
                       );
-                      // Center(
-                      //   child: Column(
-                      //     mainAxisAlignment: MainAxisAlignment.center,
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     children: [
-                      //       Container(
-                      //         // width: 150,
-                      //         // height: 150,
-                      //         padding: EdgeInsets.all(8),
-                      //         decoration: avatarDecoration,
-                      //         child: Container(
-                      //           decoration: avatarDecoration,
-                      //           padding: EdgeInsets.all(1),
-                      //           child: Container(
-                      //             decoration: BoxDecoration(
-                      //               shape: BoxShape.circle,
-                      //             ),
-                      //             child: ClipRRect(
-                      //               borderRadius: BorderRadius.circular(40),
-                      //               child: CachedNetworkImage(
-                      //                 fit: BoxFit.cover,
-                      //                 imageUrl: data['photo'],
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       // AvatarImage(data['photo'].toString()),
-                      //       Text(name),
-                      //       Text(email),
-                      //       Text("User Since $dateJoined"),
-                      //       userType == 'email'
-                      //           ? Text("Email user! ")
-                      //           : Text("Gmail user! "),
-                      //       Text("Birthday : $birthdate"),
-                      //       Text("Gender : $gender"),
-                      //     ],
-                      //   ),
-                      // );
                     });
               }
 
-              // if (snapshot.hasData) {
-              //   final data = snapshot.data;
-              //   String name = data['name'].toString();
-              //   return Column(
-              //         crossAxisAlignment: CrossAxisAlignment.center,
-              //         children: [
-              //           ClipRRect(
-              //             borderRadius: BorderRadius.circular(40),
-              //             child: CachedNetworkImage(
-              //               fit: BoxFit.cover,
-              //               imageUrl: snapshot.data['photo'],
-              //             ),
-              //           ),
-              //           Text(name),
-              //           Text("Member Since:"),
-              //         ],
-              //       );
-              //     }
               return Center(
                 child: Container(
                   height: 50,

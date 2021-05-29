@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'auth_service.dart';
 import 'db_services.dart';
 import 'dart:io';
@@ -87,6 +88,15 @@ Future<DocumentReference> createEntry(
     'position': position
   });
   DocumentReference query = userDoc.collection('entries').doc(docId);
+  return query;
+}
+
+Stream<DocumentSnapshot> getEntryStream({@required String entryId}) {
+  String email = AuthService.getUserEmail();
+  DocumentReference userDoc =
+      FirebaseFirestore.instance.collection('users').doc(email);
+
+  Stream<DocumentSnapshot> query = userDoc.collection('entries').doc(entryId).get().asStream();
   return query;
 }
 

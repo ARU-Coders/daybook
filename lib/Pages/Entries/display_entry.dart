@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:daybook/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,30 +85,18 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
     return file;
   }
 
-  final Map<String, Color> colorMoodMap = {
-    "Terrible": Color(0xffa3a8b8), //darkgrey
-    "Bad": Color(0xffcbcbcb), //grey
-    "Neutral": Color(0xfffdefcc), //yellow
-    "Good": Color(0xffffa194), //red
-    "Wonderful": Color(0xffadd2ff) //blue
-  };
-
-  final Map<String, String> moodText = {
-    "Terrible": "Terrible 😭",
-    "Bad": "Bad 😥",
-    "Neutral": "Neutral 🙂",
-    "Good": "Good 😃",
-    "Wonderful": "Wonderful 😁"
-  };
 
   @override
   Widget build(BuildContext context) {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     double width = MediaQuery.of(context).size.width;
     var appbarHeight = AppBar().preferredSize.height;
 
     final arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
     DocumentSnapshot documentSnapshot = arguments[0];
+    // String docId = documentSnapshot.id;
     List<dynamic> imageUrls = documentSnapshot["images"];
     List<String> tags = List<String>.from(documentSnapshot["tags"]);
     print("checking :" + documentSnapshot['title']);
@@ -211,6 +200,7 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
 
     return SafeArea(
         child: Scaffold(
+          key: _scaffoldKey,
             body: Container(
       height: double.infinity,
       width: double.infinity,
@@ -390,8 +380,6 @@ class _DisplayEntryScreenState extends State<DisplayEntryScreen> {
                               backgroundColor: Color(0xffffe9b3),
                             )
                           : SizedBox(),
-                      // Text(
-                      //     documentSnapshot['address'] ?? "Loaction Nnot added"),
                       Chip(
                         label: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),

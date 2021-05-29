@@ -10,6 +10,7 @@ class CreateJourneyScreen extends StatefulWidget {
 }
 
 class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
 
   String documentId;
@@ -44,6 +45,7 @@ class _CreateJourneyScreenState extends State<CreateJourneyScreen> {
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           isEditing ? "Edit Journey" : "Create Journey",
