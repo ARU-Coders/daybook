@@ -24,6 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey _bottomNavigationKey = GlobalKey();
   final _url = 'https://trcr.tk/Kf6uY';
 
@@ -85,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                   // return SizedBpx();
                   Navigator.popAndPushNamed(
                     context,
-                    '/start',
+                    '/splashScreen',
                   );
                   // });
 
@@ -96,6 +97,7 @@ class _HomePageState extends State<HomePage> {
 
           return SafeArea(
             child: Scaffold(
+              key: _scaffoldKey,
               appBar: AppBar(
                 title: Text(
                   _title[_currentTab],

@@ -69,6 +69,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               Container(
                 margin: EdgeInsets.only(top: 16),
                 child: AnimatedTextKit(
+                  totalRepeatCount: 1,
                   animatedTexts:[
                     TyperAnimatedText("Daybook", 
                       textStyle: GoogleFonts.getFont("Allura", fontSize: 40, color: Colors.blueGrey[800], letterSpacing: 1.5
