@@ -2,11 +2,6 @@ import 'package:daybook/Services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-// import 'package:daybook/Services/entryService.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'dart:io';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:intl/intl.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -22,8 +17,8 @@ class _EditProfileState extends State<EditProfile> {
   bool isChanged = false;
   final _formKey = GlobalKey<FormState>();
   String dropdownValue;
-  String birthdate = "Not Set";
-
+  String birthdate;
+  List<dynamic> arguments;
   Function callback;
 
   InputDecoration textFormFieldDecoration(String lbl, IconData icon) {
@@ -40,7 +35,7 @@ class _EditProfileState extends State<EditProfile> {
     DateTime date = await showDatePicker(
       context: context,
       firstDate: DateTime(1950),
-      lastDate: DateTime(DateTime.now().year + 5),
+      lastDate: DateTime.now(),
       initialDate: DateTime.now(),
     );
     if (date != null) {
@@ -54,17 +49,18 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    
     if(!isChanged)
     {
-      final arguments =
+      arguments =
         ModalRoute.of(context).settings.arguments as List<dynamic>;
-    nameController.text = arguments[0]['name'];
-    emailController.text = arguments[0]['email'];
-    dropdownValue = arguments[0]['gender'];
-    birthdayController.text = arguments[0]['birthdate'];
-
-    callback = arguments[1];
-    isChanged = true;
+        nameController.text = arguments[0]['name'];
+        emailController.text = arguments[0]['email'];
+        dropdownValue = arguments[0]['gender'];
+        birthdate = arguments[0]['birthdate'];
+        birthdayController.text = DateFormat.yMMMMd().format(DateTime.parse(birthdate));
+        callback = arguments[1];
+        isChanged = true;
     }
     return Scaffold(
       resizeToAvoidBottomInset:false,
@@ -164,7 +160,7 @@ class _EditProfileState extends State<EditProfile> {
                     if(value == "Not Set"){
                       return "Please select birthdate";
                     }
-                    if (DateTime.parse(birthdayController.text)
+                    if (DateTime.parse(birthdate)
                         .isAfter(DateTime.now())) {
                       return 'Birthdate cannot be a future date !';
                     }
@@ -219,15 +215,18 @@ class _EditProfileState extends State<EditProfile> {
                     highlightColor: Color(0xDAFFD1DC),
                     color: Color(0xffFFD1DC),
                     onPressed: () async{
+                      String name = nameController.text.trim();
+                      String gender = dropdownValue;
                       if (_formKey.currentState.validate()){
-                        //If form is valid
-                        //pop
-                        //Else
-                        //display snackar
                         FocusScope.of(context).unfocus();
-                        await editProfile(nameController.text.trim(), birthdayController.text ,dropdownValue);
-                        callback("Profile Updated!");
+                        await editProfile(name, birthdate , gender);
                         Navigator.pop(context);
+                        if(arguments[0]['birthdate'] != birthdate || 
+                            arguments[0]['name'] != name ||
+                            arguments[0]['gender'] != gender){
+                          callback("Profile Updated!");
+                        }
+
                       }
                     }),
               ),
