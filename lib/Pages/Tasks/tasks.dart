@@ -1,3 +1,5 @@
+import 'package:daybook/Utils/constants.dart';
+import 'package:daybook/Widgets/no_data_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/taskService.dart';
 import 'package:daybook/Widgets/LoadingPage.dart';
@@ -31,28 +33,8 @@ class _TasksScreenState extends State<TasksScreen> {
                     return LoadingPage();
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/No-Tasks.png',
-                            height: 250.0,
-                            // width: 200.0,
-                          ),
-                          Text(
-                            "No tasks created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont(
-                              'Lato',
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                              // color: Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    return noDataFound(
+                      screen: Screens.TASKS,
                     );
                   }
                   return ListView.builder(

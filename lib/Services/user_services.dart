@@ -51,18 +51,6 @@ Future<void> editProfile(
     'birthdate': birthdate
   });
 }
-// Stream<QuerySnapshot> getTasks() {
-//   String email = AuthService.getUserEmail();
-
-//   DocumentReference userDoc =
-//       FirebaseFirestore.instance.collection('users').doc(email);
-//   Stream<QuerySnapshot> query = userDoc
-//       .collection('tasks')
-//       .orderBy('isChecked')
-//       .orderBy('dueDate')
-//       .snapshots();
-//   return query;
-// }
 
 Future<DocumentSnapshot> getTask(String taskId) async {
   DocumentReference userDoc = await getUserDocRef();

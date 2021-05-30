@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Pages/EnlargedImage.dart';
+import 'package:daybook/Utils/constants.dart';
+import 'package:daybook/Widgets/no_data_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -46,27 +48,8 @@ class ShowAllImages extends StatelessWidget {
                                 Container(child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/No-Entry.png',
-                            height: 250.0,
-                          ),
-                          Text(
-                            "No images Added",
-                            style: GoogleFonts.getFont(
-                              'Lato',
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    return noDataFound(
+                      screen: Screens.IMAGES,
                     );
                   }
                   return new ListView.builder(

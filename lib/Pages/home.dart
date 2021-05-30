@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:daybook/Pages/Profile/profile.dart';
 import 'package:daybook/Provider/email_sign_in.dart';
 import 'package:daybook/Provider/theme_change.dart';
 import 'package:daybook/Widgets/custom_switch.dart';
@@ -26,7 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey _bottomNavigationKey = GlobalKey();
-  final _url = 'https://trcr.tk/Kf6uY';
+  final _url = 'https://trcr.tk/yRkGg';
 
   final _tabs = [
     JourneysScreen(),

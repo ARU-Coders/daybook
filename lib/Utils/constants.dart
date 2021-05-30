@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
-
 import 'constantStrings.dart';
+
+enum Screens{
+  JOURNEYS,
+  ENTRIES,
+  HABITS,
+  TASKS,
+  PDFS,
+  IMAGES
+}
+
+const DARK_GREY = Color(0xffa3a8b8);  //darkgrey
+const GREY  = Color(0xffcbcbcb);      //grey
+const YELLOW  = Color(0xfffdefcc);    //yellow
+const RED = Color(0xffffa194);        //red
+const BLUE = Color(0xffadd2ff);       //blue
 
 const List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
 
-const List<Color>  colorPalette = [
-    Color(0xffa3a8b8), //darkgrey
-    Color(0xffcbcbcb), //grey
-    Color(0xfffdefcc), //yellow
-    Color(0xffffa194), //red
-    Color(0xffadd2ff) //blue
-  ];
+const List<Color>  colorPalette = [DARK_GREY, GREY, YELLOW, RED, BLUE];
 
 final Map<String, Color> colorMoodMap = {
     "Terrible": Color(0xffa3a8b8), //darkgrey
@@ -56,3 +64,30 @@ final Map<String, String> moodMap = {
 };
 
 const EMAIL_REGEX = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+
+//Asset Paths
+const NO_ENTRY_IMAGE    = "assets/images/No-Entry.png";
+const NO_TASK_IMAGE     = "assets/images/No-Tasks.png";
+const NO_HABIT_IMAGE    = "assets/images/No-Habits.png";
+const NO_JOURNEY_IMAGE  = "assets/images/No-Journey.png";
+const NO_IMAGES_IMAGE   = "assets/images/No-Entry.png";
+const NO_PDFS_IMAGE     = "assets/images/No-Entry.png";
+
+
+const Map<Screens, String> noDataImageMap = {
+  Screens.ENTRIES:  NO_ENTRY_IMAGE,
+  Screens.TASKS:    NO_TASK_IMAGE,
+  Screens.HABITS:   NO_HABIT_IMAGE,
+  Screens.JOURNEYS: NO_JOURNEY_IMAGE,
+  Screens.IMAGES:   NO_IMAGES_IMAGE,
+  Screens.PDFS:     NO_PDFS_IMAGE,
+}; 
+
+const Map<Screens, String> noDataMessagesMap = {
+  Screens.ENTRIES:  NO_ENTRY_MESSAGE,
+  Screens.TASKS:    NO_TASK_MESSAGE,
+  Screens.HABITS:   NO_HABIT_MESSAGE,
+  Screens.JOURNEYS: NO_JOURNEY_MESSAGE,
+  Screens.IMAGES:   NO_IMAGES_MESSAGE,
+  Screens.PDFS:     NO_PDFS_MESSAGE,
+};

@@ -1,3 +1,5 @@
+import 'package:daybook/Utils/constants.dart';
+import 'package:daybook/Widgets/no_data_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/habitService.dart';
@@ -15,14 +17,6 @@ class _HabitsScreenState extends State<HabitsScreen> {
   // DateTime now = DateTime.now();
   DateTime today =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
-  final Map<String, Color> colorCodes = {
-    "Terrible": Color(0xffa3a8b8), //darkgrey
-    "Bad": Color(0xffcbcbcb), //grey
-    "Neutral": Color(0xfffdefcc), //yellow
-    "Good": Color(0xffffa194), //red
-    "Wonderful": Color(0xffadd2ff) //blue
-  };
 
   String formatTime(time, frequency, context, [day]) {
     int h = int.parse(time.split(":")[0]);
@@ -52,28 +46,8 @@ class _HabitsScreenState extends State<HabitsScreen> {
                                 Container(child: CircularProgressIndicator())));
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/No-Habits.png',
-                            height: 250.0,
-                            // width: 200.0,
-                          ),
-                          Text(
-                            "No habits created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont(
-                              'Lato',
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                              // color: Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    return noDataFound(
+                      screen: Screens.HABITS,
                     );
                   }
                   return new ListView.builder(

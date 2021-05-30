@@ -1,3 +1,5 @@
+import 'package:daybook/Utils/constants.dart';
+import 'package:daybook/Widgets/no_data_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,28 +31,10 @@ class ShowFiles extends StatelessWidget {
       ),
       body: SafeArea(
         child: files.length <= 0
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/No-Entry.png',
-                      height: 250.0,
-                    ),
-                    Text(
-                      "No PDFs Added",
-                      style: GoogleFonts.getFont(
-                        'Lato',
-                        fontSize: 27,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
+            ? 
+            noDataFound(
+              screen: Screens.PDFS,
+            )
             : ListView.builder(
                 itemCount: files?.length ?? 0,
                 itemBuilder: (context, index) {

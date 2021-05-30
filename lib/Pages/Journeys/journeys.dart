@@ -1,4 +1,6 @@
 import 'package:daybook/Services/journeyService.dart';
+import 'package:daybook/Utils/constants.dart';
+import 'package:daybook/Widgets/no_data_found_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -12,12 +14,7 @@ class JourneysScreen extends StatefulWidget {
 }
 
 class _JourneysScreenState extends State<JourneysScreen> {
-  final List<Color> colorCodes = [
-    Color(0xfff5dea4),
-    Color(0xffdde1eb),
-    Color(0xffbddafc),
-    Color(0xfffdefcc),
-  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,21 +28,9 @@ class _JourneysScreenState extends State<JourneysScreen> {
                     return LoadingPage();
                   }
                   if (snapshot.data.docs.length == 0) {
-                    return Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
-                            "No journeys created !! \n Click on + to get started",
-                            style: GoogleFonts.getFont(
-                              'Lato',
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                              // color: Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ));
+                    return noDataFound(
+                      screen: Screens.JOURNEYS,
+                    );
                   }
                   return new ListView.builder(
                       padding: EdgeInsets.fromLTRB(17, 10, 17, 25),
@@ -53,7 +38,7 @@ class _JourneysScreenState extends State<JourneysScreen> {
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
                         return JourneyCard(
-                            colorCodes: colorCodes,
+                            colorCodes: colorPalette,
                             index: index,
                             documentSnapshot: ds);
                       });
