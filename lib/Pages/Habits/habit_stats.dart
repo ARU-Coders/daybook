@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daybook/Services/habitStatsService.dart';
+import 'package:daybook/Utils/constants.dart';
 import 'package:daybook/Widgets/daily_tracker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -251,7 +252,7 @@ class HabitHeader extends StatelessWidget {
     return Container(
         width: width,
         decoration: new BoxDecoration(
-          color: Colors.pink[200],
+          color: habitsStringToColorMap[ds['color']],
           borderRadius:
               new BorderRadius.vertical(bottom: new Radius.circular(40.0)),
         ),

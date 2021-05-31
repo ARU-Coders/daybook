@@ -1,6 +1,9 @@
+import 'package:daybook/Provider/theme_change.dart';
+import 'package:daybook/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/habitService.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class CreateHabitScreen extends StatefulWidget {
   @override
@@ -9,25 +12,19 @@ class CreateHabitScreen extends StatefulWidget {
 
 class _CreateHabitScreenState extends State<CreateHabitScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController titleController = TextEditingController();
-  TimeOfDay time;
-  int flag = 0;
+  TimeOfDay time = TimeOfDay.now();
+  // int flag = 0;
+  bool isWeekly = false;
   String _chosenValue = 'Daily';
   bool isExpanded = false;
   String _chosenDay = 'Monday';
+  Color selectedColor = habitsColorPalette[0];
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if (flag == 0) {
-        time = TimeOfDay.now();
-        flag = 1;
-      }
-    });
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -35,8 +32,8 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
           "Create Habit",
           style: GoogleFonts.getFont('Lato'),
         ),
+        backgroundColor: selectedColor,
         leading: Builder(
-          
           //Using builder here to provide required context to display the Snackbar.
           builder: (BuildContext context) {
             return IconButton(
@@ -44,9 +41,9 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
                   if (_chosenValue == 'Daily') {
-                    createHabit(titleController.text, time, _chosenValue);
+                    createHabit(titleController.text, time, _chosenValue, habitsColorToStringMap[selectedColor]);
                   } else {
-                    createHabit(titleController.text, time, _chosenValue,
+                    createHabit(titleController.text, time, _chosenValue, habitsColorToStringMap[selectedColor],
                         day: _chosenDay);
                   }
                   Navigator.pop(context);
@@ -66,70 +63,150 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
                 key: _formKey,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                  child: Column(children: [
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                     SizedBox(
                       height: 25.0,
                     ),
-                    TextFormField(
-                      controller: titleController,
-                      decoration: InputDecoration(
-                        labelText: "Title",
-                      ),
-                      autofocus: false,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Title cannot be empty !';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(
-                      height: 15.0,
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Habit Name",
+                          style: TextStyle(
+                            // color: Colors.black87,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Times New Roman",
+                          ),
+                        ),
+                        SizedBox(height:10),
+                        TextFormField(
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            labelText: "Title",
+                          ),
+                          autofocus: false,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Title cannot be empty !';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
 
                     SizedBox(
-                      height: 25,
+                      height: 30.0,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: DropdownButton<String>(
-                        dropdownColor: Theme.of(context).cardColor,
-                        value: _chosenValue,
-                        elevation: 5,
-                        underline: Container(
-                          height: 1,
-                        ),
-                        isExpanded: true,
-                        style: TextStyle(color: Colors.white),
-                        items: <String>[
-                          'Daily',
-                          'Weekly',
-                          // 'Monthly',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                    divider(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                        padding: const EdgeInsets.only(bottom: 14, right: 3, left: 3),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10,),
+                            Text("Frequency",
+                              style: TextStyle(
+                                // color: Colors.black87,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Times New Roman",
+                              ),
                             ),
-                          );
-                        }).toList(),
-                        hint: Text(
-                          "Please choose any one",
-                          style: TextStyle(
-                              color: Theme.of(context).textTheme.bodyText1.color,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
+                            SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                Text("Daily"),
+                                Switch(
+                                  value: isWeekly,
+                                  inactiveTrackColor: selectedColor,
+                                  activeColor: selectedColor,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isWeekly = value;
+                                      _chosenValue = isWeekly? "Weekly" : "Daily";
+                                    });
+                                  },
+                                ),
+                                Text("Weekly"),
+                              ],
+                            ),
+                          ],
                         ),
-                        onChanged: (String value) {
-                          setState(() {
-                            _chosenValue = value;
-                          });
-                        },
                       ),
+                      if (_chosenValue == 'Weekly') _weeklyFormFields(),
+                      ],
                     ),
-                    if (_chosenValue == 'Daily') _dailyFormFields(),
-                    if (_chosenValue == 'Weekly') _weeklyFormFields(),
+                    SizedBox(height: 15,),
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                            "Reminder",
+                            style: TextStyle(
+                                // color: Colors.black87,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Times New Roman",
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                            reminderTimeChip(),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 25,),
+                    divider(),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                            "Habit Color",
+                            style: TextStyle(
+                                // color: Colors.black87,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Times New Roman",
+                              ),
+                            ),
+                            SizedBox(height: 5,),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Container(
+                                height: 50,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  itemCount: habitsColorPalette.length,
+                                  itemBuilder: (context, index) {
+                                    final color = habitsColorPalette[index];
+                                    return colorButton(color);
+                                  }
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ]),
                 ),
               ),
@@ -140,37 +217,53 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
     );
   }
 
-  Widget _dailyFormFields() {
-    return GestureDetector(
-      child: Chip(
-        label: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            "${time.format(context)}",
-            style: TextStyle(
-              color: Colors.black87,
+  divider(){
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical:5),
+      child: Divider(),
+    );
+  }
+  colorButton(Color color){
+    var _themeProvider = Provider.of<ThemeChanger>(context);
+    return
+      Padding(
+        padding: EdgeInsets.only(right: 8),
+        child: InkWell(
+          onTap: () => setState(() => selectedColor = color),
+          child: Container(
+            width: 35,
+            height: 35,
+            decoration: new BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _themeProvider.getTheme == lightTheme ? Colors.black45: Colors.white70,
+                width: 2.0
+              ),
             ),
           ),
         ),
-        avatar: Icon(Icons.alarm, color: Colors.black),
-        backgroundColor: Color(0xffffe9b3),
-      ),
-      onTap: _pickTime,
-    );
+      );
+  }
+
+  InputDecoration textFormFieldDecoration(String lbl) {
+    return InputDecoration(
+        labelText: lbl,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide(color: Colors.blueGrey)));
   }
 
   Widget _weeklyFormFields() {
     return Column(children: [
       Container(
-        width: MediaQuery.of(context).size.width,
-        child: DropdownButton<String>(
+        width: MediaQuery.of(context).size.width*0.4,
+        child: DropdownButtonFormField(
+          decoration: textFormFieldDecoration("Day"),
           dropdownColor: Theme.of(context).cardColor,
           value: _chosenDay,
-          elevation: 5,
-          underline: Container(
-            height: 1,
-            color: Theme.of(context).dividerColor,
-          ),
+          elevation: 1,
           isExpanded: true,
           items: <String>[
             'Sunday',
@@ -203,23 +296,28 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
           },
         ),
       ),
-      GestureDetector(
-        child: Chip(
-          label: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Text(
-              "${time.format(context)}",
-              style: TextStyle(
-                color: Colors.black87,
-              ),
+
+    ]);
+  }
+
+  reminderTimeChip(){
+    return 
+    GestureDetector(
+      child: Chip(
+        label: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Text(
+            "${time.format(context)}",
+            style: TextStyle(
+              color: Colors.black87,
             ),
           ),
-          avatar: Icon(Icons.alarm, color: Colors.black),
-          backgroundColor: Color(0xffffe9b3),
         ),
-        onTap: _pickTime,
-      )
-    ]);
+        avatar: Icon(Icons.alarm, color: Colors.black),
+        backgroundColor: selectedColor,
+      ),
+      onTap: _pickTime,
+    );
   }
 
   _pickTime() async {

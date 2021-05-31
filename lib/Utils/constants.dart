@@ -16,10 +16,31 @@ const YELLOW  = Color(0xfffdefcc);    //yellow
 const RED = Color(0xffffa194);        //red
 const BLUE = Color(0xffadd2ff);       //blue
 const PINK = Color(0xDAFFD1DC);       //pink
+Color LIGHT_PINK = Colors.pink[200];  //lightpink
+const LIGHT_GREEN = Color(0xFF90EE90);//lightgreen
 
 const List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
 
 const List<Color>  colorPalette = [DARK_GREY, GREY, YELLOW, RED, BLUE];
+final List<Color>  habitsColorPalette = [BLUE, LIGHT_GREEN, YELLOW, RED, LIGHT_PINK, GREY];
+
+final Map<Color, String> habitsColorToStringMap = {
+  BLUE:         "BLUE", 
+  LIGHT_GREEN:  "LIGHT_GREEN", 
+  YELLOW:       "YELLOW", 
+  RED:          "RED", 
+  LIGHT_PINK:   "LIGHT_PINK", 
+  GREY:         "GREY"
+}; 
+
+final Map<String, Color> habitsStringToColorMap = {
+  "BLUE":         BLUE, 
+  "LIGHT_GREEN":  LIGHT_GREEN, 
+  "YELLOW":       YELLOW, 
+  "RED":          RED, 
+  "LIGHT_PINK":   LIGHT_PINK, 
+  "GREY":         GREY
+}; 
 
 final Map<String, Color> colorMoodMap = {
     "Terrible": Color(0xffa3a8b8), //darkgrey

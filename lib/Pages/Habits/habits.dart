@@ -55,7 +55,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.docs[index];
-
+                        Color color = habitsStringToColorMap[ds['color']];
                         String timeString = formatTime(
                             ds['reminder'].toString(),
                             ds['frequency'].toString(),
@@ -64,43 +64,58 @@ class _HabitsScreenState extends State<HabitsScreen> {
                                 ? ds['day'].toString()
                                 : null);
                         return GestureDetector(
-                          child: CheckboxListTile(
-                              title: Text(
-                                ds['title'],
-                                style: GoogleFonts.getFont(
-                                  'Merriweather',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical:8),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                color: color,
                               ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 6.0),
-                                child: Text("$timeString"),
-                              ),
-                              value: List<String>.from(ds['daysCompleted'])
-                                  .contains(today.toString()),
-                              controlAffinity: ListTileControlAffinity.leading,
-                              onChanged: (newValue) async{
-                                await HapticFeedback.vibrate();
-                                print("Habit: $newValue");
-                                markAsDone(
-                                    ds['habitId'],
-                                    List<String>.from(ds['daysCompleted']),
-                                    DateTime.now());
-                              },
-                              secondary: IconButton(
-                                icon: Icon(Icons.arrow_forward),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
+                              child: CheckboxListTile(
+                                activeColor: Colors.black45,
+                                // checkColor: Colors.black87,
+                                  title: Text(
+                                    ds['title'],
+                                    style: GoogleFonts.getFont(
+                                      'Merriweather',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black87
+                                    ),
+                                  ),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 6.0),
+                                    child: Text("$timeString",
+                                    style: TextStyle(color: Colors.black45),),
+                                  ),
+                                  value: List<String>.from(ds['daysCompleted'])
+                                      .contains(today.toString()),
+                                  controlAffinity: ListTileControlAffinity.leading,
+                                  onChanged: (newValue) async{
+                                    await HapticFeedback.vibrate();
+                                    print("Habit: $newValue");
+                                    markAsDone(
+                                        ds['habitId'],
+                                        List<String>.from(ds['daysCompleted']),
+                                        DateTime.now());
+                                  },
+                                  secondary: IconButton(
+                                    icon: Icon(Icons.arrow_forward,color: Colors.black87),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
                                             HabitStatisticsPage(
                                               ds: ds,
-                                            )),
-                                  );
-                                },
-                              )),
+                                            ),
+                                          ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                            ),
+                          ),
                         );
                       });
                 }),

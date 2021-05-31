@@ -14,7 +14,7 @@ Stream<QuerySnapshot> getHabits() {
   String email = AuthService.getUserEmail();
   DocumentReference userDoc =
       FirebaseFirestore.instance.collection('users').doc(email);
-  Stream<QuerySnapshot> query = userDoc.collection('habits').snapshots();
+  Stream<QuerySnapshot> query = userDoc.collection('habits').orderBy("dateCreated", descending: true).snapshots();
   return query;
 }
 
@@ -28,7 +28,7 @@ Stream<DocumentSnapshot> getSingleHabitStream(String habitId) {
 }
 
 Future<DocumentReference> createHabit(
-    String title, TimeOfDay reminder, String frequency,
+    String title, TimeOfDay reminder, String frequency, String habitColor,
     {bool setReminder = true, String day}) async {
   int notifId = 0;
 
@@ -58,7 +58,8 @@ Future<DocumentReference> createHabit(
       'reminder': reminderTimString,
       'habitId': docId,
       'daysCompleted': [],
-      'notifId': notifId
+      'notifId': notifId,
+      'color': habitColor
     });
   } else {
     final _ = await userDoc.collection('habits').doc(docId).set({
@@ -70,7 +71,8 @@ Future<DocumentReference> createHabit(
       'reminder': reminderTimString,
       'habitId': docId,
       'daysCompleted': [],
-      'notifId': notifId
+      'notifId': notifId,
+      'color': habitColor
     });
   }
 
