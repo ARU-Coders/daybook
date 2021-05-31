@@ -56,8 +56,11 @@ class _LoginPageState extends State<LoginPage> {
       successCallback:(){
         stopEmailLoading();
         print("Success");
-
-        Navigator.popAndPushNamed(context, '/home');
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home', 
+          (Route<dynamic> route) => false
+        );
+        // Navigator.popAndPushNamed(context, '/home');
       }
     );
   }
@@ -76,7 +79,11 @@ class _LoginPageState extends State<LoginPage> {
           stopGoogleLoading();
           print("Success");
 
-          Navigator.popAndPushNamed(context, '/home');
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/home', 
+            (Route<dynamic> route) => false
+          );
+          // Navigator.popAndPushNamed(context, '/home');
           },
         dismissCallback:(){
           stopGoogleLoading();

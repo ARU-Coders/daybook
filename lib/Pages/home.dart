@@ -86,12 +86,14 @@ class _HomePageState extends State<HomePage> {
                         .logout();
                   }
                   // return SizedBpx();
-                  Navigator.popAndPushNamed(
-                    context,
+                  Navigator.of(context).pushNamedAndRemoveUntil(
                     '/splashScreen',
+                    (Route<dynamic> route) => false
                   );
-                  // });
-
+                  // Navigator.popAndPushNamed(
+                  //   context,
+                  //   '/splashScreen',
+                  // );
                   break;
                 }
             }

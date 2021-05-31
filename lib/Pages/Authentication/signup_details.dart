@@ -90,9 +90,13 @@ class _SignupDetailsState extends State<SignupDetails> {
         stopEmailLoading();
         print("Success");
 
-        Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-          ModalRoute.withName('/login'),);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home', 
+          (Route<dynamic> route) => false
+        );
+        // Navigator.pushAndRemoveUntil(context,
+        //   MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+        //   ModalRoute.withName('/login'),);
       }
     );
   }

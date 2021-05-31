@@ -300,13 +300,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
-  flutter_cupertino_localizations:
-    dependency: transitive
-    description:
-      name: flutter_cupertino_localizations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   flutter_file_manager:
     dependency: "direct main"
     description:
@@ -342,11 +335,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_page_indicator:
     dependency: transitive
     description:
@@ -510,7 +498,7 @@ packages:
       name: js
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3-nullsafety.2"
+    version: "0.6.2"
   location:
     dependency: "direct main"
     description:
@@ -574,13 +562,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.7"
-  month_picker_dialog:
-    dependency: "direct main"
-    description:
-      name: month_picker_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.3"
   nested:
     dependency: transitive
     description:
@@ -678,7 +659,7 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.0-nullsafety.2"
+    version: "1.9.2"
   permission_handler:
     dependency: "direct main"
     description:

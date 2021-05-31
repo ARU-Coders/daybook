@@ -41,7 +41,7 @@ dependencies:
   pie_chart: 
   table_calendar:
   charts_flutter: ^0.10.0
-  month_picker_dialog:
+  # month_picker_dialog:
 
   #UI Components and Widgets, Styling
   lottie: ^0.7.0

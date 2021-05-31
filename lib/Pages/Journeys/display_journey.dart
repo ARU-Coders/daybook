@@ -26,7 +26,7 @@ class _DisplayJourneyScreenState extends State<DisplayJourneyScreen> {
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             Column(
