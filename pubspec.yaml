@@ -43,7 +43,8 @@ dependencies:
   charts_flutter: ^0.10.0
   month_picker_dialog:
 
-  #UI Components and Widgets
+  #UI Components and Widgets, Styling
+  lottie: ^0.7.0
   shimmer: ^1.1.2
   fluttertoast: 
   group_button: ^1.0.3
@@ -116,6 +117,7 @@ flutter:
     - assets/images/
     - assets/files/
     - assets/fonts/
+    - assets/lottieFiles/
     # - assets/fonts/
   #   - images/a_dot_ham.jpeg
 

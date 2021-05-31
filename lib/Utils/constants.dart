@@ -15,6 +15,7 @@ const GREY  = Color(0xffcbcbcb);      //grey
 const YELLOW  = Color(0xfffdefcc);    //yellow
 const RED = Color(0xffffa194);        //red
 const BLUE = Color(0xffadd2ff);       //blue
+const PINK = Color(0xDAFFD1DC);       //pink
 
 const List<String> moodList = ["😭", "😥", "🙂", "😃", "😁"];
 
@@ -73,6 +74,11 @@ const NO_JOURNEY_IMAGE  = "assets/images/No-Journey.png";
 const NO_IMAGES_IMAGE   = "assets/images/No-Entry.png";
 const NO_PDFS_IMAGE     = "assets/images/No-Entry.png";
 
+//Lottie File Paths
+const ENTRY_LOTTIE_FILE = "assets/lottieFiles/entries.json";
+const HABIT_LOTTIE_FILE = "assets/lottieFiles/habits.json";
+const TASK_LOTTIE_FILE  = "assets/lottieFiles/tasks.json";
+const STATS_LOTTIE_FILE = "assets/lottieFiles/stats.json";
 
 const Map<Screens, String> noDataImageMap = {
   Screens.ENTRIES:  NO_ENTRY_IMAGE,

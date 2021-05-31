@@ -42,8 +42,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       }
     }
     else{
-      await prefs.setBool(SHAREDPREFNAME, true);
       // Show Intro Screens
+      Navigator.popAndPushNamed(context, '/intro');
     }
   }
 

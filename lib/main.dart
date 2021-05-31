@@ -1,5 +1,6 @@
 import 'package:daybook/Pages/Entries/create_entry.dart';
 import 'package:daybook/Pages/Habits/create_habit.dart';
+import 'package:daybook/Pages/Intro/walkthrough_page.dart';
 import 'package:daybook/Pages/Journeys/create_journey.dart';
 import 'package:daybook/Pages/Entries/display_entry.dart';
 import 'package:daybook/Pages/Journeys/display_journey.dart';
@@ -73,6 +74,7 @@ class MaterialAppWithTheme extends StatelessWidget {
         home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           '/splashScreen': (BuildContext context)=>SplashScreen(),
+          '/intro': (BuildContext context)=>WalkThroughScreen(),
           '/signup': (BuildContext context) => Signup(),
           '/login': (BuildContext context) => LoginPage(),
           '/home': (BuildContext context) => HomePage(),
@@ -87,7 +89,7 @@ class MaterialAppWithTheme extends StatelessWidget {
           '/profile': (BuildContext context) => ProfileScreen(),
           '/editProfile': (BuildContext context) => EditProfile(),
         },
-        ),
-      );
+      ),
+    );
   }
 }

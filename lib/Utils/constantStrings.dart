@@ -20,3 +20,15 @@ const NO_HABIT_MESSAGE    = "No habit created !\n Click on + to get started";
 const NO_JOURNEY_MESSAGE  = "No journey created !\n Click on + to get started";
 const NO_IMAGES_MESSAGE   = "No images added";
 const NO_PDFS_MESSAGE     = "No PDFs saved";
+
+//Intro Slides Titles
+const ENTRY_INTRO_TITLE  = "Your digital diary";
+const HABIT_INTRO_TITLE  = "Build new habits";
+const TASK_INTRO_TITLE   = "Finish every task";
+const STATS_INTRO_TITLE  = "Visulaize your mood and habits";
+
+//Intro Slides Descriptions
+const ENTRY_INTRO_DESCRIPTION  = "Create rich entries, track mood and add images !";
+const HABIT_INTRO_DESCRIPTION  = "Create daily or weekly habits, don't let the streak break !";
+const TASK_INTRO_DESCRIPTION   = "Create tasks and get reminded to complete them !";
+const STATS_INTRO_DESCRIPTION  = "Visulaize your mood and habits with beautiful charts !";
