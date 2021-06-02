@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daybook/Pages/Habits/edit_habit.dart';
 import 'package:daybook/Services/habitStatsService.dart';
 import 'package:daybook/Utils/constants.dart';
 import 'package:daybook/Widgets/daily_tracker.dart';
+import 'package:daybook/Widgets/stat_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,57 +23,25 @@ class HabitStatisticsPage extends StatefulWidget {
 
 class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  
+  DocumentSnapshot ds;
   DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
+    ds = widget.ds;
     selectedDate = DateTime.now();
   }
 
   String dropdownValue = 'Year';
   List<String> years = List<String>.generate(
       DateTime.now().year - 2000 + 1, (index) => (2000 + index).toString());
-  Widget statCard(
-    emoji,
-    value,
-    title, {
-    color: const Color(0xff8ebbf2),
-  }) {
-    return Card(
-      elevation: 2,
-      color: color,
-      child: InkWell(
-        splashColor: Colors.white30,
-        onLongPress: () async {
-          await HapticFeedback.mediumImpact();
-        },
-        onTap: () {},
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Text(
-              emoji,
-              style: TextStyle(
-                fontSize: 25,
-              ),
-            ),
-            SizedBox(height: 3),
-            Text(
-              value,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.getFont("Lora",
-                  fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-            Text(title,
-                style: GoogleFonts.getFont("Merriweather", fontSize: 12),
-                textAlign: TextAlign.center),
-          ],
-        ),
-      ),
-    );
+  
+  Future<void> refreshData() async{
+    ds= await getHabit(ds.id);
+    setState((){
+      print("Refreshed the snapshot");
+    });
   }
 
   @override
@@ -83,7 +53,8 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           HabitHeader(
-            ds: widget.ds,
+            ds: ds,
+            editCallback: refreshData,
           ),
           SizedBox(
             height: 25,
@@ -96,7 +67,7 @@ class _HabitStatisticsPageState extends State<HabitStatisticsPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     StreamBuilder(
-                        stream: getSingleHabitStream(widget.ds['habitId']),
+                        stream: getSingleHabitStream(ds['habitId']),
                         builder: (context,
                             AsyncSnapshot<DocumentSnapshot> snapshot) {
                           if (!snapshot.hasData) {
@@ -225,9 +196,11 @@ class HabitHeader extends StatelessWidget {
   const HabitHeader({
     Key key,
     @required this.ds,
+    @required this.editCallback,
   }) : super(key: key);
 
   final DocumentSnapshot ds;
+  final Function editCallback;
 
   String formatTime(time, frequency, context, [day]) {
     int h = int.parse(time.split(":")[0]);
@@ -329,7 +302,9 @@ class HabitHeader extends StatelessWidget {
                         Icons.edit,
                         size: 20,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> EditHabitScreen(ds:ds, callback:editCallback),),);
+                      },
                     ),
                     SizedBox(
                       width: 25,

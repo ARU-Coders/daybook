@@ -79,6 +79,45 @@ Future<DocumentReference> createHabit(
   return query;
 }
 
+Future<DocumentReference> editHabit(
+    String title, TimeOfDay reminder, String frequency, String habitColor, String habitId,
+    {bool setReminder = true, String day}) async {
+  // int notifId = 0;
+
+  String reminderTimString =
+      reminder.hour.toString() + ":" + reminder.minute.toString();
+
+  DateTime now = new DateTime.now();
+
+  DocumentReference userDoc = await getUserDocRef();
+  DocumentReference query = userDoc.collection('habits').doc(habitId);
+  // if (setReminder) {
+  //   final notification = Notif.Notification();
+  //   notifId = await notification.scheduleNotificationForHabit(
+  //       frequency, reminder, title, "This is your $frequency reminder",
+  //       day: day);
+  // }
+
+  if (frequency == 'Daily') {
+    final _ = await userDoc.collection('habits').doc(habitId).update({
+      'title': title,
+      'dateLastModified': now.toString(),
+      'reminder': reminderTimString,
+      'color': habitColor
+    });
+  } else {
+    final _ = await userDoc.collection('habits').doc(habitId).update({
+      'title': title,
+      'dateLastModified': now.toString(),
+      'day': day,
+      'reminder': reminderTimString,
+      'color': habitColor
+    });
+  }
+
+  return query;
+}
+
 Future<DocumentReference> markAsDone(
     String habitId, List<dynamic> daysCompleted, DateTime date) async {
   DocumentReference userDoc = await getUserDocRef();
