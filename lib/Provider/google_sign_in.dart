@@ -1,4 +1,5 @@
 import 'package:daybook/Services/auth_service.dart';
+import 'package:daybook/Utils/constantStrings.dart';
 import 'package:daybook/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,6 @@ class GoogleSignInProvider extends ChangeNotifier {
         } 
 
         print(user);
-
         final googleAuth = await user.authentication;
 
         // String accTok = googleAuth.accessToken.toString();
@@ -57,32 +57,40 @@ class GoogleSignInProvider extends ChangeNotifier {
         );
 
         FirebaseFirestore firestore = FirebaseFirestore.instance;
-        final doc = firestore
-            .collection('users')
-            .where('email', isEqualTo: user.email)
-            .get();
 
-        if (doc != null) {
-          await FirebaseAuth.instance.signInWithCredential(credential);
-          final _ = AuthService.updateEmail();
-          successCallback();
+        final ds = await firestore.collection('users').doc(user.email).get();
+        print(ds.exists);
+
+        if(!ds.exists){
+          logout();
+          errorCallback(ACCOUNT_DOESNOT_EXIST);
+          return;
         }
-        dismissCallback();
+
+        print("Logging in");
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+        AuthService.updateEmail();
+        successCallback();
       }catch(e){
+        String errorMessage = DEFAULT_AUTH_ERROR;
         print("Error during login with Google.");
-        String errorMessage = "Some error occured! Please check your internet connection.";
+        
         if(e is FirebaseAuthException){
           print(e);
           print(e.code);
-          errorMessage = googleAuthExceptionMessageMap[e.code];
+          errorMessage = googleAuthExceptionMessageMap[e.code] == null ? DEFAULT_AUTH_ERROR : googleAuthExceptionMessageMap[e.code];
         }
+        print("Attempting to log out");
+        logout();
         errorCallback(errorMessage);
+        return;
       }
   }
 
   /// Gets [gender] and [Date of birth] from user's Google profile
   /// 
-  /// Eg: `genderAndDOB = ["Male", "15/08/1947"]`;
+  /// Eg: `genderAndDOB = ["Male", "1947-08-15"]`;
   Future<List<String>> getGenderAndDOB(String accessToken) async {
     final headers = await googleSignIn.currentUser.authHeaders;
     String dd = "01", mm = "01", yyyy = "2000", gender = "Not Set";

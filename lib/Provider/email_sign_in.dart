@@ -1,4 +1,5 @@
 import 'package:daybook/Services/auth_service.dart';
+import 'package:daybook/Utils/constantStrings.dart';
 import 'package:daybook/Utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,7 @@ class EmailSignInProvider extends ChangeNotifier {
       }
   }
 
-  Future<String> register({
+  Future<void> register({
     @required String name, 
     @required String email, 
     @required String password,
@@ -55,9 +56,13 @@ class EmailSignInProvider extends ChangeNotifier {
     try {
       final newUser = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      if (newUser != null) {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      final ds = await firestore.collection('users').doc(email).get();
+      
+      if (newUser != null && !ds.exists) {
         FirebaseFirestore firestore = FirebaseFirestore.instance;
-        Future<void> _ = firestore.collection('users').doc(email).set({
+        await firestore.collection('users').doc(email).set({
           'name': name,
           'email': email,
           'birthdate': dob,
@@ -67,13 +72,28 @@ class EmailSignInProvider extends ChangeNotifier {
               "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-image-user-vector-179390926.jpg",
           'type': 'email'
         });
-        final __ = AuthService.updateEmail();
-        return "Success !";
+        
+        AuthService.updateEmail();
+        successCallback();
       }
-      return "Cannot create account !";
+      errorCallback(DEFAULT_AUTH_ERROR);
+    
     } catch (e) {
+      print("Error during login with email.");
       print(e);
-      return "Error!";
+      
+      String errorMessage = DEFAULT_AUTH_ERROR;
+      if(e is FirebaseAuthException){
+        print(e);
+        print(e.code);
+        errorMessage = emailRegistrationExceptionMessageMap[e.code] == null ? DEFAULT_AUTH_ERROR : emailRegistrationExceptionMessageMap[e.code];
+      }
+
+      print("Attempting to log out");
+      logout();
+      errorCallback(errorMessage);
+      
+      return;
     }
   }
 

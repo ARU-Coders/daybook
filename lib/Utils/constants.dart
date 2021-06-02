@@ -69,6 +69,13 @@ const Map<String, String> googleAuthExceptionMessageMap = {
   "wrong-password": WRONG_PASSWORD
 };
 
+const Map<String, String> emailRegistrationExceptionMessageMap = {
+  "email-already-in-use": EMAIL_ALREADY_IN_USE,
+  "invalid-email":INVALID_EMAIL_ID,
+  "operation-not-allowed": OPERATION_NOT_ALLOWED,
+  "weak-password": WEAK_PASSWORD
+};
+
 final Map<String, String> moodText = {
     "Terrible": "Terrible 😭",
     "Bad": "Bad 😥",
@@ -94,6 +101,7 @@ const NO_HABIT_IMAGE    = "assets/images/No-Habits.png";
 const NO_JOURNEY_IMAGE  = "assets/images/No-Journey.png";
 const NO_IMAGES_IMAGE   = "assets/images/No-Entry.png";
 const NO_PDFS_IMAGE     = "assets/images/No-Entry.png";
+const ENTRY_PLACEHOLDER     = "assets/images/Entry-Placeholder.png";
 
 //Lottie File Paths
 const ENTRY_LOTTIE_FILE = "assets/lottieFiles/entries.json";

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'db_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// A service to get email of logged in user
+/// A service to get and update `email` and `type` of logged in user
 class AuthService {
   static String email;
   static String getUserEmail() {
