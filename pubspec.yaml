@@ -35,7 +35,7 @@ dependencies:
   firebase_storage: ^5.2.0
   firebase_ml_vision: ^0.9.10
   firebase_crashlytics: ^0.2.3
-  firebase_messaging: ^7.0.2
+  firebase_messaging: ^7.0.3
   
   #Graphs, charts, calender
   pie_chart: 

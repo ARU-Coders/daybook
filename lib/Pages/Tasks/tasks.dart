@@ -259,7 +259,7 @@ class _MyDialogState extends State<MyDialog> {
               },
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 30, 50, 5),
+              padding: EdgeInsets.fromLTRB(0, 30, 20, 5),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: ListTile(

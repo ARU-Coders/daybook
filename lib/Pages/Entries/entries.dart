@@ -339,7 +339,7 @@ class EntryCard extends StatelessWidget {
                           child: (documentSnapshot['images'].length == 0 ||
                                   documentSnapshot['images'][0] == "")
                               ? Image.asset(
-                                  'assets/images/Diary-pana.png',
+                                  ENTRY_PLACEHOLDER,
                                   height: 80.0,
                                   width: 80.0,
                                 )
