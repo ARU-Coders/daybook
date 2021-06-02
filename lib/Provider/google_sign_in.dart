@@ -106,10 +106,10 @@ class GoogleSignInProvider extends ChangeNotifier {
 
     if (response.containsKey("birthdays")) {
       dd = response["birthdays"][0]["date"].containsKey("day")
-          ? response["birthdays"][0]["date"]["day"].toString()
+          ? response["birthdays"][0]["date"]["day"].toString().padLeft(2,"0")
           : '01';
       mm = response["birthdays"][0]["date"].containsKey("month")
-          ? response["birthdays"][0]["date"]["month"].toString()
+          ? response["birthdays"][0]["date"]["month"].toString().padLeft(2,"0")
           : '01';
       yyyy = response["birthdays"][0]["date"].containsKey("year")
           ? response["birthdays"][0]["date"]["year"].toString()
