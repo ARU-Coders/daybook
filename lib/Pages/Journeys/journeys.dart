@@ -51,7 +51,6 @@ class _JourneysScreenState extends State<JourneysScreen> {
                 child: Icon(
                   Icons.add,
                   size: 40,
-                  color: Colors.black,
                 ),
                 onPressed: () => {
                   Navigator.pushNamed(context, '/createJourney', arguments: [])

@@ -90,6 +90,7 @@ class WalkThroughScreenState extends State<WalkThroughScreen> {
                         {
                           SharedPreferences prefs = await SharedPreferences.getInstance();
                           await prefs.setBool(SHAREDPREFNAME, true);
+                          await prefs.setBool(DARKTHEMESHAREDPREF, false);
                           Navigator.pushNamed(context, '/login');
                         }
                         else

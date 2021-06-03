@@ -3,6 +3,7 @@ import 'package:daybook/Provider/theme_change.dart';
 import 'package:daybook/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/habitService.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,8 @@ class EditHabitScreen extends StatefulWidget {
 
 class _EditHabitScreenState extends State<EditHabitScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final  _tooltipKey = GlobalKey();
+
   final _formKey = GlobalKey<FormState>();
   bool isLoading=false;
 
@@ -56,6 +59,12 @@ class _EditHabitScreenState extends State<EditHabitScreen> {
     selectedColor = habitsStringToColorMap[ds['color']];
   }
   
+  @override
+  void dispose(){
+    titleController.dispose();
+    super.dispose();
+  } 
+
   startLoading()=>setState((){isLoading=true;});
   stopLoading()=>setState((){isLoading=false;});
 
@@ -165,13 +174,39 @@ class _EditHabitScreenState extends State<EditHabitScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 10,),
-                            Text("Frequency",
-                              style: TextStyle(
-                                // color: Colors.black87,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Times New Roman",
-                              ),
+                            Row(
+                              children: [
+                                Text("Frequency",
+                                  style: TextStyle(
+                                    // color: Colors.black87,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Times New Roman",
+                                  ),
+                                ),
+                                SizedBox(width: 10,),
+                                Tooltip(
+                                  key:_tooltipKey,
+                                  child: GestureDetector(
+                                    onTap: () async{
+                                      try{
+                                        await HapticFeedback.vibrate();
+                                        final dynamic tooltip = _tooltipKey.currentState;
+                                        tooltip.ensureTooltipVisible();
+                                      }catch(e){
+                                        print(e);
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.info_outline, 
+                                      color: DARK_GREY, 
+                                      size: 20,
+                                      semanticLabel: "Habit frequency cannot be changed!",
+                                    ),
+                                  ),
+                                  message: "Habit frequency cannot be changed!",
+                                  ),
+                              ],
                             ),
                             SizedBox(height: 5,),
                             Row(

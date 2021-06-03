@@ -456,41 +456,46 @@ void showSnackBar(BuildContext buildContext, String message, {int duration = 3})
                               //   },
                               // ),
                               currentAddress != ""
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        GestureDetector(
-                                          child: Chip(
-                                            label: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 5),
-                                              child: Text(
-                                                currentAddress,
-                                                style: GoogleFonts.getFont(
-                                                  'Oxygen',
-                                                  color: Colors.black87,
+                                  ? Column(
+                                    children: [
+                                      SizedBox(height: 15),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            GestureDetector(
+                                              child: Chip(
+                                                label: Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          vertical: 5),
+                                                  child: Text(
+                                                    currentAddress,
+                                                    style: GoogleFonts.getFont(
+                                                      'Oxygen',
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
                                                 ),
+                                                avatar: Icon(
+                                                    Icons.location_on_outlined),
+                                                backgroundColor: Color(0xffffe9b3),
                                               ),
+                                              onLongPress: () {
+                                                setState(() {
+                                                  currentAddress = '';
+                                                  _currentPosition = Position(
+                                                      latitude: 0, longitude: 0);
+                                                  position = GeoPoint(0, 0);
+                                                });
+                                              },
                                             ),
-                                            avatar: Icon(
-                                                Icons.location_on_outlined),
-                                            backgroundColor: Color(0xffffe9b3),
-                                          ),
-                                          onLongPress: () {
-                                            setState(() {
-                                              currentAddress = '';
-                                              _currentPosition = Position(
-                                                  latitude: 0, longitude: 0);
-                                              position = GeoPoint(0, 0);
-                                            });
-                                          },
+                                          ],
                                         ),
-                                      ],
-                                    )
+                                    ],
+                                  )
                                   : SizedBox(),
                               SizedBox(height: 15),
                               Row(

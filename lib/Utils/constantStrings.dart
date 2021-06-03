@@ -1,4 +1,5 @@
 const SHAREDPREFNAME = "DaybookIntroSeen";
+const DARKTHEMESHAREDPREF = "DaybookIsDarkTheme";
 
 //Auth Errors
 const INVALID_EMAIL_ID = "Error ! Invalid email entered!";

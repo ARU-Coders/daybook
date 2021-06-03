@@ -1,3 +1,5 @@
+import 'package:daybook/Provider/theme_change.dart';
+import 'package:provider/provider.dart';
 import "package:shared_preferences/shared_preferences.dart";
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:daybook/Utils/constantStrings.dart';
@@ -40,6 +42,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       else{
         Navigator.popAndPushNamed(context, '/login');
       }
+      bool isDarkTheme = (prefs.getBool(DARKTHEMESHAREDPREF) ?? false);
+      var _themeProvider = Provider.of<ThemeChanger>(context,listen: false);
+      _themeProvider.setTheme(isDarkTheme ? darkTheme : lightTheme);
+
     }
     else{
       // Show Intro Screens

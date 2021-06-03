@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:daybook/Provider/email_sign_in.dart';
 import 'package:daybook/Provider/theme_change.dart';
+import 'package:daybook/Utils/constantStrings.dart';
 import 'package:daybook/Widgets/custom_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Entries/entries.dart';
 import 'Habits/habits.dart';
 import 'Journeys/journeys.dart';
@@ -129,7 +131,9 @@ class _HomePageState extends State<HomePage> {
                       inactiveColor: Colors.grey[800],
                       inactiveTextColor: Colors.white,
                       value: status,
-                      onChanged: (value) {
+                      onChanged: (value) async{
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool(DARKTHEMESHAREDPREF, !value); //value is true if theme is lightTheme
                         _themeProvider.setTheme(
                             _themeProvider.getTheme == lightTheme
                                 ? darkTheme

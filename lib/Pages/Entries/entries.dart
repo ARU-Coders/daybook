@@ -171,6 +171,7 @@ class _EntriesScreenState extends State<EntriesScreen>
             ),
             child: new FloatingActionButton(
               heroTag: null,
+              tooltip: index == 1 ? "Text Entry" :"OCR Entry" ,
               backgroundColor: Color(0xffd68598),
               child: new Icon(
                 icons[index],
