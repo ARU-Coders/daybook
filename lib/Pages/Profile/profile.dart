@@ -37,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       barrierDismissible: true,
       builder: (context) => AlertDialog(
         title: Text("Change Password?"),
-        content: Text("A password reset link will be sent to your email to change the password and you will be logged out.\n\nYou can sign in again with the new psasword."),
+        content: Text("A password reset link will be sent to your email to change the password and you will be logged out.\n\nYou can sign in again with the new password."),
           actions: <Widget>[
             Row(
               children: [
