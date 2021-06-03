@@ -191,6 +191,7 @@ class _SignupDetailsState extends State<SignupDetails> {
                             const EdgeInsets.only(left: 20.0, right: 20.0),
                         child: TextFormField(
                           controller: emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: textFormFieldDecoration(
                               "Email", Icons.email_outlined),
                           validator: (value) {

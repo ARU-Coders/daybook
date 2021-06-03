@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:daybook/Pages/Profile/profile.dart';
 import 'package:daybook/Provider/email_sign_in.dart';
 import 'package:daybook/Provider/theme_change.dart';
 import 'package:daybook/Widgets/custom_switch.dart';
@@ -77,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                 {
                   print("Selected : $value");
                   String type = await AuthService.getUserType();
-                  // Builder(builder: (BuildContext context) {
+
                   if (type == "google") {
                     Provider.of<GoogleSignInProvider>(newContext, listen: false)
                         .logout();
@@ -85,15 +83,11 @@ class _HomePageState extends State<HomePage> {
                     Provider.of<EmailSignInProvider>(newContext, listen: false)
                         .logout();
                   }
-                  // return SizedBpx();
+
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     '/splashScreen',
                     (Route<dynamic> route) => false
                   );
-                  // Navigator.popAndPushNamed(
-                  //   context,
-                  //   '/splashScreen',
-                  // );
                   break;
                 }
             }
@@ -219,6 +213,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           );
-        }));
+        }
+      )
+    );
   }
 }

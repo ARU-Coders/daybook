@@ -76,6 +76,11 @@ const Map<String, String> emailRegistrationExceptionMessageMap = {
   "weak-password": WEAK_PASSWORD
 };
 
+const Map<String, String> passwordChangeExceptionMessageMap = {
+  "email-already-in-use": EMAIL_ALREADY_IN_USE,
+  "user-not-found":USER_NOT_FOUND,
+};
+
 final Map<String, String> moodText = {
     "Terrible": "Terrible 😭",
     "Bad": "Bad 😥",

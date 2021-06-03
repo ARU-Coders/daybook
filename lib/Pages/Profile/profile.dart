@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daybook/Provider/email_sign_in.dart';
 import 'package:daybook/Services/user_services.dart';
+import 'package:daybook/Utils/constantStrings.dart';
 import 'package:daybook/Utils/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -27,22 +31,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getStats();
   }
 
-  Future<void> getStats() async{
-    print("YOOOOOOOOOOOo");
-    DocumentReference userDoc = await getUserDocRef();
-    print("2 YOOOOOOOOOOOo");
-
-    await userDoc.collection('entries').get().then((snap) => noOfEntries=snap.docs.length.toString());
-    print("noOfEntries: $noOfEntries");
-    await userDoc.collection('journeys').get().then((snap) => noOfJourneys=snap.docs.length.toString());
-    print("noOfJourneys: $noOfJourneys");
-    await userDoc.collection('tasks').get().then((snap) => noOfTasks=snap.docs.length.toString());
-    print("noOfTasks: $noOfTasks");
-    await userDoc.collection('habits').get().then((snap) => noOfHabits=snap.docs.length.toString());
-    print("noOfHabits: $noOfHabits");
-    setState(()=>isLoading=false);
+  Future<void> showPasswordResetDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        title: Text("Change Password?"),
+        content: Text("A password reset link will be sent to your email to change the password and you will be logged out.\n\nYou can sign in again with the new psasword."),
+          actions: <Widget>[
+            Row(
+              children: [
+                FlatButton(
+                  onPressed: () async{
+                    try{
+                      await FirebaseAuth.instance.sendPasswordResetEmail(email: FirebaseAuth.instance.currentUser.email);
+                      Navigator.of(context).pop();
+                      
+                      //Signout
+                      Provider.of<EmailSignInProvider>(context, listen: false)
+                          .logout();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/splashScreen',
+                        (Route<dynamic> route) => false
+                      );
+                    }catch(e){
+                      Navigator.of(context).pop();
+                      print("Error during password change request ${e.toString()}");
+                      String errorMessage = DEFAULT_AUTH_ERROR;
+                      
+                      if(e is FirebaseAuthException){
+                        print(e);
+                        print(e.code);
+                        errorMessage = passwordChangeExceptionMessageMap[e.code] == null ? DEFAULT_AUTH_ERROR : passwordChangeExceptionMessageMap[e.code];
+                      }
+                      
+                      showSnackBar(errorMessage);
+                    }
+                  },
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.red, fontSize: 15),
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.green, fontSize: 15),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
   }
 
+  /// Get total number of entries, habits, tasks and journeys created by the user.
+  /// Not optimized at all, reads the data four times from the Firestore
+  Future<void> getStats() async{
+    DocumentReference userDoc = await getUserDocRef();
+
+    await userDoc.collection('entries').get().then((snap) => noOfEntries=snap.docs.length.toString());
+
+    await userDoc.collection('journeys').get().then((snap) => noOfJourneys=snap.docs.length.toString());
+
+    await userDoc.collection('tasks').get().then((snap) => noOfTasks=snap.docs.length.toString());
+
+    await userDoc.collection('habits').get().then((snap) => noOfHabits=snap.docs.length.toString());
+    
+    print("noOfEntries: $noOfEntries\nnoOfJourneys: $noOfJourneys\nnoOfTasks: $noOfTasks\nnoOfHabits: $noOfHabits");
+    setState(()=>isLoading=false);
+  }
 
   void showSnackBar(String message, {int duration = 3}) {
     final snackBar = SnackBar(
@@ -443,23 +505,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   ? Padding(
                                                       padding: const EdgeInsets.symmetric(
                                                           vertical: 8.0),
-                                                      child: RaisedButton(
-                                                        child: Text("Change password",
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 20,
-                                                              color: Color(0xff5685bf),
-                                                            )),
-                                                        padding: EdgeInsets.symmetric(
-                                                            horizontal: 40, vertical: 10),
-                                                        shape: StadiumBorder(),
-                                                        color: Color(0xff8ebbf2),
-                                                        onPressed: () => {
-                                                          print(
-                                                              "Navigate to change password screen...")
-                                                          // Navigator.popAndPushNamed(context, '/selectEntries',
-                                                          //     arguments: [documentSnapshot])
-                                                        },
+                                                      child: Center(
+                                                        child: RaisedButton(
+                                                          child: Text("Change password",
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 20,
+                                                                color: Color(0xff5685bf),
+                                                              )),
+                                                          padding: EdgeInsets.symmetric(
+                                                              horizontal: 40, vertical: 10),
+                                                          shape: StadiumBorder(),
+                                                          color: Color(0xff8ebbf2),
+                                                          onPressed: ()  async{
+                                                            print("Navigate to change password screen...");
+                                                            await showPasswordResetDialog();
+                                                            print("Email sent!!");
+                                                          },
+                                                        ),
                                                       ),
                                                     )
                                                   : SizedBox(),
