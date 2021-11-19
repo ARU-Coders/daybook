@@ -310,7 +310,7 @@ class EntryCard extends StatelessWidget {
                               documentSnapshot['title'],
                               style: GoogleFonts.getFont(
                                 'Merriweather',
-                                fontSize: 17,
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
@@ -323,7 +323,7 @@ class EntryCard extends StatelessWidget {
                               child: Text(
                                 documentSnapshot['content'],
                                 style: GoogleFonts.getFont('Nunito',
-                                    fontSize: 15,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black.withOpacity(0.6)),
                                 overflow: TextOverflow.fade,
@@ -394,7 +394,7 @@ class EntryCard extends StatelessWidget {
                   DateFormat.jm()
                       .format(DateTime.parse(documentSnapshot['dateCreated'])),
                   style: GoogleFonts.getFont('Oxygen',
-                      fontSize: 13, color: Colors.black.withOpacity(0.6)),
+                      fontSize: 11, color: Colors.black.withOpacity(0.6)),
                 ),
               ]),
             ],
