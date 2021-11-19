@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      margin: EdgeInsets.symmetric(horizontal: 7),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

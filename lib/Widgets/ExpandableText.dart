@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ExpandableText extends StatefulWidget {
   ExpandableText(this.text);
@@ -18,19 +19,30 @@ class _ExpandableTextState extends State<ExpandableText>
       AnimatedSize(
           vsync: this,
           duration: const Duration(milliseconds: 250),
-          child: ConstrainedBox(
-              constraints: widget.isExpanded
-                  ? BoxConstraints()
-                  : BoxConstraints(maxHeight: 75.0),
-              child: Text(
-                widget.text,
-                softWrap: true,
-                style: TextStyle(
-                    // color: Colors.black87,
-                    fontSize: 12.5,
-                    letterSpacing: 0.2,
-                    fontFamily: "Times New Roman"),
-              ))),
+          child: GestureDetector(
+            onLongPress: () {
+              Clipboard.setData(new ClipboardData(text: widget.text.trim()));
+                final snackBar = SnackBar(
+                content: Text("Journey Description copied to clipboard!"),
+                duration: Duration(seconds: 3),
+              );
+              Scaffold.of(context).showSnackBar(snackBar);
+            },
+            onTap: ()=> setState(()=>widget.isExpanded = !widget.isExpanded),
+            child: ConstrainedBox(
+                constraints: widget.isExpanded
+                    ? BoxConstraints()
+                    : BoxConstraints(maxHeight: 75.0),
+                child: Text(
+                  widget.text,
+                  softWrap: true,
+                  style: TextStyle(
+                      // color: Colors.black87,
+                      fontSize: 12.5,
+                      letterSpacing: 0.2,
+                      fontFamily: "Times New Roman"),
+                )),
+          )),
       widget.isExpanded
           ? SizedBox(
               height: 30,
