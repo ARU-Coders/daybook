@@ -131,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(height: 8),
+            SizedBox(height: 10),
             Text(
               emoji,
               style: TextStyle(
@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Colors.black87
               ),
             ),
-            SizedBox(height: 3),
+            SizedBox(height: 2),
             isLoading
             ?
             Center(
@@ -163,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Container(
                 child: Text(title,
                   style: GoogleFonts.getFont("Merriweather", 
-                  fontSize: 12,
+                  fontSize: 11,
                   color: Colors.black87),
                   textAlign: TextAlign.center,
                   softWrap: true,
@@ -252,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           Text(
                                             "My Profile",
                                             style: TextStyle(
-                                              fontSize: 30,
+                                              fontSize: 25,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -324,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                 .join(" "),
                                                             style: GoogleFonts.getFont(
                                                               "Oxygen",
-                                                              fontSize: 20,
+                                                              fontSize: 17,
                                                               fontWeight: FontWeight.w600),
                                                             softWrap: true,
                                                           ),
@@ -334,7 +334,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           "User since $dateJoined",
                                                           style: GoogleFonts.getFont(
                                                             "Lato",
-                                                            fontSize: 14,
+                                                            fontSize: 12,
                                                             fontWeight: FontWeight.w400),
                                                         ),
                                                       ]),
@@ -538,7 +538,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
                                           child: GridView.count(
                                             primary: false,
-                                            childAspectRatio: (7 / 8),
+                                            childAspectRatio: (6 / 9),
                                             shrinkWrap: true,
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 1, vertical: 15),
