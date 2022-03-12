@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Notification {
+  //TODO: Fix local notifications
+
   Map<String, int> dayMap = {
     'Sunday': 0,
     'Monday': 1,
@@ -27,7 +29,8 @@ class Notification {
     var initializationSettingsAndroid = AndroidInitializationSettings('logo');
     var initializationSettingsIOs = IOSInitializationSettings();
     var initSetttings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOs);
+        // initializationSettingsAndroid, initializationSettingsIOs
+        );
 
     flutterLocalNotificationsPlugin.initialize(initSetttings,
         onSelectNotification: onSelectNotification);
@@ -43,12 +46,13 @@ class Notification {
       String notifTitle,
       String notifSubtitle,
       {String day}) async {
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        '2', 'Habit', 'Reminders of Habit',
-        importance: Importance.Max, priority: Priority.High);
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    // var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    //     '2', 'Habit', 'Reminders of Habit',
+    //     importance: Importance.max, priority: Priority.high);
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+        // androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics
+        );
 
     int notifId = DateTime.now().millisecondsSinceEpoch % 10000;
     Time scheduleTime = Time(

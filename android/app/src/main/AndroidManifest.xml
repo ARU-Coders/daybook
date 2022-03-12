@@ -15,8 +15,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
-        android:name="io.flutter.app.FlutterApplication"
-        android:label="daybook"
+        android:name="${applicationName}"
+        android:label="Daybook"
         android:icon="@mipmap/ic_launcher">
 
       <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">

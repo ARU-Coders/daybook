@@ -33,69 +33,81 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   Future<void> login({
-      @required Function successCallback,
-      @required Function errorCallback,
-      @required Function dismissCallback,
-    }) async {
-      try{
-        final user = await googleSignInForLogin.signIn();
+    @required Function successCallback,
+    @required Function errorCallback,
+    @required Function dismissCallback,
+  }) async {
+    try {
+      final user = await googleSignInForLogin.signIn();
 
-        if (user == null){
-          dismissCallback();
-          return;
-        } 
-
-        print(user);
-        final googleAuth = await user.authentication;
-
-        // String accTok = googleAuth.accessToken.toString();
-        // await getGenderAndDOB(accTok);
-
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-        final ds = await firestore.collection('users').doc(user.email).get();
-        print(ds.exists);
-
-        if(!ds.exists){
-          logout();
-          errorCallback(ACCOUNT_DOESNOT_EXIST);
-          return;
-        }
-
-        print("Logging in");
-        await FirebaseAuth.instance.signInWithCredential(credential);
-
-        AuthService.updateEmail();
-        successCallback();
-      }catch(e){
-        String errorMessage = DEFAULT_AUTH_ERROR;
-        print("Error during login with Google.");
-        
-        if(e is FirebaseAuthException){
-          print(e);
-          print(e.code);
-          errorMessage = googleAuthExceptionMessageMap[e.code] == null ? DEFAULT_AUTH_ERROR : googleAuthExceptionMessageMap[e.code];
-        }
-        print("Attempting to log out");
-        logout();
-        errorCallback(errorMessage);
+      if (user == null) {
+        dismissCallback();
         return;
       }
+
+      print(user);
+      final googleAuth = await user.authentication;
+
+      // String accTok = googleAuth.accessToken.toString();
+      // await getGenderAndDOB(accTok);
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      final ds = await firestore.collection('users').doc(user.email).get();
+      print(ds.exists);
+
+      if (!ds.exists) {
+        logout();
+        errorCallback(ACCOUNT_DOESNOT_EXIST);
+        return;
+      }
+
+      print("Logging in");
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      AuthService.updateEmail();
+      successCallback();
+    } catch (e) {
+      String errorMessage = DEFAULT_AUTH_ERROR;
+      print("Error during login with Google.");
+
+      if (e is FirebaseAuthException) {
+        print(e);
+        print(e.code);
+        errorMessage = googleAuthExceptionMessageMap[e.code] == null
+            ? DEFAULT_AUTH_ERROR
+            : googleAuthExceptionMessageMap[e.code];
+      }
+      print("Attempting to log out");
+      logout();
+      errorCallback(errorMessage);
+      return;
+    }
   }
 
   /// Gets [gender] and [Date of birth] from user's Google profile
-  /// 
+  ///
   /// Eg: `genderAndDOB = ["Male", "1947-08-15"]`;
   Future<List<String>> getGenderAndDOB(String accessToken) async {
     final headers = await googleSignIn.currentUser.authHeaders;
     String dd = "01", mm = "01", yyyy = "2000", gender = "Not Set";
     final r = await http.get(
-        "https://people.googleapis.com/v1/people/me?personFields=genders,birthdays&key=$apiKey&access_token=$accessToken",
+        // "https://people.googleapis.com/v1/people/me?personFields=genders,birthdays&key=$apiKey&access_token=$accessToken")
+        Uri(
+          scheme: 'https',
+          host: 'people.googleapis.com',
+          path: 'v1/people/me',
+          queryParameters: {
+            'personFields': 'genders,birthdays',
+            'key': '$apiKey',
+            'access_token': '$accessToken',
+          },
+        ),
         headers: {"Authorization": headers["Authorization"]});
     final response = jsonDecode(r.body);
     print(response);
@@ -106,10 +118,10 @@ class GoogleSignInProvider extends ChangeNotifier {
 
     if (response.containsKey("birthdays")) {
       dd = response["birthdays"][0]["date"].containsKey("day")
-          ? response["birthdays"][0]["date"]["day"].toString().padLeft(2,"0")
+          ? response["birthdays"][0]["date"]["day"].toString().padLeft(2, "0")
           : '01';
       mm = response["birthdays"][0]["date"].containsKey("month")
-          ? response["birthdays"][0]["date"]["month"].toString().padLeft(2,"0")
+          ? response["birthdays"][0]["date"]["month"].toString().padLeft(2, "0")
           : '01';
       yyyy = response["birthdays"][0]["date"].containsKey("year")
           ? response["birthdays"][0]["date"]["year"].toString()
@@ -128,8 +140,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     @required Function successCallback,
     @required Function errorCallback,
     @required Function dismissCallback,
-    }) async {
-    try{
+  }) async {
+    try {
       final user = await googleSignIn.signIn();
 
       if (user == null) {
@@ -164,31 +176,32 @@ class GoogleSignInProvider extends ChangeNotifier {
           //Save user details
           addUserToFirestore(user, gender, dob);
           final _ = AuthService.updateEmail();
-          
+
           successCallback();
           return true;
         } else {
           String errorMessage = "User Already Exists !";
           print(doc["email"].toString());
           print("User Already Exists !");
-          
+
           logout();
 
           errorCallback(errorMessage);
           return false;
         }
       }
-    }catch(e){
-        print("Error during registering with Google.");
-        String errorMessage = "Some error occured! Please check your internet connection.";
-        if(e is FirebaseAuthException){
-          print(e);
-          print(e.code);
-          errorMessage = googleAuthExceptionMessageMap[e.code];
-        }
-        errorCallback(errorMessage);
-        return false;
+    } catch (e) {
+      print("Error during registering with Google.");
+      String errorMessage =
+          "Some error occured! Please check your internet connection.";
+      if (e is FirebaseAuthException) {
+        print(e);
+        print(e.code);
+        errorMessage = googleAuthExceptionMessageMap[e.code];
       }
+      errorCallback(errorMessage);
+      return false;
+    }
   }
 
   void addUserToFirestore(user, gender, dob) async {

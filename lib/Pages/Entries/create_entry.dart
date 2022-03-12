@@ -13,7 +13,7 @@ import 'package:textfield_tags/textfield_tags.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart' as loc;
+// import 'package:location/location.dart' as loc;
 
 class CreateEntryScreen extends StatefulWidget {
   @override
@@ -22,6 +22,7 @@ class CreateEntryScreen extends StatefulWidget {
 
 class _CreateEntryScreenState extends State<CreateEntryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GroupButtonController _controller = new GroupButtonController();
 
   List<String> selectedImages = [];
 
@@ -51,7 +52,7 @@ class _CreateEntryScreenState extends State<CreateEntryScreen> {
 
   Position _currentPosition;
   String currentAddress = '';
-  loc.Location location = loc.Location();
+  // loc.Location location = loc.Location();
   GeoPoint position = GeoPoint(0, 0);
 
   final List<String> menuItems = <String>[
@@ -69,11 +70,11 @@ void showSnackBar(BuildContext buildContext, String message, {int duration = 3})
   Scaffold.of(buildContext).showSnackBar(snackBar);
 }
 
-  Future _checkGps() async {
-    if (!await location.serviceEnabled()) {
-      location.requestService();
-    }
-  }
+  // Future _checkGps() async {
+  //   if (!await location.serviceEnabled()) {
+  //     location.requestService();
+  //   }
+  // }
 
   getCurrentLocation() async {
     print("Arre hello");
@@ -303,7 +304,7 @@ void showSnackBar(BuildContext buildContext, String message, {int duration = 3})
       }
       _currentPosition = Position(
           latitude: arguments[0]['position'].latitude,
-          longitude: arguments[0]['position'].longitude);
+          longitude: arguments[0]['position'].longitude, accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0, timestamp: DateTime.now());
       currentAddress = arguments[0]['address'];
     }
 
@@ -487,7 +488,7 @@ void showSnackBar(BuildContext buildContext, String message, {int duration = 3})
                                                 setState(() {
                                                   currentAddress = '';
                                                   _currentPosition = Position(
-                                                      latitude: 0, longitude: 0);
+                                                      latitude: 0, longitude: 0, accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0, timestamp: DateTime.now());
                                                   position = GeoPoint(0, 0);
                                                 });
                                               },
@@ -666,29 +667,32 @@ void showSnackBar(BuildContext buildContext, String message, {int duration = 3})
 
   Widget _moodBar() {
     return GroupButton(
-      spacing: 3,
+      controller: _controller,
       isRadio: true,
-      direction: Axis.horizontal,
       onSelected: (index, isSelected) => {selectedMoods[0] = moodList[index]},
       buttons: moodList,
-      selectedButtons: selectedMoods,
-      selectedTextStyle: TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 16,
-        color: Colors.red,
+      options: GroupButtonOptions(
+        selectedTextStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: Colors.red,
+        ),
+        direction: Axis.horizontal,
+        spacing: 3,
+        unselectedTextStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: Colors.grey[600],
+        ),
+        selectedColor: Colors.grey[300],
+        unselectedColor: Colors.white,
+        selectedBorderColor: Colors.red,
+        unselectedBorderColor: Colors.grey[500],
+        borderRadius: BorderRadius.circular(20.0),
+        selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
+        unselectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
       ),
-      unselectedTextStyle: TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 14,
-        color: Colors.grey[600],
-      ),
-      selectedColor: Colors.grey[300],
-      unselectedColor: Colors.white,
-      selectedBorderColor: Colors.red,
-      unselectedBorderColor: Colors.grey[500],
-      borderRadius: BorderRadius.circular(20.0),
-      selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
-      unselectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
-    );
+      
+);
   }
 }

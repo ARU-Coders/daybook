@@ -97,6 +97,14 @@ final Map<String, String> moodMap = {
   "😁": "Wonderful"
 };
 
+final List<String> moodEmojis = [
+  "😭",
+  "😥",
+  "🙂",
+  "😃",
+  "😁"
+];
+
 const EMAIL_REGEX = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
 
 //Asset Paths

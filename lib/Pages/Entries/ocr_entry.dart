@@ -1,9 +1,11 @@
+// ignore_for_file: missing_required_param
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daybook/Utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:daybook/Services/entryService.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:group_button/group_button.dart';
@@ -14,7 +16,7 @@ import 'package:textfield_tags/textfield_tags.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:location/location.dart' as loc;
+// import 'package:location/location.dart' as loc;
 
 class CreateOCREntryScreen extends StatefulWidget {
   final String title, content, capturedEntryPath;
@@ -26,6 +28,7 @@ class CreateOCREntryScreen extends StatefulWidget {
 
 class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GroupButtonController _controller = new GroupButtonController();
 
   List<String> selectedImages = [];
 
@@ -44,7 +47,7 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
   TimeOfDay time = TimeOfDay.fromDateTime(DateTime.now());
   Position _currentPosition;
   String currentAddress = '';
-  loc.Location location = loc.Location();
+  // loc.Location location = loc.Location();
   GeoPoint position = GeoPoint(0, 0);
 
   @override
@@ -102,11 +105,11 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
         : true;
   }
 
-  Future _checkGps() async {
-    if (!await location.serviceEnabled()) {
-      location.requestService();
-    }
-  }
+  // Future _checkGps() async {
+  //   if (!await location.serviceEnabled()) {
+  //     location.requestService();
+  //   }
+  // }
 
   _pickDate() async {
     DateTime date = await showDatePicker(
@@ -381,7 +384,13 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
                                             setState(() {
                                               currentAddress = '';
                                               _currentPosition = Position(
-                                                  latitude: 0, longitude: 0);
+                                                  heading: 0.0,
+                                                  latitude: 0,
+                                                  longitude: 0,
+                                                  accuracy: 0.0,
+                                                  altitude: 0.0,
+                                                  speed: 0.0,
+                                                  timestamp: DateTime.now());
                                               position = GeoPoint(0, 0);
                                             });
                                           },
@@ -590,29 +599,31 @@ class _CreateOCREntryScreenState extends State<CreateOCREntryScreen> {
 
   Widget _moodBar() {
     return GroupButton(
-      spacing: 3,
+      controller: _controller,
       isRadio: true,
-      direction: Axis.horizontal,
       onSelected: (index, isSelected) => {selectedMoods[0] = moodList[index]},
       buttons: moodList,
-      selectedButtons: selectedMoods,
-      selectedTextStyle: TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 16,
-        color: Colors.red,
+      options: GroupButtonOptions(
+        selectedTextStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+          color: Colors.red,
+        ),
+        direction: Axis.horizontal,
+        spacing: 3,
+        unselectedTextStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          color: Colors.grey[600],
+        ),
+        selectedColor: Colors.grey[300],
+        unselectedColor: Colors.white,
+        selectedBorderColor: Colors.red,
+        unselectedBorderColor: Colors.grey[500],
+        borderRadius: BorderRadius.circular(20.0),
+        selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
+        unselectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
       ),
-      unselectedTextStyle: TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 14,
-        color: Colors.grey[600],
-      ),
-      selectedColor: Colors.grey[300],
-      unselectedColor: Colors.white,
-      selectedBorderColor: Colors.red,
-      unselectedBorderColor: Colors.grey[500],
-      borderRadius: BorderRadius.circular(20.0),
-      selectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
-      unselectedShadow: <BoxShadow>[BoxShadow(color: Colors.transparent)],
     );
   }
 }

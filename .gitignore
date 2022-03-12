@@ -33,7 +33,7 @@
 .pub-cache/
 .pub/
 /build/
-
+.gradle/
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -44,3 +44,7 @@ app.*.symbols
 app.*.map.json
 
 google-services.json
+
+.project
+.settings/
+.vscode/

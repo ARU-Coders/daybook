@@ -170,12 +170,15 @@ class MyDialog extends StatefulWidget {
 }
 
 class _MyDialogState extends State<MyDialog> {
+  //TODO: Fix local notifications
+
   void initState() {
     super.initState();
-    var initializationSettingsAndroid = AndroidInitializationSettings('logo');
-    var initializationSettingsIOs = IOSInitializationSettings();
+    // var initializationSettingsAndroid = AndroidInitializationSettings('logo');
+    // var initializationSettingsIOs = IOSInitializationSettings();
     var initSetttings = InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOs);
+        // initializationSettingsAndroid, initializationSettingsIOs
+        );
 
     flutterLocalNotificationsPlugin.initialize(initSetttings,
         onSelectNotification: onSelectNotification);
@@ -212,9 +215,10 @@ class _MyDialogState extends State<MyDialog> {
       // icon: 'flutter_devs',
       // largeIcon: BitmapFactory.decodeFile(Image.asset('assets/images/logo.png')),
     );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+        // androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics
+        );
     int notifId = DateTime.now().millisecondsSinceEpoch % 10000;
     await flutterLocalNotificationsPlugin.schedule(
       notifId,
